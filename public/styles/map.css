@@ -1,0 +1,44 @@
+    #map-body {
+      margin: 0;
+      background: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .map-container {
+      position: relative;
+      width: 90vw;
+      max-width: 1365px;
+      aspect-ratio: 1365 / 668;
+    }
+    .map-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #map-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .debug-path {
+      fill: none;
+    } 
+    .map_text-overlay, .map_text-overlay2 {
+      position: absolute;
+      font-weight: bold;
+      font-size: 20px;
+      color: rgb(0, 0, 0);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0);
+    }
+    .map_text-overlay {
+      top: 33%;
+      left: 23%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+    }
+    .map_text-overlay2 {
+      top: 70%;
+      left: 92%;
+      transform: translate(-50%, -50%) rotate(-7deg);
+    }
