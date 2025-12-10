@@ -1,0 +1,301 @@
+{
+    "home":{
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": "https://arjanmalattarchand.com/#org",
+                "name": "Arjanmal Attarchand",
+                "url": "https://arjanmalattarchand.com/",
+                "logo": "https://arjanmalattarchand.com/logo.png",
+                "foundingDate": "1904",
+                "description": "Exporters of glass bottles, fancy perfume bottles, perfume attar bottles, aluminum bottles, and glass jars since 1904.",
+                "telephone": "+91-98115-55255",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "772, Tilak Bazar, Khari Baoli",
+                    "addressLocality": "New Delhi",
+                    "postalCode": "110006",
+                    "addressCountry": "IN",
+                    "addressRegion": "Delhi"
+                },
+                "areaServed": [{
+                    "@type": "Country",
+                    "name": "India"}
+                ],
+                "sameAs": [
+                    "https://arjanmalattarchand.com/"
+                ]
+            },
+            {
+                "@type": "LocalBusiness",
+                "@id": "https://arjanmalattarchand.com/#local",
+                "name": "Arjanmal Attarchand - Delhi NCR Bottle & Attar Packaging",
+                "url": "https://arjanmalattarchand.com/",
+                "image": "https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png",
+                "telephone": "+91-98115-55255",
+                "priceRange": "$$",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "772, Tilak Bazar, Khari Baoli",
+                    "addressLocality": "New Delhi",
+                    "postalCode": "110006",
+                    "addressCountry": "IN",
+                    "addressRegion": "Delhi"
+                },
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": "28.6573",
+                    "longitude": "77.2273"
+                },
+                "areaServed": [{
+                    "@type": "Country",
+                    "name": "India"}
+                ],
+                "foundingDate": "1904",
+                "logo": "https://arjanmalattarchand.com/logo.png"
+            },
+            {
+                "@type": "WebSite",
+                "@id": "https://arjanmalattarchand.com/#website",
+                "name": "Arjanmal Attarchand",
+                "url": "https://arjanmalattarchand.com/",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://arjanmalattarchand.com/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://arjanmalattarchand.com/#breadcrumbs",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://arjanmalattarchand.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Shop",
+                        "item": "https://arjanmalattarchand.com/shop.html"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "About",
+                        "item": "https://arjanmalattarchand.com/about.html"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 4,
+                        "name": "Contact",
+                        "item": "https://arjanmalattarchand.com/contact.html"
+                    }
+                ]
+            },
+            {
+                "@type": "Product",
+                "name": "Glass Bottles - Delhi NCR Exporters",
+                "image": "https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png",
+                "description": "Premium glass bottles for fragrances and beverages supplied across New Delhi, Old Delhi, Gurugram, Noida, Faridabad, and Ghaziabad.",
+                "brand": "Arjanmal Attarchand",
+                "category": "Glass Bottles"
+            },
+            {
+                "@type": "Product",
+                "name": "Fancy Perfume Bottles - New Delhi",
+                "image": "https://arjanmalattarchand.com/images/small-attar-bottles-new-delhi.png",
+                "description": "Decorative fancy perfume bottles crafted for luxury attars and oils in Delhi NCR.",
+                "brand": "Arjanmal Attarchand",
+                "category": "Fancy Perfume Bottles"
+            },
+            {
+                "@type": "Product",
+                "name": "Perfume Attar Bottles - Old Delhi Heritage",
+                "image": "https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png",
+                "description": "Attar bottles inspired by Old Delhi heritage, exported worldwide.",
+                "brand": "Arjanmal Attarchand",
+                "category": "Perfume Attar Bottles"
+            },
+            {
+                "@type": "Product",
+                "name": "Aluminum Bottles - Industrial Supply Delhi NCR",
+                "image": "https://arjanmalattarchand.com/images/pharma-amber-glass-containers-delhi.png",
+                "description": "Durable aluminum bottles for pharma and chemical applications across NCR.",
+                "brand": "Arjanmal Attarchand",
+                "category": "Aluminum Bottles"
+            },
+            {
+                "@type": "Product",
+                "name": "Glass Jars - Food & Beverages Gurugram / Noida",
+                "image": "https://arjanmalattarchand.com/images/glass-food-jars-suppliers-delhi.png",
+                "description": "Glass jars for food and beverage packaging, supplied across Gurugram, Noida, and the wider NCR.",
+                "brand": "Arjanmal Attarchand",
+                "category": "Glass Jars"
+            }
+        ]
+    },
+    "about":{
+        
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://arjanmalattarchand.com/#org",
+          "name": "Arjanmal Attarchand",
+          "url": "https://arjanmalattarchand.com/",
+          "logo": "https://arjanmalattarchand.com/logo.png",
+          "foundingDate": "1904",
+          "description": "Exporters of glass bottles, fancy perfume bottles, perfume attar bottles, aluminum bottles, and glass jars since 1904.",
+          "telephone": "+91-98115-55255",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "772, Tilak Bazar, Khari Baoli",
+            "addressLocality": "New Delhi",
+            "postalCode": "110006",
+            "addressCountry": "IN",
+            "addressRegion": "Delhi"
+          },
+          "areaServed": [{
+            "@type": "Country",
+    "name": "India"}
+          ],
+          "sameAs": ["https://arjanmalattarchand.com/"]
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://arjanmalattarchand.com/#local",
+          "name": "Arjanmal Attarchand - Delhi NCR Bottle & Attar Packaging",
+          "url": "https://arjanmalattarchand.com/",
+          "image": "https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png",
+          "telephone": "+91-98115-55255",
+          "priceRange": "$$",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "772, Tilak Bazar, Khari Baoli",
+            "addressLocality": "New Delhi",
+            "postalCode": "110006",
+            "addressCountry": "IN",
+            "addressRegion": "Delhi"
+          },
+          "areaServed": [{
+            "@type": "Country",
+    "name": "India"}
+          ],
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "28.6573",
+            "longitude": "77.2273"
+          },
+          "foundingDate": "1904",
+          "logo": "https://arjanmalattarchand.com/logo.png"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://arjanmalattarchand.com/#website",
+          "name": "Arjanmal Attarchand",
+          "url": "https://arjanmalattarchand.com/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://arjanmalattarchand.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://arjanmalattarchand.com/about.html#breadcrumbs",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://arjanmalattarchand.com/" },
+            { "@type": "ListItem", "position": 2, "name": "About", "item": "https://arjanmalattarchand.com/about.html" }
+          ]
+        },
+        {
+          "@type": "AboutPage",
+          "@id": "https://arjanmalattarchand.com/about.html#about",
+          "url": "https://arjanmalattarchand.com/about.html",
+          "name": "About Arjanmal Attarchand - Delhi NCR Glass & Attar Bottles",
+          "description": "Learn about Arjanmal Attarchand’s heritage exporting glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars in Delhi NCR since 1904."
+        }
+      ]
+    },
+    "contact":{
+        "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://arjanmalattarchand.com/#org",
+        "name": "Arjanmal Attarchand",
+        "url": "https://arjanmalattarchand.com/",
+        "logo": "https://arjanmalattarchand.com/logo.png",
+        "foundingDate": "1904",
+        "description": "Exporters of glass bottles, fancy perfume bottles, perfume attar bottles, aluminum bottles, and glass jars since 1904.",
+        "telephone": "+91-98115-55255",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "772, Tilak Bazar, Khari Baoli",
+          "addressLocality": "New Delhi",
+          "postalCode": "110006",
+          "addressCountry": "IN",
+          "addressRegion": "Delhi"
+        },
+        "areaServed": [{
+         "@type": "Country",
+    "name": "India"}
+        ],
+        "sameAs": ["https://arjanmalattarchand.com/"]
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://arjanmalattarchand.com/#local",
+        "name": "Arjanmal Attarchand - Delhi NCR Bottle & Attar Packaging",
+        "url": "https://arjanmalattarchand.com/",
+        "image": "https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png",
+        "telephone": "+91-98115-55255",
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "772, Tilak Bazar, Khari Baoli",
+          "addressLocality": "New Delhi",
+          "postalCode": "110006",
+          "addressCountry": "IN",
+          "addressRegion": "Delhi"
+        },
+        "areaServed": [{
+         "@type": "Country",
+    "name": "India"}
+        ],
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "28.6573",
+          "longitude": "77.2273"
+        },
+        "foundingDate": "1904",
+        "logo": "https://arjanmalattarchand.com/logo.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://arjanmalattarchand.com/#website",
+        "name": "Arjanmal Attarchand",
+        "url": "https://arjanmalattarchand.com/"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://arjanmalattarchand.com/contact.html#breadcrumbs",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://arjanmalattarchand.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://arjanmalattarchand.com/contact.html" }
+        ]
+      },
+      {
+        "@type": "ContactPage",
+        "@id": "https://arjanmalattarchand.com/contact.html#contact",
+        "url": "https://arjanmalattarchand.com/contact.html",
+        "name": "Contact Arjanmal Attarchand - Delhi NCR",
+        "description": "Get in touch for glass bottles, perfume bottles, attar bottles, aluminum bottles, and glass jars in Delhi NCR."
+      }
+    ]
+    }
+}

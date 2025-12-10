@@ -1,0 +1,112 @@
+  <style>
+            .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 58px;
+            height: 58px;
+            border-radius: 9999px;
+            background: #25D366;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            z-index: 70;
+            opacity: 0.95;
+        }
+
+        .whatsapp-float:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+            opacity: 1;
+        }
+
+        .whatsapp-float img {
+            width: 28px;
+            height: 28px;
+            filter: brightness(0) invert(1);
+        }
+
+        @media (max-width: 640px) {
+            .whatsapp-float {
+                width: 52px;
+                height: 52px;
+                bottom: 16px;
+                right: 16px;
+            }
+
+            .whatsapp-float img {
+                width: 24px;
+                height: 24px;
+            }
+        }
+    
+  </style>
+  
+  <!-- Navbar -->
+  <header class="fixed inset-x-0 top-0 z-50">
+    <nav id="navbar" class="transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 sm:h-20 items-center justify-between">
+          <!-- Brand -->
+          <a href="#" class="flex items-center gap-2">
+            <span class="text-xl sm:text-2xl cormorant tracking-wider text-white">
+              <span class="text-[color:var(--gold)] font-semibold">ARJANMAL</span>
+              <span class="font-light">ATTARCHAND</span>
+            </span>
+          </a>
+
+          <!-- Desktop menu -->
+          <div class="hidden md:flex items-center gap-8">
+            <a href="/"
+              class="text-sm tracking-widest uppercase text-white hover:text-[color:var(--gold)] transition">Home</a>
+            <a href="/shop"
+              class="text-sm tracking-widest uppercase text-gray-300 hover:text-[color:var(--gold)] transition">Shop</a>
+            <a href="/about"
+              class="text-sm tracking-widest uppercase text-gray-300 hover:text-[color:var(--gold)] transition">About</a>
+            <a href="/contact"
+              class="text-sm tracking-widest uppercase text-gray-300 hover:text-[color:var(--gold)] transition">Contact</a>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-3">
+            <button aria-label="search" class="p-2 text-white hover:text-[color:var(--gold)] transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21 21l-4.8-4.8M10.5 18a7.5 7.5 0 110-15 7.5 7.5 0 010 15z"></path>
+              </svg>
+            </button>
+
+
+            <!-- Mobile menu button -->
+            <button id="menuToggle" class="md:hidden p-2 text-white hover:text-[color:var(--gold)]" aria-label="menu">
+              <svg id="menuIconOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg id="menuIconClose" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="md:hidden mobile-panel pb-6">
+          <div class="mt-3 space-y-2 rounded-xl border border-white/10 bg-black/40 backdrop-blur p-4">
+            <a href="/" target=""
+              class="block px-3 py-2 rounded-lg text-white hover:text-[color:var(--gold)] hover:bg-white/5">Home</a>
+            <a href="/shop" target=""
+              class="block px-3 py-2 rounded-lg text-gray-300 hover:text-[color:var(--gold)] hover:bg-white/5">Shop</a>
+            <a href="/about" target=""
+              class="block px-3 py-2 rounded-lg text-gray-300 hover:text-[color:var(--gold)] hover:bg-white/5">About</a>
+            <a href="/contact" target=""
+              class="block px-3 py-2 rounded-lg text-gray-300 hover:text-[color:var(--gold)] hover:bg-white/5">Contact</a>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </nav>
+  </header>

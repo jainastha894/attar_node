@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Products — Arjan Attars</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- <link rel="stylesheet" href="/styles/shop.css"> -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;600&display=swap');
+
+    :root {
+      --gold: #d4af37;
+      --gold-deep: #b8860b;
+      --ink: #0a0a0a;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .2px;
+      overflow-x: hidden;
+      background: #fff;
+    }
+
+    .cormorant {
+      font-family: 'Cormorant Garamond', serif
+    }
+
+    /* Header styling and stability on scroll */
+    .nav-blur {
+      backdrop-filter: blur(14px);
+      background: rgba(12, 12, 12, .78);
+      border-bottom: 1px solid rgba(212, 175, 55, .15)
+    }
+
+    /* Hero */
+    .hero-gradient {
+      background: radial-gradient(1100px 520px at 10% 10%, rgba(212, 175, 55, .12), transparent 60%),
+        radial-gradient(900px 480px at 90% 20%, rgba(184, 134, 11, .10), transparent 60%),
+        linear-gradient(135deg, #0b0b0b 0%, #111111 55%, #1a1a1a 100%);
+      position: relative;
+    }
+
+    .hero-pattern:before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><g fill="%23d4af37" fill-opacity=".08"><circle cx="20" cy="20" r="1.2"/><circle cx="80" cy="40" r="1"/><circle cx="40" cy="120" r="1"/><circle cx="120" cy="80" r="1"/></g></svg>') repeat;
+    }
+
+    /* Cards and chips */
+    .product-card {
+      transition: transform .4s cubic-bezier(.25, .46, .45, .94), box-shadow .4s;
+      border: 1px solid rgba(184, 134, 11, .12)
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, .12)
+    }
+
+    .price-badge {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #111
+    }
+
+    .chip {
+      background: rgba(212, 175, 55, .12);
+      color: #a07807;
+      border: 1px solid rgba(212, 175, 55, .25)
+    }
+
+    /* CTA */
+    .gold-btn {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #111;
+      transition: transform .2s, box-shadow .2s
+    }
+
+    .gold-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(212, 175, 55, .25)
+    }
+
+    /* Mobile filter sheet */
+    .sheet-backdrop {
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(6px)
+    }
+
+    .sheet {
+      transform: translateY(100%);
+      transition: transform .28s ease
+    }
+
+    .sheet.open {
+      transform: translateY(0)
+    }
+
+    #mobileMenu {
+      margin-right: 20px;
+    }
+
+    /* Mobile menu animation */
+    .mobile-panel {
+      transform-origin: top;
+      transform: scaleY(0);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: transform .3s ease, opacity .3s ease, max-height .3s ease;
+    }
+
+    .mobile-panel.open {
+      transform: scaleY(1);
+      opacity: 1;
+      max-height: 500px;
+      /* adjust if menu is taller */
+      pointer-events: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+    <%- include ('partials/header.ejs') %>
+
+  <!-- Hero -->
+  <section class="hero-gradient hero-pattern pt-24 sm:pt-32 pb-8 sm:pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+      <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-4">Shop here...</p>
+      <h1 class="cormorant text-4xl sm:text-6xl md:text-7xl leading-[1.05] mb-4">Our<span
+          class="text-[color:var(--gold)] italic"> Exclusive Products</span></h1>
+      <p class="text-gray-300 max-w-3xl mx-auto">Explore our Attars and Jars, Bottles and Containers crafted with
+        timeless artistry
+        and modern elegance.</p>
+      <div class="mt-7">
+        <button
+          class="border border-[color:var(--gold)] text-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-black transition rounded-full px-7 py-3 text-sm"
+          onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Collection</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls (mobile-first) -->
+  <section class="bg-white border-b border-gray-100 pt-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+      <div class="flex flex-col gap-3 sm:gap-4">
+        <!-- Row 1: Search -->
+        <div class="flex gap-3">
+          <input id="searchInput" type="text" placeholder="Search bottles..."
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[color:var(--gold)] focus:border-[color:var(--gold)] text-gray-800 placeholder-gray-400" />
+          <!-- Mobile filter trigger -->
+          <button id="openFilters"
+            class="sm:hidden px-4 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-gray-700">Filters</button>
+        </div>
+        <!-- Row 2: Sort + Count -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <label for="sortSelect" class="text-xs sm:text-sm text-gray-600 uppercase tracking-wider">Sort</label>
+            <select id="sortSelect"
+              class="px-3 py-2 rounded-md border border-gray-200 focus:ring-2 focus:ring-[color:var(--gold)] focus:border-[color:var(--gold)] text-sm">
+              <option value="name">Name</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
+          <div id="productCount" class="text-sm text-gray-600">Showing 0</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Desktop Filters -->
+        <aside class="hidden lg:block lg:w-64 flex-shrink-0">
+          <div class="sticky top-24 bg-white border border-gray-100 rounded-2xl p-6">
+            <h3 class="cormorant text-2xl text-gray-900 mb-4">Filters</h3>
+            <!-- Jars And Bottles -->
+            <div class="mb-6">
+              <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="all">All</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Ittar Bottles">Ittar Bottles</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Perfume Bottles">Perfume Bottles</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Clear Glass Bottles">Clear Glass Bottles</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Clear Glass Jars">Clear Glass Jars</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Amber Glass Jars">Amber Glass Jars</button>
+                <button
+                  class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="Amber Glass Bottles">Amber Glass Bottles</button>
+              </div>
+            </div>
+            <!-- Exquisite Fragnances -->
+            <div class="mb-6">
+              <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Exquisite Fragnances</div>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-exq="all">All</button>
+                <button
+                  class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-exq="Floral">Floral</button>
+                <button
+                  class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-exq="Citrus">Citrus</button>
+                <button
+                  class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-exq="Amber or Musk">Amber or Musk</button>
+                <button
+                  class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-exq="Oud">Oud</button>
+              </div>
+            </div>
+
+            <div class="mt-6 flex gap-2">
+              <button id="clearDesktop"
+                class="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm hover:border-gray-300">Clear</button>
+              <button id="applyDesktop" class="px-4 py-2 rounded-lg gold-btn text-sm">Apply</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Products Grid -->
+        <section id="products" class="flex-1">
+          <!-- Grid: 2 columns on mobile -->
+          <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+            <!-- rendered via JS -->
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Filter Sheet -->
+  <div id="filterSheet" class="fixed inset-0 z-50 hidden">
+    <div class="sheet-backdrop absolute inset-0" id="closeSheet"></div>
+    <div class="absolute inset-x-0 bottom-0 bg-white rounded-t-2xl sheet">
+      <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+        <h3 class="cormorant text-2xl text-gray-900">Filters</h3>
+        <button id="closeSheetBtn" class="px-3 py-1 rounded-md border border-gray-200">Close</button>
+      </div>
+      <div class="p-5 space-y-6 max-h-[65vh] overflow-y-auto">
+        <div>
+          <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="all">All</button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Ittar Bottles">Ittar Bottles</button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Perfume Bottles">Perfume Bottles</button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Clear Glass Bottles">Clear Glass Bottles</button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Clear Glass Jars">Clear Glass Jars </button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Amber Glass Jars">Amber Glass Jars</button>
+            <button
+              class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-filter="Amber Glass Bottles">Amber Glass Bottles</button>
+          </div>
+        </div>
+        <div>
+          <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Exquisite Fragnances</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-exq="all">All</button>
+            <button
+              class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-exq="Floral">Floral</button>
+            <button
+              class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-exq="Citrus">Citrus</button>
+            <button
+              class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-exq="Amber or Musk">Amber or Musk</button>
+            <button
+              class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+              data-exq="Oud">Oud</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="p-5 border-t border-gray-100 flex items-center gap-3">
+        <button id="clearMobile"
+          class="px-4 py-3 rounded-lg border border-gray-200 text-gray-700 text-sm flex-1">Clear</button>
+        <button id="applyMobile" class="px-4 py-3 rounded-lg gold-btn text-sm flex-1">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="productModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="closeModal"></div>
+    <div class="absolute inset-0 p-4 sm:p-8 grid place-items-center">
+      <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative">
+        <button id="xModal"
+          class="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 grid place-items-center">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div id="modalContent" class="p-6 sm:p-8"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="bg-black border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div class="grid md:grid-cols-4 gap-10">
+        <div class="md:col-span-2">
+          <div class="text-2xl cormorant tracking-wider text-white">
+            <span class="text-xl sm:text-2xl cormorant tracking-wider text-white">
+              <span class="text-[color:var(--gold)] font-semibold">ARJANMAL</span>
+              <span class="font-light">ATTARCHAND</span>
+            </span>
+          </div>
+          <p class="text-gray-400 mt-4 max-w-md">
+            Where tradition meets luxury. Crafted in Lahore with an unwavering commitment to excellence.
+          </p>
+        </div>
+        <div>
+          <h4 class="cormorant text-white text-lg">Explore</h4>
+          <ul class="mt-3 space-y-2 text-gray-400">
+            <li><a href="index.html" class="hover:text-[color:var(--gold)]">Home</a></li>
+            <li><a href="about.html" class="hover:text-[color:var(--gold)]">About</a></li>
+            <li><a href="shop.html" class="hover:text-[color:var(--gold)]">Shop</a></li>
+            <li><a href="contact.html" class="hover:text-[color:var(--gold)]">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="cormorant text-white text-lg">Trader - Wholesaler/Distributor</h4>
+          <ul class="mt-3 space-y-1 text-gray-400">
+            <li>Retail Business, Office / Sale Office, Wholesale Business</li>
+            <li>772, Tilak Bazar, Khari Baoli, New Delhi - 110006, Delhi</li>
+            <li>India</li>
+            <li class="mt-2">+91 9311555255</li>
+            <li>sales@arjanmalattarchand.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="text-gray-500 text-sm mt-10 border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between">
+        <p>© 2025 Arjan Attars. All rights reserved.</p>
+        <div class="mt-3 sm:mt-0 space-x-5">
+          <a href="#" class="hover:text-[color:var(--gold)]">Privacy</a>
+          <a href="#" class="hover:text-[color:var(--gold)]">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    // Header stability
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      // Always keep a solid style and never shrink the header height
+      nav.classList.add('nav-blur');
+    });
+
+    // Mobile menu
+    const toggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('mobileMenu');
+    const iconOpen = document.getElementById('menuIconOpen');
+    const iconClose = document.getElementById('menuIconClose');
+
+    toggle.addEventListener('click', () => {
+      const isOpen = menu.classList.contains('open');
+      if (isOpen) {
+        menu.classList.remove('open');
+      } else {
+        menu.classList.add('open');
+      }
+      iconOpen.classList.toggle('hidden', !isOpen);
+      iconClose.classList.toggle('hidden', isOpen);
+    });
+
+    // Close mobile menu on link click
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      menu.classList.remove('open');
+      iconOpen.classList.remove('hidden');
+      iconClose.classList.add('hidden');
+    }));
+
+    // Data
+    const products = [
+      { id: 1, name: "Perfume Bottle", image: "fragnances/bottle1.png", JarsAndBottles: "Perfume Bottles", description: "NF: 240", size: "100ml",  featured: true, industry: "Fragnances" },
+      { id: 2, name: "Gustav Women", image: "fragnances/bottle2.png", JarsAndBottles: "Perfume Bottles", description: "Clear Bottle ", size: "100ml",  featured: true, industry: "Fragnances" },
+      { id: 3, name: "Colorful Car Hanging", image: "fragnances/colorfulCarHanging.jpeg", JarsAndBottles: "Ittar Bottles", description: "Colorful Car hanging bottles for ittars", size: "", featured: false, industry: "Fragnances" },
+      { id: 4, name: "Pharma 1", image: "pharma/pharma1.jpeg", JarsAndBottles: "Clear Glass Bottles", description: "Clear Glass Bottles for pharma uses.", size: "", featured: false, industry: "pharma" },
+      { id: 5, name: "Pharma 2", image: "pharma/pharma2.jpeg", JarsAndBottles: "Clear Glass Bottles", description: "Clear Glass Bottles for pharma uses.", size: "", featured: false, industry: "pharma" },
+      { id: 6, name: "Pharma 3", image: "pharma/pharma3.jpeg", JarsAndBottles: "Clear Glass Jars", description: "Clear Glass Jars of 50ml for pharma uses.", size: "50ml", featured: true, industry: "pharma" },
+      { id: 7, name: "Floral Fragnance", image: "exquisiteFragnances/Floral.jpeg", JarsAndBottles: "", description: "Soft, fresh fragrances inspired by blooming flowers and natural petals.", size: "", featured: true, industry: "", ExquisiteFragnances: "Floral" },
+      { id: 8, name: "Amber or Musk Fragnance", image: "exquisiteFragnances/Amber.jpeg", JarsAndBottles: "", description: "Warm, deep, and long-lasting scents with a cozy, sensual feel.", size: "", featured: true, industry: "", ExquisiteFragnances: "Amber or Musk" },
+      { id: 9, name: "Citrus Fragnance", image: "exquisiteFragnances/Citrus.jpeg", JarsAndBottles: "", description: "Bright, zesty, and refreshing aromas bursting with lemon, orange, and fresh notes.", size: "", featured: true, industry: "", ExquisiteFragnances: "Citrus" },
+      { id: 10, name: "Oud Fragnance", image: "exquisiteFragnances/Oud.jpeg", JarsAndBottles: "", description: "Rich, smoky, and luxurious woody scent known for its bold and exotic character.", size: "", featured: true, industry: "", ExquisiteFragnances: "Oud" },
+      { id: 11, name: "Matka Jar", image: "food/food1.jpeg", JarsAndBottles: "Clear Glass Jars", description: "recyclable materials, these bottles & jars are not only dishwasher safe", size: "All sizes available", featured: false, industry: "food" },
+      { id: 12, name: "Round Jars", image: "food/food5.png", JarsAndBottles: "Clear Glass Jars", description: "Plastic/Steels caps. dishwasher-safe and recyclable glass", size: "All sizes available", featured: true, industry: "food" },
+      { id: 13, name: "Cylendrical Jars", image: "food/food7.png", JarsAndBottles: "Clear Glass Jars", description: "PLASTIC CAP, Glassfinity's Cylinderical Jars ", size: "All sizes available", featured: false, industry: "food" }
+
+
+    ];
+
+    let filteredProducts = [...products];
+    // let cartCount = 0;
+
+    // State
+    const state = {
+      search: '',
+      // null = no filter applied (show everything). When user clicks a filter it becomes
+      // either a specific value (e.g. "Perfume Bottles") or the explicit "all" token.
+      JarsAndBottles: null,
+      exquisiteFragnances: null,
+      notes: new Set(),
+      sort: 'name',
+    };
+
+    // Elements
+    const grid = document.getElementById('productsGrid');
+    const countEl = document.getElementById('productCount');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+
+    // Render
+    function renderProducts() {
+      const items = filteredProducts.map(p => {
+        const JarsAndBottlesLabel = p.JarsAndBottles ? (p.JarsAndBottles.charAt(0).toUpperCase() + p.JarsAndBottles.slice(1)) : '';
+        return `
+         <article class="product-card bg-white rounded-xl overflow-hidden flex flex-col" onclick="openProductModal(${p.id})">
+          <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 aspect-square">
+            <div class="absolute top-2 left-2">
+              ${p.featured ? '<span class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-medium bg-[color:var(--gold)] text-black">Featured</span>' : ''}
+            </div>
+            <div class="absolute top-2 right-2">
+             <span class="chip px-1 py-1 rounded-full text-xs">${JarsAndBottlesLabel}</span>
+            </div>
+            <div class="absolute inset-0">
+  <img src="images/products/${p.image}" 
+       alt="${p.name}" 
+       class="w-full h-full object-cover"/>
+</div>
+
+          </div>
+          <div class="p-3 sm:p-4 flex-1 flex flex-col">
+            <h3 class="cormorant text-base sm:text-lg text-gray-900 leading-snug">${p.name}</h3>
+            <p class="text-gray-600 text-[11px] sm:text-sm mt-1 line-clamp-2">${p.description}</p>
+            <div class="mt-2 sm:mt-3 flex items-center justify-between">
+              <span class="text-[11px] text-gray-500">${p.size}</span>
+            </div>
+           <a href="https://wa.me/919311555255?text=Hi%20I%20am%20interested%20in%20${p.name}" 
+   target="_blank"
+   class=" gold-btn w-full mt-3 sm:mt-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">
+      <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.59 2.15 8.02L.5 31.5l7.7-2.07C10.35 30.27 13.12 31 16 31c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28c-2.5 0-4.94-.67-7.06-1.93l-.5-.29-4.57 1.23 1.23-4.57-.29-.5C3.67 20.94 3 18.5 3 16 3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13zm7.2-9.98c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.63-.2-.9.2s-1.03 1.26-1.27 1.52c-.23.26-.47.29-.86.1-.39-.2-1.63-.6-3.1-1.92-1.15-1.02-1.92-2.3-2.15-2.69-.23-.39-.02-.6.17-.79.17-.17.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.9-2.17-1.24-2.97-.33-.8-.67-.69-.9-.7h-.77c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26s1.4 3.77 1.59 4.03c.2.26 2.75 4.2 6.67 5.89.93.4 1.65.64 2.21.82.93.3 1.78.26 2.45.16.75-.11 2.3-.94 2.62-1.84.33-.9.33-1.67.23-1.84-.1-.17-.36-.26-.75-.46z"/>
+   </svg>
+   WhatsApp
+</a>
+
+
+          </div>
+        </article>`;
+      }).join('');
+
+      grid.innerHTML = items || `
+        <div class="col-span-full text-center py-14">
+          <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 grid place-items-center mb-4">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          <p class="cormorant text-xl text-gray-900">No products found</p>
+          <p class="text-gray-600 text-sm">Try adjusting your filters.</p>
+        </div>
+      `;
+
+      countEl.textContent = `Showing ${filteredProducts.length}`;
+    }
+
+    function applyFilters() {
+      const term = state.search.toLowerCase().trim();
+      filteredProducts = products.filter(p => {
+        const matchesSearch = !term || p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term);
+         const matchesIndustry = !state.industry || p.industry === state.industry;
+        // Exclusive filter logic:
+        // - If neither filter applied (both null) => show everything.
+        // - If JarsAndBottles is not null => apply it and ignore exquisiteFragnances.
+       //    * If JarsAndBottles === 'all' => match any product that has a non-empty JarsAndBottles.
+        // - Else if exquisiteFragnances is not null => apply it and ignore JarsAndBottles.
+        //    * If exquisiteFragnances === 'all' => match any product that has a non-empty ExquisiteFragnances.
+       let matchesJarsAndBottles = true;
+        let matchesExq = true;
+        if (state.JarsAndBottles !== null) {
+         if (state.JarsAndBottles === 'all') matchesJarsAndBottles = !!(p.JarsAndBottles && p.JarsAndBottles.toString().trim() !== '');
+          else matchesJarsAndBottles = p.JarsAndBottles === state.JarsAndBottles;
+          matchesExq = true; // ignore exq
+        } else if (state.exquisiteFragnances !== null) {
+          if (state.exquisiteFragnances === 'all') matchesExq = !!(p.ExquisiteFragnances && p.ExquisiteFragnances.toString().trim() !== '');
+          else matchesExq = (p.ExquisiteFragnances || '').toString() === state.exquisiteFragnances;
+          matchesJarsAndBottles = true; // ignore jars
+        } // else both null -> both remain true (show all)
+         
+        const matchesNotes = state.notes.size === 0 || [...state.notes].some(n => p.notes.includes(n));
+        return matchesSearch && matchesJarsAndBottles && matchesExq && matchesNotes && matchesIndustry;
+      });
+      sortProducts();
+    }
+
+    function sortProducts() {
+      const s = state.sort;
+      filteredProducts.sort((a, b) => {
+        if (s === 'name') return a.name.localeCompare(b.name);
+        if (s === 'newest') return b.id - a.id;
+        return 0;
+      });
+      renderProducts();
+    }
+
+    // UI helpers
+    function setActive(btns, btn) {
+      btns.forEach(b => b.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'));
+      if (btn) { btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
+    }
+    // Detect industry filter from URL and apply it globally
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedIndustry = urlParams.get('industry');
+    if (selectedIndustry) {
+      // Lock industry for this page
+      state.industry = selectedIndustry;
+    }
+
+
+    // Events
+    function setupEvents() {
+      // Search
+      searchInput.addEventListener('input', (e) => {
+        state.search = e.target.value;
+        applyFilters();
+      });
+      // Sort
+      sortSelect.addEventListener('change', (e) => {
+        state.sort = e.target.value;
+        sortProducts();
+      });
+
+      // Desktop filter buttons
+      const colBtns = document.querySelectorAll('aside .filter-btn');
+      const exqBtns = document.querySelectorAll('aside .exq-filter');
+      const noteBtns = document.querySelectorAll('aside .note-filter');
+           function setFilterButtonState(btns, disabled) {
+        btns.forEach(b => {
+          b.disabled = disabled;
+          b.classList.toggle('opacity-50', disabled);
+          b.classList.toggle('pointer-events-none', disabled);
+        });
+      }
+
+
+      colBtns.forEach(btn => btn.addEventListener('click', () => {
+     // apply jars filter (including explicit "all") and disable Exquisite Fragnances
+        state.JarsAndBottles = btn.dataset.filter;
+        state.exquisiteFragnances = null;
+        setActive(colBtns, btn);
+        setActive(exqBtns, null);
+        setFilterButtonState(exqBtns, true);
+      }));
+      exqBtns.forEach(btn => btn.addEventListener('click', () => {
+        // apply exq filter and disable JarsAndBottles
+        state.exquisiteFragnances = btn.dataset.exq;
+        state.JarsAndBottles = null;
+        setActive(exqBtns, btn);
+        setActive(colBtns, null);
+        setFilterButtonState(colBtns, true);
+      }));
+      noteBtns.forEach(btn => btn.addEventListener('click', () => {
+        const n = btn.dataset.note;
+        if (state.notes.has(n)) { state.notes.delete(n); btn.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
+        else { state.notes.add(n); btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
+      }));
+      document.getElementById('applyDesktop').addEventListener('click', applyFilters);
+      document.getElementById('clearDesktop').addEventListener('click', () => {
+      // reset all filters -> show everything
+        state.JarsAndBottles = null;
+        state.exquisiteFragnances = null;
+        state.notes.clear();
+        setActive(colBtns, null); setActive(exqBtns, null);
+        setFilterButtonState(colBtns, false);
+        setFilterButtonState(exqBtns, false);
+        noteBtns.forEach(n => n.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'));
+        applyFilters();
+      });
+
+      // Mobile sheet
+      const sheet = document.getElementById('filterSheet');
+      const openFilters = document.getElementById('openFilters');
+      const closeSheet = document.getElementById('closeSheet');
+      const closeSheetBtn = document.getElementById('closeSheetBtn');
+      const sheetPanel = sheet.querySelector('.sheet');
+
+      function openSheet() {
+        sheet.classList.remove('hidden');
+        requestAnimationFrame(() => sheetPanel.classList.add('open'));
+        document.body.style.overflow = 'hidden';
+      }
+      function hideSheet() {
+        sheetPanel.classList.remove('open');
+        setTimeout(() => sheet.classList.add('hidden'), 250);
+        document.body.style.overflow = 'auto';
+      }
+      openFilters.addEventListener('click', openSheet);
+      closeSheet.addEventListener('click', hideSheet);
+      closeSheetBtn.addEventListener('click', hideSheet);
+
+      // Mobile filters
+      const mColBtns = sheet.querySelectorAll('.m-filter');
+      const mExqBtns = sheet.querySelectorAll('.m-exq');
+      const mNoteBtns = sheet.querySelectorAll('.m-note');
+
+      mColBtns.forEach(btn => btn.addEventListener('click', () => {
+        state.JarsAndBottles = btn.dataset.filter;
+        state.exquisiteFragnances = null;
+        setActive(mColBtns, btn);
+        setActive(mExqBtns, null);
+        setFilterButtonState(mExqBtns, true);
+      }));
+      mExqBtns.forEach(btn => btn.addEventListener('click', () => {
+         state.exquisiteFragnances = btn.dataset.exq;
+        state.JarsAndBottles = null;
+        setActive(mExqBtns, btn);
+        setActive(mColBtns, null);
+        setFilterButtonState(mColBtns, true);
+      }));
+      mNoteBtns.forEach(btn => btn.addEventListener('click', () => {
+        const n = btn.dataset.note;
+        if (state.notes.has(n)) { state.notes.delete(n); btn.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
+        else { state.notes.add(n); btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
+      }));
+      document.getElementById('applyMobile').addEventListener('click', () => { applyFilters(); hideSheet(); });
+      document.getElementById('clearMobile').addEventListener('click', () => {
+        state.JarsAndBottles = null;
+        state.exquisiteFragnances = null;
+        state.notes.clear();
+        setActive(mColBtns, null); setActive(mExqBtns, null);
+        setFilterButtonState(mColBtns, false);
+        setFilterButtonState(mExqBtns, false);
+        mNoteBtns.forEach(n => n.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'));
+        applyFilters();
+      });
+
+      // Modal controls
+      document.getElementById('closeModal').addEventListener('click', closeProductModal);
+      document.getElementById('xModal').addEventListener('click', closeProductModal);
+    }
+    // Modal
+    function openProductModal(id) {
+      const p = products.find(x => x.id === id);
+
+      const content = `
+    <div class="flex flex-col md:grid md:grid-cols-2 gap-6">
+
+      
+      <!-- Image -->
+      <div class="rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100  w-full">
+        ${p.featured ? '<span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-[color:var(--gold)] text-black text-xs font-medium">Featured</span>' : ''}
+         <img src="images/products/${p.image}"
+             alt="${p.name}"
+             class="w-full h-full object-cover aspect-[2.5/3]"/>
+      </div>
+
+      <!-- Product Details -->
+      <div class="w-full">
+        <span class="chip px-3 py-1 rounded-full text-xs">${p.JarsAndBottles.charAt(0).toUpperCase() + p.JarsAndBottles.slice(1)}</span>
+        <h2 class="cormorant text-3xl text-gray-900 mt-3">${p.name}</h2>
+        <p class="text-gray-600 mt-4">${p.description}</p>
+
+        <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+          <div class="border border-gray-100 rounded-lg p-3">
+            <div class="text-gray-500">Size</div>
+            <div class="text-gray-900 font-medium">${p.size}</div>
+          </div>
+          </div>
+        </div>
+
+       
+        <div class="px-4">
+        <a href="https://wa.me/919876543210?text=Hi%20I%20am%20interested%20in%20${p.name}" 
+           target="_blank"
+           class="gold-btn w-full mt-6 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">
+            <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.59 2.15 8.02L.5 31.5l7.7-2.07C10.35 30.27 13.12 31 16 31c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28c-2.5 0-4.94-.67-7.06-1.93l-.5-.29-4.57 1.23 1.23-4.57-.29-.5C3.67 20.94 3 18.5 3 16 3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13zm7.2-9.98c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.63-.2-.9.2s-1.03 1.26-1.27 1.52c-.23.26-.47.29-.86.1-.39-.2-1.63-.6-3.1-1.92-1.15-1.02-1.92-2.3-2.15-2.69-.23-.39-.02-.6.17-.79.17-.17.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.9-2.17-1.24-2.97-.33-.8-.67-.69-.9-.7h-.77c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26s1.4 3.77 1.59 4.03c.2.26 2.75 4.2 6.67 5.89.93.4 1.65.64 2.21.82.93.3 1.78.26 2.45.16.75-.11 2.3-.94 2.62-1.84.33-.9.33-1.67.23-1.84-.1-.17-.36-.26-.75-.46z"/>
+          </svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  `;
+
+      const modal = document.getElementById('productModal');
+      document.getElementById('modalContent').innerHTML = content;
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      // Use the main modal wrapper's cross button
+      const closeBtn = modal.querySelector('.close-btn');
+      if (closeBtn) {
+
+        closeBtn.addEventListener('click', () => {
+          modal.classList.add('hidden');
+          document.body.style.overflow = '';
+        });
+      }
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Init
+    (function init() {
+     setupEvents();
+      // No default filter active on load -> show all products
+      // ensure all buttons enabled and none visually active
+      document.querySelectorAll('aside .filter-btn, aside .exq-filter, .sheet .m-filter, .sheet .m-exq').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('opacity-50', 'pointer-events-none');
+      });
+      applyFilters();
+    })();
+  </script>
+  <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'982a742516c8a7ee',t:'MTc1ODQ2NzA1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
