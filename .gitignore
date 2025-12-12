@@ -1,3 +1,41 @@
-.vscode/
+# Node modules
 node_modules/
+
+# Environment variables / secrets
 .env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts (if you add a build process later)
+dist/
+build/
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Optional: ignore coverage directory (if you add Jest later)
+coverage/
+
+# Cache folders
+.cache/
+.eslintcache
+
+# Local server metadata
+*.pid
+*.seed
+*.pid.lock
