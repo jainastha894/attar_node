@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Units - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+                <!-- Sidebar Placeholder -->
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Modify Units</h1>
+                        <p>Manage categories and attributes</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="units-grid">
+                            <div class="unit-card">
+                                <h3>Industries</h3>
+                                <ul class="unit-list" id="industryList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Food & Beverage</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Cosmetics</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New industry" id="newIndustry">
+                                    <button class="btn-add" id="addIndustry">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Sub Categories</h3>
+                                <ul class="unit-list" id="subCategoryList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Glass Bottles</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Plastic Jars</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New sub category" id="newSubCategory">
+                                    <button class="btn-add" id="addSubCategory">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Sizes</h3>
+                                <ul class="unit-list" id="sizeList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Small (100ml)</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Medium (250ml)</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New size" id="newSize">
+                                    <button class="btn-add" id="addSize">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Colors</h3>
+                                <ul class="unit-list" id="colorList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Clear</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Amber</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New color" id="newColor">
+                                    <button class="btn-add" id="addColor">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Shapes</h3>
+                                <ul class="unit-list" id="shapeList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Round</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Square</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New shape" id="newShape">
+                                    <button class="btn-add" id="addShape">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Neck Types</h3>
+                                <ul class="unit-list" id="neckTypeList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Screw Cap</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Cork</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New neck type" id="newNeckType">
+                                    <button class="btn-add" id="addNeckType">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Materials</h3>
+                                <ul class="unit-list" id="materialList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Clear Glass</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">PET Plastic</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New material" id="newMaterial">
+                                    <button class="btn-add" id="addMaterial">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Fragrances</h3>
+                                <ul class="unit-list" id="fragrancesList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Lavender</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Vanilla</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New fragrance" id="newFragrances">
+                                    <button class="btn-add" id="addFragrances">Add</button>
+                                </div>
+                            </div>
+                            <div class="unit-card">
+                                <h3>Jars & Bottles</h3>
+                                <ul class="unit-list" id="jarsBottlesList">
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Glass Jar</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Plastic Jar</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Glass Bottle</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                    <li class="unit-item">
+                                        <span class="unit-item-text">Plastic Bottle</span>
+                                        <button class="btn-remove">×</button>
+                                    </li>
+                                </ul>
+                                <div class="add-unit-form">
+                                    <input type="text" placeholder="New jar or bottle" id="newJarsBottles">
+                                    <button class="btn-add" id="addJarsBottles">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Footer Placeholder -->
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
+        </div>
+    </div>
+    <script src="js/partials-loader.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/header-handler.js"></script>
+    <script src="js/units-sync.js"></script>
+    <script>
+        // Override addUnitItem to sync to localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sync initial state
+            if (typeof syncUnitsToStorage === 'function') {
+                syncUnitsToStorage();
+            }
+            
+            // Override remove button handlers to sync
+            document.querySelectorAll('.btn-remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    setTimeout(() => {
+                        if (typeof syncUnitsToStorage === 'function') {
+                            syncUnitsToStorage();
+                            window.dispatchEvent(new Event('unitsUpdated'));
+                        }
+                    }, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,3 +1,225 @@
+
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;600&display=swap');
+
+    :root {
+      --gold: #d4af37;
+      --gold-deep: #b8860b;
+      --ink: #0a0a0a;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .2px;
+      overflow-x: hidden;
+      background: #fff;
+    }
+
+    .cormorant {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Header styling and stability on scroll */
+    .nav-blur {
+      backdrop-filter: blur(14px);
+      background: rgba(12, 12, 12, .78);
+      border-bottom: 1px solid rgba(212, 175, 55, .15)
+    }
+
+    /* Hero */
+    .hero-gradient {
+      background: radial-gradient(1100px 520px at 10% 10%, rgba(212, 175, 55, .12), transparent 60%),
+        radial-gradient(900px 480px at 90% 20%, rgba(184, 134, 11, .10), transparent 60%),
+        linear-gradient(135deg, #0b0b0b 0%, #111111 55%, #1a1a1a 100%);
+      position: relative;
+    }
+
+    .hero-pattern:before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><g fill="%23d4af37" fill-opacity=".08"><circle cx="20" cy="20" r="1.2"/><circle cx="80" cy="40" r="1"/><circle cx="40" cy="120" r="1"/><circle cx="120" cy="80" r="1"/></g></svg>') repeat;
+    }
+
+    /* Cards and chips */
+    .product-card {
+      transition: transform .4s cubic-bezier(.25, .46, .45, .94), box-shadow .4s;
+      border: 1px solid rgba(184, 134, 11, .12)
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, .12)
+    }
+
+    .price-badge {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #111
+    }
+
+    .chip {
+      background: rgba(212, 175, 55, .12);
+      color: #a07807;
+      border: 1px solid rgba(212, 175, 55, .25)
+    }
+
+    .thumbnail-btn:hover img {
+      transform: scale(1.05);
+    }
+
+    /* container similar to your filters card */
+    .catalogue-filter-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 14px 16px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      width: 190px;
+      /* adjust if needed */
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .filter-label {
+      font-family: "Cormorant Garamond", serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: #222;
+      margin-bottom: 2px;
+    }
+
+    /* DROPDOWN – same radius / border feel as chips */
+    .industry-dropdown {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1.5px solid #e6e6e6;
+      background-color: #ffffff;
+      font-size: 14px;
+      color: #444;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .industry-dropdown:hover,
+    .industry-dropdown:focus {
+      border-color: #c6a453;
+      /* gold */
+      box-shadow: 0 0 0 2px rgba(198, 164, 83, 0.17);
+      background: #fffaf0;
+    }
+
+    /* BUTTON – same gold chip style + click animation */
+    .download-btn {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: none;
+      background-color: #c6a453;
+      /* gold */
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition:
+        background-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.08s ease;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      box-shadow: 0 3px 8px rgba(198, 164, 83, 0.4);
+    }
+
+    .download-btn:hover {
+      background-color: #b39247;
+      /* slightly darker gold */
+      box-shadow: 0 4px 10px rgba(198, 164, 83, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .download-btn:active {
+      background-color: #a18037;
+      transform: translateY(0) scale(0.97);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* extra "chip pressed" flash class we toggle in JS */
+    .download-btn.is-clicked {
+      animation: btnPop 0.18s ease-out;
+    }
+
+    @keyframes btnPop {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(0.97);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+
+
+    /* CTA */
+    .gold-btn {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #111;
+      transition: transform .2s, box-shadow .2s
+    }
+
+    .gold-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(212, 175, 55, .25)
+    }
+
+    /* Mobile filter sheet */
+    .sheet-backdrop {
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(6px)
+    }
+
+    .sheet {
+      transform: translateY(100%);
+      transition: transform .28s ease
+    }
+
+    .sheet.open {
+      transform: translateY(0)
+    }
+
+    #mobileMenu {
+      margin-right: 20px;
+    }
+
+    /* Mobile menu animation */
+    .mobile-panel {
+      transform-origin: top;
+      transform: scaleY(0);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: transform .3s ease, opacity .3s ease, max-height .3s ease;
+    }
+
+    .mobile-panel.open {
+      transform: scaleY(1);
+      opacity: 1;
+      max-height: 500px;
+      /* adjust if menu is taller */
+      pointer-events: auto;
+    }
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;600&display=swap');
 
     :root{

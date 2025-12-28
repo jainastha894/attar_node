@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1>Admin Login</h1>
+                    <p>Arjanmal Attarchand</p>
+                </div>
+                <div id="loginError" class="error-message"></div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <label for="rememberMe">Remember me</label>
+                        </div>
+                        <a class="forgot-password" id="forgotPasswordLink">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Forgot Password Page -->
+        <div id="forgotPasswordPage" class="login-container" style="display: none;">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1>Reset Password</h1>
+                    <p>Enter your email to receive reset instructions</p>
+                </div>
+                <div id="resetSuccess" class="success-message"></div>
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="resetEmail">Email Address</label>
+                        <input type="email" id="resetEmail" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Send Reset Link</button>
+                    <button type="button" class="btn-secondary" id="backToLogin">Back to Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script>
+        // Login Handler for index.html
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginPage = document.getElementById('loginPage');
+            const loginError = document.getElementById('loginError');
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const forgotPasswordPage = document.getElementById('forgotPasswordPage');
+            const backToLogin = document.getElementById('backToLogin');
+            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+            const resetSuccess = document.getElementById('resetSuccess');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    const validUsername = 'admin@example.com';
+                    const validPassword = 'akshay@123';
+
+                    if (username === validUsername && password === validPassword) {
+                        window.location.href = '/admin/dashboard';
+                    } else {
+                        if (loginError) {
+                            loginError.textContent = 'Invalid credentials. Please use: admin@example.com / akshay@123';
+                            loginError.style.display = 'block';
+                        }
+                    }
+                });
+            }
+
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', () => {
+                    if (loginPage) loginPage.style.display = 'none';
+                    if (forgotPasswordPage) forgotPasswordPage.style.display = 'flex';
+                });
+            }
+
+            if (backToLogin) {
+                backToLogin.addEventListener('click', () => {
+                    if (forgotPasswordPage) forgotPasswordPage.style.display = 'none';
+                    if (loginPage) loginPage.style.display = 'flex';
+                });
+            }
+
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('resetEmail').value;
+                    if (resetSuccess) {
+                        resetSuccess.textContent = `Password reset link sent to ${email}`;
+                        resetSuccess.style.display = 'block';
+                    }
+                    setTimeout(() => {
+                        if (forgotPasswordPage) forgotPasswordPage.style.display = 'none';
+                        if (loginPage) loginPage.style.display = 'flex';
+                        if (resetSuccess) resetSuccess.style.display = 'none';
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

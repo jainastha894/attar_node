@@ -2,20 +2,22 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import pageRoutes from "./routes/pageRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js"
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+dotenv.config({
+  path: path.resolve(process.cwd(), ".env"),
+});
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-mongoose.connect(process.env.MONGOURL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("MongoDB connected"))
+mongoose.connect(process.env.MONGOURL)
 .catch((err) => console.log(err));
 
 // View engine
@@ -29,6 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/", pageRoutes);
+app.use("/", adminRoutes);
+app.use("/admin", adminRoutes);
 
 app.listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}`)
