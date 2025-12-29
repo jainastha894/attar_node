@@ -1,3 +1,5 @@
+import passport from "passport";
+
 export const loginPage = (req, res) => {
   res.render("admin/login");
 };
@@ -23,4 +25,14 @@ export const profilePage = (req, res) => {
 };
 export const profileSettingsPage = (req, res) => {
   res.render("admin/profileSetting");
+};
+export const adminLogin = passport.authenticate("local",{
+  successRedirect: "/admin/dashboard",
+  failureRedirect: "/admin",
+  failureFlash: true
+});
+export const adminLogout = (req, res) => {
+  req.logout(() => {
+    res.redirect("/admin");
+  });
 };

@@ -5,6 +5,9 @@ import pageRoutes from "./routes/pageRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js"
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import session from "express-session";
+import passport from "passport";
+import { passportConfig } from "./config/passportConfig.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +15,25 @@ const PORT = process.env.PORT || 3000;
 dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
+
+//session config
+app.use(
+  session({
+    name: "admin.sid",          // cookie name
+    secret: "super-secret-key", // 🔑 session sign key
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 60   // 60 days
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passportConfig();
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -31,8 +53,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/", pageRoutes);
-app.use("/", adminRoutes);
-app.use("/admin", adminRoutes);
+app.use(adminRoutes);
+
 
 app.listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}`)

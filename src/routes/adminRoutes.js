@@ -1,21 +1,29 @@
 import express from "express";
-import {  loginPage,
+import {
+  loginPage,
   dashboardPage,
   productListPage,
   addProductPage,
   unitsPage,
   profilePage,
-  profileSettingsPage
+  profileSettingsPage,
+  adminLogin,
+  adminLogout
 } from "../controllers/adminPageController.js";
+import { isAdminAuth } from "../middleware/isAdminAuth.js";
 
-  const router = express.Router();
+const router = express.Router();
 
-  router.get("/admin", loginPage);
-  router.get("/admin/dashboard", dashboardPage);
-  router.get("/admin/products", productListPage);
-  router.get("/admin/products/add", addProductPage);
-  router.get("/admin/units", unitsPage);
-  router.get("/admin/profile", profilePage);
-  router.get("/admin/profileSetting", profileSettingsPage);
+router.get("/admin", loginPage);
+router.get("/admin/logout",adminLogout );
+router.post("/admin/login", adminLogin);
+
+router.get("/admin/dashboard",isAdminAuth, dashboardPage);
+router.get("/admin/products", isAdminAuth, productListPage);
+router.get("/admin/products/add", isAdminAuth, addProductPage);
+router.get("/admin/units",isAdminAuth,  unitsPage);
+router.get("/admin/profile", isAdminAuth, profilePage);
+router.get("/admin/profileSetting",isAdminAuth,  profileSettingsPage);
+
 
 export default router;

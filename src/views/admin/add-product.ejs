@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Arjanmal Attarchand</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles/admin.css">
 </head>
 <body>
     <div class="main-wrapper">
         <div id="dashboardPage" class="dashboard-container" style="display: flex;">
             <!-- Header Placeholder -->
-            <div id="header-placeholder"></div>
+            <div id="header-placeholder"> <%- include('partials/header') %></div>
 
             <!-- Dashboard Body -->
             <div class="dashboard-body">
                 <!-- Sidebar Placeholder -->
-                <div id="sidebar-placeholder"></div>
+                <div id="sidebar-placeholder"> <%- include('partials/sidebar') %></div>
 
                 <!-- Main Content -->
                 <main class="main-content">
@@ -189,7 +189,7 @@
             </div>
 
             <!-- Footer Placeholder -->
-            <div id="footer-placeholder"></div>
+            <div id="footer-placeholder">(%-include('partials/footer.ejs')%)</div>
         </div>
     </div>
     <script src="js/partials-loader.js"></script>
