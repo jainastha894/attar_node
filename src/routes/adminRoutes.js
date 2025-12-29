@@ -8,7 +8,9 @@ import {
   profilePage,
   profileSettingsPage,
   adminLogin,
-  adminLogout
+  adminLogout,
+  addUnit,
+  removeUnit
 } from "../controllers/adminPageController.js";
 import { isAdminAuth } from "../middleware/isAdminAuth.js";
 
@@ -18,10 +20,13 @@ router.get("/admin", loginPage);
 router.get("/admin/logout",adminLogout );
 router.post("/admin/login", adminLogin);
 
-router.get("/admin/dashboard",isAdminAuth, dashboardPage);
+
+router.get("/administrator",isAdminAuth, dashboardPage);
 router.get("/admin/products", isAdminAuth, productListPage);
 router.get("/admin/products/add", isAdminAuth, addProductPage);
 router.get("/admin/units",isAdminAuth,  unitsPage);
+router.post("/admin/units/add", isAdminAuth, addUnit);
+router.post("/admin/units/remove", isAdminAuth, removeUnit);
 router.get("/admin/profile", isAdminAuth, profilePage);
 router.get("/admin/profileSetting",isAdminAuth,  profileSettingsPage);
 

@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
 </head>
+
 <body>
     <div class="main-wrapper">
         <div id="dashboardPage" class="dashboard-container" style="display: flex;">
@@ -26,7 +28,9 @@
                     <div class="content-body">
                         <div class="form-container">
                             <div class="success-message" id="addProductSuccess"></div>
-                            <form id="addProductForm">
+                            <form id="addProductForm" action="/admin/products/add" method="POST"
+                                enctype="multipart/form-data">
+
                                 <div class="form-row">
                                     <div class="form-group-inline">
                                         <label for="industry">Industry *</label>
@@ -36,13 +40,13 @@
                                     </div>
                                     <div class="form-group-inline">
                                         <label for="productName">Product Name *</label>
-                                        <input type="text" id="productName" required>
+                                        <input type="text" id="productName" name="productName" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group-inline" style="grid-column: 1/-1;">
                                         <label for="description">Description *</label>
-                                        <textarea id="description" required></textarea>
+                                        <textarea id="description" name="description" required></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -128,13 +132,13 @@
                                 <div class="form-row">
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="featured">
+                                            <input type="checkbox" id="featured" name="featured">
                                             <label for="featured">Featured Product</label>
                                         </div>
                                     </div>
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="topRated">
+                                            <input type="checkbox" id="topRated" name="topRated">
                                             <label for="topRated">Top Rated</label>
                                         </div>
                                     </div>
@@ -142,13 +146,13 @@
                                 <div class="form-row">
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="bestSeller">
+                                            <input type="checkbox" id="bestSeller" name="bestSeller">
                                             <label for="bestSeller">Best Seller</label>
                                         </div>
                                     </div>
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="onSale">
+                                            <input type="checkbox" id="onSale" name="onSale">
                                             <label for="onSale">On Sale</label>
                                         </div>
                                     </div>
@@ -156,13 +160,13 @@
                                 <div class="form-row">
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="outofstock">
+                                            <input type="checkbox" id="outofstock" name="outofstock">
                                             <label for="outofstock">Out of Stock</label>
                                         </div>
                                     </div>
                                     <div class="form-group-inline">
                                         <div class="checkbox-group">
-                                            <input type="checkbox" id="active" checked>
+                                            <input type="checkbox" id="active" name="active" checked>
                                             <label for="active">Active</label>
                                         </div>
                                     </div>
@@ -171,9 +175,10 @@
                                     <div class="form-group-inline" style="grid-column: 1/-1;">
                                         <label>Product Images *</label>
                                         <div class="image-upload" id="imageUpload">
-                                            <input type="file" id="imageInput" accept="image/*" multiple>
+                                            <input type="file" id="imageInput" accept="image/*" name="productImages" multiple>
                                             <p>📷 Click to upload images</p>
-                                            <p style="font-size: 12px; color: #999; margin-top: 8px;">You can select multiple images</p>
+                                            <p style="font-size: 12px; color: #999; margin-top: 8px;">You can select
+                                                multiple images</p>
                                         </div>
                                         <div class="image-preview" id="imagePreview"></div>
                                     </div>
@@ -205,7 +210,7 @@
                 document.querySelectorAll('.multi-select-display').forEach(display => {
                     display.removeAttribute('data-initialized');
                 });
-                
+
                 if (typeof window.initMultiSelect === 'function') {
                     window.initMultiSelect();
                 }
@@ -217,17 +222,17 @@
                 }
             }, 1000);
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             initAddProductPage();
         });
-        
+
         window.addEventListener('partialsLoaded', () => {
             setTimeout(() => {
                 initAddProductPage();
             }, 800);
         });
-        
+
         // Listen for units updates
         window.addEventListener('unitsUpdated', () => {
             setTimeout(() => {
@@ -245,4 +250,5 @@
         });
     </script>
 </body>
+
 </html>
