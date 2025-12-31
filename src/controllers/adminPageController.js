@@ -1,6 +1,10 @@
-import passport from "passport";
 import fs from "fs";
 import path from "path";
+import Product from "../models/product.js";
+import passport from "passport";
+
+
+const unitsPath = path.join(process.cwd(), "src/config/units.json");
 
 export const unitsPage = (req, res) => {
   const unitsPath = path.join(process.cwd(), "src/config/units.json");
@@ -8,6 +12,60 @@ export const unitsPage = (req, res) => {
     res.render("admin/units", {
     units: unitsData
   });
+};
+
+export const addProductPage = (req, res) => {
+  const unitsPath = path.join(process.cwd(), "src/config/units.json");
+  const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
+  res.render("admin/add-product", {
+    units: unitsData
+  });
+};
+
+export const addProduct = async (req, res) => {
+  try {
+    const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
+
+    // 1️⃣ Basic fields
+    const { productName, description } = req.body;
+
+    // 2️⃣ Images → store relative paths
+    const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+    //should be relative to shop.ejs
+
+    // 3️⃣ Dynamic units
+    const selectedUnits = {};
+
+    for (const unitKey in unitsData) {
+      if (req.body[unitKey]) {
+        selectedUnits[unitKey] = Array.isArray(req.body[unitKey])
+          ? req.body[unitKey]
+          : [req.body[unitKey]];
+      }
+    }
+
+    // 4️⃣ Boolean flags (unchecked = undefined)
+    const product = new Product({
+      name: productName,
+      description,
+      images: imagePaths,
+      units: selectedUnits,
+
+      featured: !!req.body.featured,
+      topRated: !!req.body.topRated,
+      bestSeller: !!req.body.bestSeller,
+      onSale: !!req.body.onSale,
+      outofstock: !!req.body.outofstock,
+      active: !!req.body.active
+    });
+
+    await product.save();
+
+   res.redirect("/admin/products");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error adding product");
+  }
 };
 
 export const addUnit = (req, res) => {
@@ -54,10 +112,6 @@ export const dashboardPage = (req, res) => {
 
 export const productListPage = (req, res) => {
   res.render("admin/products");
-};
-
-export const addProductPage = (req, res) => {
-  res.render("admin/add-product");
 };
 
 export const profilePage = (req, res) => {

@@ -675,6 +675,7 @@ body {
 
 .multi-select-wrapper {
     position: relative;
+    width: 100%;
 }
 
 .multi-select-display {
@@ -690,6 +691,7 @@ body {
     flex-wrap: wrap;
     gap: 6px;
     align-items: center;
+    width: 100%;
 }
 
 .multi-select-display:hover {
@@ -1986,3 +1988,12 @@ body {
             box-shadow: 0 6px 16px rgba(255, 215, 0, 0.5);
             background: #FFED4E;
         }
+.multi-select-dropdown {
+  display: none;
+  width: 100%;
+}
+
+.multi-select-dropdown.open {
+  display: block;
+  width: 100%;
+}

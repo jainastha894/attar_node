@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
 <body>
@@ -33,12 +35,6 @@
 
                                 <div class="form-row">
                                     <div class="form-group-inline">
-                                        <label for="industry">Industry *</label>
-                                        <select id="industry" required>
-                                            <option value="">Select Industry</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group-inline">
                                         <label for="productName">Product Name *</label>
                                         <input type="text" id="productName" name="productName" required>
                                     </div>
@@ -49,144 +45,100 @@
                                         <textarea id="description" name="description" required></textarea>
                                     </div>
                                 </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <label for="subCategory">Sub Category *</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="subCategory">
-                                                <span class="multi-select-placeholder">Select sub categories</span>
+                                <% for (const unitKey in units) { %>
+                                    <div class="form-row">
+                                        <div class="form-group-inline">
+                                            <label for="<%= unitKey %>">
+                                                <%= unitKey %> *
+                                            </label>
+                                            <div class="multi-select-wrapper">
+
+                                                <div class="multi-select-display">
+                                                    <button type="button" onclick="toggleDropdown('<%= unitKey %>')"
+                                                        class="multi-select-placeholder" id="display-<%= unitKey %>">
+                                                        Select <%= unitKey %>
+                                                    </button>
+                                                </div>
+
+                                                <div class="multi-select-dropdown" id="dropdown-<%= unitKey %>">
+                                                    <% units[unitKey].forEach(item=> { %>
+                                                        <label class="multi-option m-10">
+                                                            <input type="checkbox" name="<%= unitKey %>[]"
+                                                                value="<%= item %>"
+                                                                onchange="updateSelected('<%= unitKey %>')" />
+                                                            <%= item %>
+                                                        </label>
+                                                        <% }) %>
+                                                </div>
+
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
+
                                         </div>
                                     </div>
-                                    <div class="form-group-inline">
-                                        <label for="size">Size *</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="size">
-                                                <span class="multi-select-placeholder">Select sizes</span>
+
+                                    <% } %>
+
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="featured" name="featured">
+                                                    <label for="featured">Featured Product</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <label for="color">Color</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="color">
-                                                <span class="multi-select-placeholder">Select colors</span>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="topRated" name="topRated">
+                                                    <label for="topRated">Top Rated</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <label for="shape">Shape</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="shape">
-                                                <span class="multi-select-placeholder">Select shapes</span>
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="bestSeller" name="bestSeller">
+                                                    <label for="bestSeller">Best Seller</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <label for="neckType">Neck Type</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="neckType">
-                                                <span class="multi-select-placeholder">Select neck types</span>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="onSale" name="onSale">
+                                                    <label for="onSale">On Sale</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <label for="material">Material</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="material">
-                                                <span class="multi-select-placeholder">Select materials</span>
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="outofstock" name="outofstock">
+                                                    <label for="outofstock">Out of Stock</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <label for="jarsBottles">Jars & Bottles</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="jarsBottles">
-                                                <span class="multi-select-placeholder">Select jars & bottles</span>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="active" name="active" checked>
+                                                    <label for="active">Active</label>
+                                                </div>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <label for="fragrances">Fragrances</label>
-                                        <div class="multi-select-wrapper">
-                                            <div class="multi-select-display" data-target="fragrances">
-                                                <span class="multi-select-placeholder">Select fragrances</span>
+                                        <div class="form-row">
+                                            <div class="image-upload" id="imageUpload">
+                                                <input type="file" id="imageInput" name="productImages" accept="image/*"
+                                                    multiple hidden />
+
+                                                <p>📷 Click to upload images</p>
+                                                <p style="font-size: 12px; color: #999; margin-top: 8px;">
+                                                    You can select multiple images
+                                                </p>
                                             </div>
-                                            <div class="multi-select-dropdown"></div>
+
+                                            <div class="image-preview" id="imagePreview"></div>
+
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="featured" name="featured">
-                                            <label for="featured">Featured Product</label>
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-save">Save Product</button>
+                                            <button type="button" class="btn btn-cancel"
+                                                id="cancelAddProduct">Cancel</button>
                                         </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="topRated" name="topRated">
-                                            <label for="topRated">Top Rated</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="bestSeller" name="bestSeller">
-                                            <label for="bestSeller">Best Seller</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="onSale" name="onSale">
-                                            <label for="onSale">On Sale</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="outofstock" name="outofstock">
-                                            <label for="outofstock">Out of Stock</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group-inline">
-                                        <div class="checkbox-group">
-                                            <input type="checkbox" id="active" name="active" checked>
-                                            <label for="active">Active</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group-inline" style="grid-column: 1/-1;">
-                                        <label>Product Images *</label>
-                                        <div class="image-upload" id="imageUpload">
-                                            <input type="file" id="imageInput" accept="image/*" name="productImages" multiple>
-                                            <p>📷 Click to upload images</p>
-                                            <p style="font-size: 12px; color: #999; margin-top: 8px;">You can select
-                                                multiple images</p>
-                                        </div>
-                                        <div class="image-preview" id="imagePreview"></div>
-                                    </div>
-                                </div>
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-save">Save Product</button>
-                                    <button type="button" class="btn btn-cancel" id="cancelAddProduct">Cancel</button>
-                                </div>
                             </form>
                         </div>
                     </div>
@@ -202,52 +154,41 @@
     <script src="js/script.js"></script>
     <script src="js/header-handler.js"></script>
     <script>
-        // Initialize dropdowns after everything loads
-        function initAddProductPage() {
-            // Wait for script.js to be ready
-            setTimeout(() => {
-                // Remove initialization flags to allow re-initialization
-                document.querySelectorAll('.multi-select-display').forEach(display => {
-                    display.removeAttribute('data-initialized');
-                });
-
-                if (typeof window.initMultiSelect === 'function') {
-                    window.initMultiSelect();
-                }
-                if (typeof window.populateIndustryDropdown === 'function') {
-                    window.populateIndustryDropdown();
-                }
-                if (typeof updateAddProductDropdowns === 'function') {
-                    updateAddProductDropdowns();
-                }
-            }, 1000);
+        function toggleDropdown(unitKey) {
+            const dropdown = document.getElementById(`dropdown-${unitKey}`);
+            dropdown.classList.toggle("open");
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initAddProductPage();
+        // Optional: close when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".multi-select-wrapper")) {
+                document
+                    .querySelectorAll(".multi-select-dropdown")
+                    .forEach(d => d.classList.remove("open"));
+            }
         });
+        const imageUpload = document.getElementById("imageUpload");
+const imageInput = document.getElementById("imageInput");
+const imagePreview = document.getElementById("imagePreview");
 
-        window.addEventListener('partialsLoaded', () => {
-            setTimeout(() => {
-                initAddProductPage();
-            }, 800);
-        });
+imageUpload.addEventListener("click", () => {
+  imageInput.click();
+});
 
-        // Listen for units updates
-        window.addEventListener('unitsUpdated', () => {
-            setTimeout(() => {
-                if (typeof window.populateIndustryDropdown === 'function') {
-                    window.populateIndustryDropdown();
-                }
-                // Re-initialize multi-select dropdowns
-                document.querySelectorAll('.multi-select-display').forEach(display => {
-                    display.removeAttribute('data-initialized');
-                });
-                if (typeof window.initMultiSelect === 'function') {
-                    window.initMultiSelect();
-                }
-            }, 200);
-        });
+imageInput.addEventListener("change", () => {
+  imagePreview.innerHTML = "";
+
+  Array.from(imageInput.files).forEach(file => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.width = "80px";
+    img.style.margin = "5px";
+    img.style.borderRadius = "6px";
+    imagePreview.appendChild(img);
+  });
+});
+
+
     </script>
 </body>
 

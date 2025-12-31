@@ -10,9 +10,11 @@ import {
   adminLogin,
   adminLogout,
   addUnit,
-  removeUnit
+  removeUnit,
+  addProduct,
 } from "../controllers/adminPageController.js";
 import { isAdminAuth } from "../middleware/isAdminAuth.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -30,5 +32,11 @@ router.post("/admin/units/remove", isAdminAuth, removeUnit);
 router.get("/admin/profile", isAdminAuth, profilePage);
 router.get("/admin/profileSetting",isAdminAuth,  profileSettingsPage);
 
+
+router.post(
+  "/admin/products/add",
+  upload.array("productImages", 10),
+  addProduct
+);
 
 export default router;
