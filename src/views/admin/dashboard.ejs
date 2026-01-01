@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder">    <%- include('partials/header') %></div>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+                <!-- Sidebar Placeholder -->
+                 <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+                
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Dashboard</h1>
+                        <p>Overview of your products</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Total Products</h3>
+                                <div class="stat-value" id="totalProducts">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Active Products</h3>
+                                <div class="stat-value" id="activeProducts">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Featured Products</h3>
+                                <div class="stat-value" id="featuredProducts">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Out of Stock</h3>
+                                <div class="stat-value" id="outOfStockProducts">0</div>
+                            </div>
+                            </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Footer Placeholder -->
+            <%- include('partials/footer') %>
+        </div>
+    </div>
+    <script src="js/partials-loader.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/header-handler.js"></script>
+    <script>
+        // Update dashboard stats
+        function updateDashboardStats() {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const stats = {
+                total: products.length,
+                active: products.filter(p => p.active).length,
+                featured: products.filter(p => p.featured).length,
+                outOfStock: products.filter(p => p.outofstock).length
+            };
+
+            const totalEl = document.getElementById('totalProducts');
+            const activeEl = document.getElementById('activeProducts');
+            const featuredEl = document.getElementById('featuredProducts');
+            const outOfStockEl = document.getElementById('outOfStockProducts');
+            
+            if (totalEl) totalEl.textContent = stats.total;
+            if (activeEl) activeEl.textContent = stats.active;
+            if (featuredEl) featuredEl.textContent = stats.featured;
+            if (outOfStockEl) outOfStockEl.textContent = stats.outOfStock;
+        }
+
+        // Update stats when page loads and after partials load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit for partials to load
+            setTimeout(() => {
+                updateDashboardStats();
+            }, 500);
+        });
+        
+        // Also update when partials finish loading
+        window.addEventListener('partialsLoaded', () => {
+            updateDashboardStats();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+                <!-- Sidebar Placeholder -->
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Profile Settings</h1>
+                        <p>Edit your profile information</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="profile-settings-container">
+                            <div class="success-message-profile" id="profileSaveSuccess"></div>
+                            
+                            <form id="profileSettingsForm">
+                                <div class="profile-settings-header">
+                                    <div class="profile-avatar-large" id="profileAvatarContainer">
+                                        <img id="profileAvatarImg" src="" alt="Profile">
+                                        <span id="profileAvatarText">A</span>
+                                        <div class="avatar-upload-btn" id="avatarUploadBtn" title="Change Photo">
+                                            📷
+                                        </div>
+                                        <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div>
+                                        <h2 id="profileDisplayName">Admin User</h2>
+                                        <p id="profileDisplayRole">Administrator</p>
+                                    </div>
+                                </div>
+
+                                <div class="profile-section">
+                                    <h3>Personal Information</h3>
+                                    
+                                    <div class="form-group-profile">
+                                        <label for="userId">User ID</label>
+                                        <input type="text" id="userId" readonly>
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="fullName">Full Name *</label>
+                                        <input type="text" id="fullName" required>
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="email">Email Address *</label>
+                                        <input type="email" id="email" required>
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="tel" id="phone">
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="role">Role</label>
+                                        <select id="role">
+                                            <option value="Administrator">Administrator</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Editor">Editor</option>
+                                            <option value="Viewer">Viewer</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="bio">Bio</label>
+                                        <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="profile-section">
+                                    <h3>Account Settings</h3>
+                                    
+                                    <div class="form-group-profile">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" id="currentPassword" placeholder="Enter current password to change">
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" id="newPassword" placeholder="Enter new password">
+                                    </div>
+
+                                    <div class="form-group-profile">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                                    </div>
+                                </div>
+
+                                <div class="profile-actions">
+                                    <button type="submit" class="btn-save-profile">Save Changes</button>
+                                    <button type="button" class="btn-cancel-profile" id="cancelProfileBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Footer Placeholder -->
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
+        </div>
+    </div>
+    <script src="js/partials-loader.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/header-handler.js"></script>
+    <script src="js/profile-settings.js"></script>
+</body>
+</html>

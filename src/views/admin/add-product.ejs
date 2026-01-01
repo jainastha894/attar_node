@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"> <%- include('partials/header') %></div>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+                <!-- Sidebar Placeholder -->
+                <div id="sidebar-placeholder"> <%- include('partials/sidebar') %></div>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Add Product</h1>
+                        <p>Create a new product listing</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="form-container">
+                            <div class="success-message" id="addProductSuccess"></div>
+                            <form id="addProductForm" action="/admin/products/add" method="POST"
+                                enctype="multipart/form-data">
+
+                                <div class="form-row">
+                                    <div class="form-group-inline">
+                                        <label for="productName">Product Name *</label>
+                                        <input type="text" id="productName" name="productName" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group-inline" style="grid-column: 1/-1;">
+                                        <label for="description">Description *</label>
+                                        <textarea id="description" name="description" required></textarea>
+                                    </div>
+                                </div>
+                                <% for (const unitKey in units) { %>
+                                    <div class="form-row">
+                                        <div class="form-group-inline">
+                                            <label for="<%= unitKey %>">
+                                                <%= unitKey %> *
+                                            </label>
+                                            <div class="multi-select-wrapper">
+
+                                                <div class="multi-select-display">
+                                                    <button type="button" onclick="toggleDropdown('<%= unitKey %>')"
+                                                        class="multi-select-placeholder" id="display-<%= unitKey %>">
+                                                        Select <%= unitKey %>
+                                                    </button>
+                                                </div>
+
+                                                <div class="multi-select-dropdown" id="dropdown-<%= unitKey %>">
+                                                    <% units[unitKey].forEach(item=> { %>
+                                                        <label class="multi-option m-10">
+                                                            <input type="checkbox" name="<%= unitKey %>[]"
+                                                                value="<%= item %>"
+                                                                onchange="updateSelected('<%= unitKey %>')" />
+                                                            <%= item %>
+                                                        </label>
+                                                        <% }) %>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <% } %>
+
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="featured" name="featured">
+                                                    <label for="featured">Featured Product</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="topRated" name="topRated">
+                                                    <label for="topRated">Top Rated</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="bestSeller" name="bestSeller">
+                                                    <label for="bestSeller">Best Seller</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="onSale" name="onSale">
+                                                    <label for="onSale">On Sale</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="outofstock" name="outofstock">
+                                                    <label for="outofstock">Out of Stock</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group-inline">
+                                                <div class="checkbox-group">
+                                                    <input type="checkbox" id="active" name="active" checked>
+                                                    <label for="active">Active</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="image-upload" id="imageUpload">
+                                                <input type="file" id="imageInput" name="productImages" accept="image/*"
+                                                    multiple hidden />
+
+                                                <p>📷 Click to upload images</p>
+                                                <p style="font-size: 12px; color: #999; margin-top: 8px;">
+                                                    You can select multiple images
+                                                </p>
+                                            </div>
+
+                                            <div class="image-preview" id="imagePreview"></div>
+
+                                        </div>
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-save">Save Product</button>
+                                            <button type="button" class="btn btn-cancel"
+                                                id="cancelAddProduct">Cancel</button>
+                                        </div>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Footer Placeholder -->
+            <div id="footer-placeholder">(%-include('partials/footer.ejs')%)</div>
+        </div>
+    </div>
+    <script src="js/partials-loader.js"></script>
+    <script src="js/units-sync.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/header-handler.js"></script>
+    <script>
+        function toggleDropdown(unitKey) {
+            const dropdown = document.getElementById(`dropdown-${unitKey}`);
+            dropdown.classList.toggle("open");
+        }
+
+        // Optional: close when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".multi-select-wrapper")) {
+                document
+                    .querySelectorAll(".multi-select-dropdown")
+                    .forEach(d => d.classList.remove("open"));
+            }
+        });
+        const imageUpload = document.getElementById("imageUpload");
+const imageInput = document.getElementById("imageInput");
+const imagePreview = document.getElementById("imagePreview");
+
+imageUpload.addEventListener("click", () => {
+  imageInput.click();
+});
+
+imageInput.addEventListener("change", () => {
+  imagePreview.innerHTML = "";
+
+  Array.from(imageInput.files).forEach(file => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.width = "80px";
+    img.style.margin = "5px";
+    img.style.borderRadius = "6px";
+    imagePreview.appendChild(img);
+  });
+});
+
+
+    </script>
+</body>
+
+</html>

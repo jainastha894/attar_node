@@ -1,0 +1,41 @@
+{
+  "industryList": [
+    "Cosmetics",
+    "Food and Beverage"
+  ],
+  "subCategoryList": [
+    "Glass Bottles",
+    "Plastic Jars"
+  ],
+  "sizeList": [
+    "Small (100ml)",
+    "Medium (250ml)",
+    "Large (500ml)"
+  ],
+  "colorList": [
+    "Clear",
+    "Amber"
+  ],
+  "shapeList": [
+    "Round",
+    "Square"
+  ],
+  "neckTypeList": [
+    "Screw Cap",
+    "Cork"
+  ],
+  "materialList": [
+    "Clear Glass",
+    "PET Plastic"
+  ],
+  "fragranceList": [
+    "Lavender",
+    "Vanilla"
+  ],
+  "jarBottleList": [
+    "Glass Jar",
+    "Plastic Jar",
+    "Glass Bottle",
+    "Plastic Bottle"
+  ]
+}

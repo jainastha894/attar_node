@@ -11,7 +11,7 @@
 
     <meta name="keywords"
         content="about Arjanmal Attarchand, glass bottles Delhi NCR, perfume bottles New Delhi, attar bottles Old Delhi, aluminum bottles Noida, glass jars Gurugram, heritage packaging Faridabad, wholesale bottles Ghaziabad" />
-    <link rel="canonical" href="https://arjanmalattarchand.com/about.html" />
+    <link rel="canonical" href="https://arjanmalattarchand.com/about" />
 
     <meta property="og:type" content="website" />
 
@@ -21,7 +21,7 @@
     <meta property="og:description"
         content="Heritage exporters of glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars across Delhi NCR and beyond." />
 
-    <meta property="og:url" content="https://arjanmalattarchand.com/about.html" />
+    <meta property="og:url" content="https://arjanmalattarchand.com/about." />
 
     <meta property="og:image"
         content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
@@ -443,30 +443,7 @@
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" />
     </a>
     <script>
-        // Mobile menu
-        const toggle = document.getElementById('menuToggle');
-        const menu = document.getElementById('mobileMenu');
-        const iconOpen = document.getElementById('menuIconOpen');
-        const iconClose = document.getElementById('menuIconClose');
-
-        toggle.addEventListener('click', () => {
-            const isOpen = menu.classList.contains('open');
-            if (isOpen) {
-                menu.classList.remove('open');
-            } else {
-                menu.classList.add('open');
-            }
-            iconOpen.classList.toggle('hidden', !isOpen);
-            iconClose.classList.toggle('hidden', isOpen);
-        });
-
-        // Close mobile menu on link click
-        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-            menu.classList.remove('open');
-            iconOpen.classList.remove('hidden');
-            iconClose.classList.add('hidden');
-        }));
-
+        
         // Scroll reveal animation
         const observerOptions = {
             threshold: 0.1,
