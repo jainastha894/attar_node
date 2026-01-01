@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="info-row">
                                     <div class="info-label">Email:</div>
-                                    <div class="info-value" id="profileViewEmail">admin@example.com</div>
+                                    <div class="info-value" id="profileViewEmail">z</div>
                                 </div>
                                 <div class="info-row">
                                     <div class="info-label">Phone:</div>
@@ -89,11 +89,11 @@
                                 <h3>Statistics</h3>
                                 <div class="info-row">
                                     <div class="info-label">Total Products Added:</div>
-                                    <div class="info-value" id="totalProductsAdded">0</div>
+                                    <div class="info-value" id="totalProductsAdded"><%= totalproducts %></div>
                                 </div>
                                 <div class="info-row">
                                     <div class="info-label">Active Products:</div>
-                                    <div class="info-value" id="activeProductsCount">0</div>
+                                    <div class="info-value" id="activeProductsCount"><%= activeproducts %></div>
                                 </div>
                             </div>
                         </div>
@@ -108,51 +108,5 @@
     <script src="js/partials-loader.js"></script>
     <script src="js/script.js"></script>
     <script src="js/header-handler.js"></script>
-    <script>
-        // Load and display user profile data
-        document.addEventListener('DOMContentLoaded', () => {
-            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-            
-            // Set defaults if no data
-            if (!userData.userId) {
-                userData.userId = 'ADM001';
-                userData.fullName = 'Admin User';
-                userData.email = 'admin@example.com';
-                userData.phone = '';
-                userData.role = 'Administrator';
-                userData.bio = '';
-                userData.avatar = '';
-                localStorage.setItem('userData', JSON.stringify(userData));
-            }
-            
-            // Update profile view
-            document.getElementById('profileViewUserId').textContent = userData.userId || 'ADM001';
-            document.getElementById('profileViewName').textContent = userData.fullName || 'Admin User';
-            document.getElementById('profileViewFullName').textContent = userData.fullName || 'Admin User';
-            document.getElementById('profileViewEmail').textContent = userData.email || 'admin@example.com';
-            document.getElementById('profileViewPhone').textContent = userData.phone || '-';
-            document.getElementById('profileViewRole').textContent = userData.role || 'Administrator';
-            document.getElementById('profileViewRoleValue').textContent = userData.role || 'Administrator';
-            document.getElementById('profileViewBio').textContent = userData.bio || '-';
-            
-            // Update avatar
-            const avatarImg = document.getElementById('profileViewAvatarImg');
-            const avatarText = document.getElementById('profileViewAvatarText');
-            if (userData.avatar) {
-                avatarImg.src = userData.avatar;
-                avatarImg.style.display = 'block';
-                avatarText.style.display = 'none';
-            } else {
-                avatarText.textContent = (userData.fullName || 'A').charAt(0).toUpperCase();
-                avatarText.style.display = 'block';
-                avatarImg.style.display = 'none';
-            }
-            
-            // Update profile statistics
-            const products = JSON.parse(localStorage.getItem('products') || '[]');
-            document.getElementById('totalProductsAdded').textContent = products.length;
-            document.getElementById('activeProductsCount').textContent = products.filter(p => p.active).length;
-        });
-    </script>
-</body>
+   </body>
 </html>

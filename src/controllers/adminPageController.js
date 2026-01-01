@@ -106,16 +106,33 @@ export const loginPage = (req, res) => {
   res.render("admin/login");
 };
 
-export const dashboardPage = (req, res) => {
-  res.render("admin/dashboard");
+export const dashboardPage = async(req, res) => {
+    let totalproducts= await Product.countDocuments();
+  let featuredproducts= await Product.countDocuments({featured:true});
+  let outofstockproducts= await Product.countDocuments({outofstock:true});
+  let activeproducts= await Product.countDocuments({active:true});
+
+  res.render("admin/dashboard", {
+    totalproducts,
+    featuredproducts,
+    outofstockproducts,
+    activeproducts
+  });
 };
 
 export const productListPage = (req, res) => {
   res.render("admin/products");
 };
 
-export const profilePage = (req, res) => {
-  res.render("admin/profile");
+export const profilePage = async(req, res) => {
+    let totalproducts= await Product.countDocuments();
+  let activeproducts= await Product.countDocuments({active:true});
+
+  res.render("admin/profile",
+    {
+      totalproducts, activeproducts
+    }
+  );
 };
 export const profileSettingsPage = (req, res) => {
   res.render("admin/profileSetting");

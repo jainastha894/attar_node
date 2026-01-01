@@ -12,15 +12,24 @@ import { passportConfig } from "./config/passportConfig.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
+
+try {
+  await mongoose.connect(process.env.MONGOURL);
+  console.log("MongoDB connected");
+} catch (err) {
+  console.error("MongoDB connection failed:", err.message);
+  process.exit(1);
+}
 
 //session config
 app.use(
   session({
     name: "admin.sid",          // cookie name
-    secret: "super-secret-key", // 🔑 session sign key
+    secret: "super-secret-key", // session sign key
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -39,8 +48,6 @@ passportConfig();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-mongoose.connect(process.env.MONGOURL)
-.catch((err) => console.log(err));
 
 // View engine
 app.set("view engine", "ejs");
