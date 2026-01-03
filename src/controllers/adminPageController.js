@@ -30,7 +30,7 @@ export const addProduct = async (req, res) => {
     const { productName, description } = req.body;
 
     // 2️⃣ Images → store relative paths
-    const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+    const imagePaths = req.files.map(file => `/public/uploads/${file.filename}`);
     //should be relative to shop.ejs
 
     // 3️⃣ Dynamic units

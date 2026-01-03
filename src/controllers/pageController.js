@@ -1,4 +1,5 @@
 import path from "path";
+import Product from "../models/product.js";
 import fs from "fs";
 
 // Load SEO JSON once
@@ -17,6 +18,7 @@ export const renderContact = (req, res) => {
   res.render("contact", { seoData: seo.contact });
 };
 
-export const renderShop = (req, res) => {
-  res.render("shop"); 
+export const renderShop = async(req, res) => {
+  const products = await Product.find();
+  res.render("shop", { seoData: seo.shop, products });
 };
