@@ -12,9 +12,7 @@ const router = express.Router();
 router.get("/", renderHome);
 router.get("/about", renderAbout);
 router.get("/contact", renderContact);
-router.get("/shop", async (req, res) => {
-  const products = await getAllProducts();
-  res.render("shop", { products });
-});
+router.get("/shop", renderShop);
+
 
 export default router;

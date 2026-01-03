@@ -73,50 +73,18 @@
               <!-- Jars And Bottles -->
               <div class="mb-6">
                 <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
-                <div class="grid grid-cols-2 gap-2">
-                  <button
+                <select name="desktopfilter" class="grid grid-cols-2 gap-2">
+                  <option value="All"
                     class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="all">All</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Ittar Bottles">Ittar Bottles</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Perfume Bottles">Perfume Bottles</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Clear Glass Bottles">Clear Glass Bottles</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Clear Glass Jars">Clear Glass Jars</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Amber Glass Jars">Amber Glass Jars</button>
-                  <button
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="Amber Glass Bottles">Amber Glass Bottles</button>
-                </div>
-              </div>
-              <!-- Exquisite Fragnances -->
-              <div class="mb-6">
-                <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Exquisite Fragnances</div>
-                <div class="grid grid-cols-2 gap-2">
-                  <button
-                    class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-exq="all">All</button>
-                  <button
-                    class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-exq="Floral">Floral</button>
-                  <button
-                    class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-exq="Citrus">Citrus</button>
-                  <button
-                    class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-exq="Amber or Musk">Amber or Musk</button>
-                  <button
-                    class="exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-exq="Oud">Oud</button>
-                </div>
+                    data-filter="all">All</option>
+                  <% units.jarBottleList.forEach(item=> { %>
+                    <option value="<%= item %>"
+                      class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                      data-filter="<%= item %>">
+                      <%= item %>
+                    </option>
+                    <% }); %>
+                </select>
               </div>
 
               <div class="mt-6 flex gap-2">
@@ -150,62 +118,7 @@
           <section id="products" class="flex-1">
             <!-- Grid: 2 columns on mobile -->
             <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5">
-              <% products.forEach(p=> {
-                %>
-                <article id="<%= p._id %>" class="product-card bg-white rounded-xl overflow-hidden flex flex-col"
-                  onclick="openProductModal('<%= p._id %>')">
-                  <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 aspect-square">
-                    <div class="absolute top-2 left-2">
-                      <% if (p.featured) { %>
-                        <span
-                          class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-medium bg-[color:var(--gold)] text-black">Featured</span>
-                        <% } %>
-                    </div>
-                    <div class="absolute inset-0">
-                      <%if (p.images[0]!=undefined && p.images[0]) { %>
-                        <img src="<%= p.images[0] %>" alt="<%= p.images[0] %>" class="w-full h-full object-cover" />
-                        <% } else{ %>
-                          <img src="/public/uploads/default.png" alt="default" class="w-full h-full object-cover" />
-                          <% } %>
-
-                    </div>
-
-
-                  </div>
-                  <div class="p-3 sm:p-4 flex-1 flex flex-col">
-                    <h1 class="cormorant font-black text-base sm:text-xl text-black-1500 leading-snug">
-                      <%= p.name %>
-                    </h1>
-                    <p class="text-gray-500 text-[11px] sm:text-sm mt-1 line-clamp-2 mb-2">
-                      <%= p.description %>
-                    </p>
-
-
-                    <div class="mt-auto">
-
-                      <div class="flex items-center justify-between text-[11px] text-gray-500">
-                        <% if(p.size) { %>
-                          <span>
-                            <%= p.size %>
-                          </span>
-                          <% } %>
-                      </div>
-                      <div class="p-2 sm:p-2 flex-1 flex flex-col gap-1">
-
-                        <a href="https://wa.me/919311555255?text=Hi%20I%20am%20interested%20in%20${p.name}%20https://arjanmalattarchand.com/images/products/${p.images[0]}"
-                          target="_blank"
-                          class="gold-btn w-full mt-2 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">
-                            <path
-                              d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.59 2.15 8.02L.5 31.5l7.7-2.07C10.35 30.27 13.12 31 16 31c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28c-2.5 0-4.94-.67-7.06-1.93l-.5-.29-4.57 1.23 1.23-4.57-.29-.5C3.67 20.94 3 18.5 3 16 3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13zm7.2-9.98c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.63-.2-.9.2s-1.03 1.26-1.27 1.52c-.23.26-.47.29-.86.1-.39-.2-1.63-.6-3.1-1.92-1.15-1.02-1.92-2.3-2.15-2.69-.23-.39-.02-.6.17-.79.17-.17.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.9-2.17-1.24-2.97-.33-.8-.67-.69-.9-.7h-.77c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26s1.4 3.77 1.59 4.03c.2.26 2.75 4.2 6.67 5.89.93.4 1.65.64 2.21.82.93.3 1.78.26 2.45.16.75-.11 2.3-.94 2.62-1.84.33-.9.33-1.67.23-1.84-.1-.17-.36-.26-.75-.46z" />
-                          </svg>
-                          WhatsApp
-                        </a>
-
-
-                      </div>
-                </article>
-                <% }) %>
+              <!-- rendered via JS -->
             </div>
           </section>
         </div>
@@ -223,49 +136,18 @@
         <div class="p-5 space-y-6 max-h-[65vh] overflow-y-auto">
           <div>
             <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button
+            <select name="jarbottlefilter" class="grid grid-cols-2 gap-2">
+              <option value="All"
                 class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="all">All</button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Ittar Bottles">Ittar Bottles</button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Perfume Bottles">Perfume Bottles</button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Clear Glass Bottles">Clear Glass Bottles</button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Clear Glass Jars">Clear Glass Jars </button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Amber Glass Jars">Amber Glass Jars</button>
-              <button
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="Amber Glass Bottles">Amber Glass Bottles</button>
-            </div>
-          </div>
-          <div>
-            <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Exquisite Fragnances</div>
-            <div class="grid grid-cols-2 gap-2">
-              <button
-                class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-exq="all">All</button>
-              <button
-                class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-exq="Floral">Floral</button>
-              <button
-                class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-exq="Citrus">Citrus</button>
-              <button
-                class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-exq="Amber or Musk">Amber or Musk</button>
-              <button
-                class="m-exq exq-filter px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-exq="Oud">Oud</button>
-            </div>
+                data-filter="All">All</option>
+              <% units.jarBottleList.forEach(item=> { %>
+                <option value="<%= item %>"
+                  class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
+                  data-filter="<%= item %>">
+                  <%= item %>
+                </option>
+                <% }); %>
+            </select>
           </div>
 
           <div class="p-5 border-t border-gray-100 flex items-center gap-3">
@@ -304,271 +186,20 @@
 </script>
 
 
-
+      <script>
+        const PRODUCTS = JSON.parse(
+          document.getElementById("products-data").textContent
+        );
+      </script>
 
       <script>
 
-        // Data
-        let nextID = 1;
-
-        const products = [
-
-          {
-            id: nextID++,
-            name: "Perfume Bottle",
-            images: [
-              "fragnances/bottle1.png",
-              "fragnances/bottle11.jpg",
-              "fragnances/bottle1_top.png"
-            ],
-            JarsAndBottles: "Perfume Bottles",
-            description: "NF: 240",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: true,
-            industry: "Fragnances",
-            capacity: "",
-            height: "",
-            width: "",
-            weight: "",
-            color: "",
-            shape: "",
-            neckSize: "",
-            neckType: "",
-            material: "",
-            usage: ""
-          },
-
-          {
-            id: nextID++,
-            name: "Gustav Women",
-            images: [
-              "fragnances/bottle2.png",
-              "fragnances/bottle2_side.png"
-            ],
-            JarsAndBottles: "Perfume Bottles",
-            description: "Clear Bottle",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: true,
-            industry: "Fragnances",
-            capacity: "",
-            height: "",
-            width: "",
-            weight: "",
-            color: "",
-            shape: "",
-            neckSize: "",
-            neckType: "",
-            material: "",
-            usage: ""
-          },
-
-          {
-            id: nextID++,
-            name: "Colorful Car Hanging",
-            images: [
-              "fragnances/colorfulCarHanging.jpeg",
-              "fragnances/colorfulCarHanging2.jpeg"
-            ],
-            JarsAndBottles: "Ittar Bottles",
-            description: "Colorful Car hanging bottles for ittars",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances",
-            capacity: "",
-            height: "",
-            width: "",
-            weight: "",
-            color: "",
-            shape: "",
-            neckSize: "",
-            neckType: "",
-            material: "",
-            usage: ""
-          },
-
-          {
-            id: nextID++,
-            name: "Pharma 1",
-            images: [
-              "pharma/pharma1.jpeg"
-            ],
-            JarsAndBottles: "Clear Glass Bottles",
-            description: "Clear Glass Bottles for pharma uses.",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "pharma",
-            capacity: "",
-            height: "",
-            width: "",
-            weight: "",
-            color: "",
-            shape: "",
-            neckSize: "",
-            neckType: "",
-            material: "",
-            usage: ""
-          },
-
-          {
-            id: nextID++,
-            name: "Pharma 2",
-            images: [
-              "pharma/pharma2.jpeg"
-            ],
-            JarsAndBottles: "Clear Glass Bottles",
-            description: "Clear Glass Bottles for pharma uses.",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "pharma",
-            capacity: "",
-            height: "",
-            width: "",
-            weight: "",
-            color: "",
-            shape: "",
-            neckSize: "",
-            neckType: "",
-            material: "",
-            usage: ""
-          },
-
-          {
-            id: nextID++,
-            name: "Pharma 3",
-            images: [
-              "pharma/pharma3.jpeg"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "Clear Glass Jars of 50ml for pharma uses.",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: true,
-            industry: "pharma"
-          },
+        document.addEventListener("DOMContentLoaded", () => {
+          renderProducts(PRODUCTS);
+        });
 
 
-          {
-            id: nextID++,
-            name: "Matka Jar",
-            images: [
-              "food/food1.jpeg"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "recyclable materials, these bottles & jars are not only dishwasher safe",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "food"
-          },
-
-          {
-            id: nextID++,
-            name: "Round Jars",
-            images: [
-              "food/food5.png"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "Plastic/Steels caps. dishwasher-safe and recyclable glass",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: true,
-            industry: "food"
-          },
-
-          {
-            id: nextID++,
-            name: "Cylendrical Jars",
-            images: [
-              "food/food7.png"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "PLASTIC CAP, Glassfinity's Cylinderical Jars",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "food"
-          },
-
-          {
-            id: nextID++,
-            name: "Inverted Diamond Jars",
-            images: [
-              "fragnances/bottle8.jpg"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "Glassfinity's Diamond Jars (JK4) in Cartoon of 48 Pieces",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances"
-          },
-
-          {
-            id: nextID++,
-            name: "Star Jars",
-            images: [
-              "fragnances/bottle9.jpg"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "Glassfinity's Star Jars With Crown",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances"
-          },
-
-          {
-            id: nextID++,
-            name: "Amber Cuboid Jars",
-            images: [
-              "fragnances/bottle11.jpg",
-              "fragnances/bottle10.jpg"
-            ],
-            JarsAndBottles: "Amber Glass Jars",
-            description: "Amber Cuboid Jars with Bulb for Spraying in 48 Piece Cartoon (QN 1)",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances"
-          },
-
-          {
-            id: nextID++,
-            name: "Cylendrical Viles",
-            images: [
-              "fragnances/bottle12.jpg"
-            ],
-            JarsAndBottles: "Amber Glass Jars",
-            description: "Small Cylindrical Viles with Seperated Chamber and Colored Bottom made of Amber Glass in 100 Piece Cartoon (YNP 6ml)",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances"
-          },
-
-          {
-            id: nextID++,
-            name: "Perfume Bottle Gold Cap",
-            images: [
-              "fragnances/bottle13.jpg"
-            ],
-            JarsAndBottles: "Clear Glass Jars",
-            description: "Elegant Perfume Bottle with Gold Cap and 4 Sides Vertical Strips in Different Sizes (BJP 2) \n3ml in 960 Piece Cartoon\n6ml in 720 Piece Cartoon\n12ml in 480 Piece Cartoon",
-            sizeOptions: ["3ml", "6ml", "12ml", "24ml"],
-            fragranceOptions: ["Rose", "Oud", "Musk", "Sandalwood"],
-            featured: false,
-            industry: "Fragnances"
-          }
-
-        ];
-
-        let filteredProducts = [...products];
-        // let cartCount = 0;
+        let filteredProducts = [...PRODUCTS];
 
         // State
         const state = {
@@ -592,7 +223,7 @@
           return `images/products/${imgValue}`;              // relative like "fragnances/bottle1.png"
         }
 
-        // ---------- DOM READY ----------
+        // ---------- DOM READY ---------- PDF 
         document.addEventListener("DOMContentLoaded", () => {
           const industrySelect = document.getElementById("industryFilter");
           const downloadBtn = document.getElementById("downloadPdfBtn");
@@ -954,45 +585,141 @@
         const searchInput = document.getElementById('searchInput');
         const sortSelect = document.getElementById('sortSelect');
 
-        // Render
+        // working Render
+        function renderProducts(list) {
+          const grid = document.getElementById("productsGrid");
+          grid.innerHTML = "";
 
-        function applyFilters() {
-          const term = state.search.toLowerCase().trim();
-          filteredProducts = products.filter(p => {
-            const matchesSearch = !term || p.name.toLowerCase().includes(term) || p.description.toLowerCase().includes(term);
-            const matchesIndustry = !state.industry || p.industry === state.industry;
-            // Exclusive filter logic:
-            // - If neither filter applied (both null) => show everything.
-            // - If JarsAndBottles is not null => apply it and ignore exquisiteFragnances.
-            //    * If JarsAndBottles === 'all' => match any product that has a non-empty JarsAndBottles.
-            // - Else if exquisiteFragnances is not null => apply it and ignore JarsAndBottles.
-            //    * If exquisiteFragnances === 'all' => match any product that has a non-empty ExquisiteFragnances.
-            let matchesJarsAndBottles = true;
-            let matchesExq = true;
-            if (state.JarsAndBottles !== null) {
-              if (state.JarsAndBottles === 'all') matchesJarsAndBottles = !!(p.JarsAndBottles && p.JarsAndBottles.toString().trim() !== '');
-              else matchesJarsAndBottles = p.JarsAndBottles === state.JarsAndBottles;
-              matchesExq = true; // ignore exq
-            } else if (state.exquisiteFragnances !== null) {
-              if (state.exquisiteFragnances === 'all') matchesExq = !!(p.ExquisiteFragnances && p.ExquisiteFragnances.toString().trim() !== '');
-              else matchesExq = (p.ExquisiteFragnances || '').toString() === state.exquisiteFragnances;
-              matchesJarsAndBottles = true; // ignore jars
-            } // else both null -> both remain true (show all)
+          if (!list || !list.length) {
+            grid.innerHTML = `
+      <p class="col-span-full text-center text-gray-500 py-10">
+        No products found
+      </p>
+    `;
+            return;
+          }
 
-            const matchesNotes = state.notes.size === 0 || [...state.notes].some(n => p.notes.includes(n));
-            return matchesSearch && matchesJarsAndBottles && matchesExq && matchesNotes && matchesIndustry;
+          list.forEach(p => {
+            grid.innerHTML += `
+            <article class="product-card bg-white rounded-xl overflow-hidden flex flex-col"
+         onclick="openProductModal('${p._id}')">
+
+                                <div class="absolute top-2 left-2">
+              ${p.featured ? '<span class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-medium bg-[color:var(--gold)] text-black">Featured</span>' : ''}
+            </div>
+      <div class="group bg-white border border-gray-200 rounded-lg overflow-hidden
+                  hover:shadow-md transition">
+
+
+        <!-- IMAGE -->
+        <div class="relative aspect-square bg-gray-100 overflow-hidden">
+          <img
+            src="${p.images?.[0] || "/images/placeholder.png"}"
+            alt="${p.name}"
+            class="w-full h-full object-cover
+                   group-hover:scale-105 transition duration-300"
+          />
+        </div>
+
+        <!-- CONTENT -->
+        <div class="p-3 space-y-1.5">
+
+          <!-- PRODUCT NAME -->
+          <h3 class="text-sm font-medium text-gray-800 truncate">
+            ${p.name}
+          </h3>
+
+          
+            <p class="text-gray-500 text-[11px] sm:text-sm mt-1 line-clamp-2 mb-2">${p.description}</p>
+<!-- INDUSTRY -->
+<p class="text-xs text-gray-500">
+  ${(p.units?.jarBottleList || []).map(item => `
+    <span class="text-[10px] px-2 py-0.5 rounded-full border border-gray-300 text-gray-600">
+      ${item}
+    </span>
+  `).join("")}
+</p>
+
+          <!-- CTA -->
+            <div class="p-2 sm:p-2 flex-1 flex flex-col gap-1">
+
+  <a href="https://wa.me/919311555255?text=Hi%20I%20am%20interested%20in%20${p.name}%20https://arjanmalattarchand.com/images/products/${p.images[0]}" 
+     target="_blank"
+     class="gold-btn w-full mt-2 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2">
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">
+      <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.59 2.15 8.02L.5 31.5l7.7-2.07C10.35 30.27 13.12 31 16 31c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28c-2.5 0-4.94-.67-7.06-1.93l-.5-.29-4.57 1.23 1.23-4.57-.29-.5C3.67 20.94 3 18.5 3 16 3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13zm7.2-9.98c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.63-.2-.9.2s-1.03 1.26-1.27 1.52c-.23.26-.47.29-.86.1-.39-.2-1.63-.6-3.1-1.92-1.15-1.02-1.92-2.3-2.15-2.69-.23-.39-.02-.6.17-.79.17-.17.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.9-2.17-1.24-2.97-.33-.8-.67-.69-.9-.7h-.77c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26s1.4 3.77 1.59 4.03c.2.26 2.75 4.2 6.67 5.89.93.4 1.65.64 2.21.82.93.3 1.78.26 2.45.16.75-.11 2.3-.94 2.62-1.84.33-.9.33-1.67.23-1.84-.1-.17-.36-.26-.75-.46z"/>
+   </svg>
+   WhatsApp
+</a>
+
+
+          </div>
+
+        </div>
+      </div>
+      </article>
+    `;
+
           });
-          sortProducts();
+          
+          countEl.textContent = `Showing ${list.length}`;
         }
 
-        function sortProducts() {
-          const s = state.sort;
-          filteredProducts.sort((a, b) => {
-            if (s === 'name') return a.name.localeCompare(b.name);
-            if (s === 'newest') return b.id - a.id;
-            return 0;
+        function applyFilters(selectedJar) {
+          const term = state.search.toLowerCase().trim();
+
+
+
+          // If All selected → no filtering
+          if (selectedJar === "all") {
+            renderProducts(PRODUCTS);
+            return;
+          }
+
+          const filteredProducts = PRODUCTS.filter(p => {
+
+            /* ---------------- SEARCH FILTER ---------------- */
+            if (term && !p.name.toLowerCase().includes(term)) {
+              return false;
+            }
+
+            /* ---------------- JAR/BOTTLE FILTER ---------------- */
+            if (!p.units.jarBottleList) {
+              return false;
+            }
+
+            if (!p.units.jarBottleList.includes(selectedJar)) {
+              return false;
+            }
+
+            return true;
           });
-          renderProducts();
+
+          renderProducts(filteredProducts);
+        }
+
+
+        function sortProducts() {
+
+          sortSelect.addEventListener("change", () => {
+            const value = sortSelect.value;
+            let sortedProducts = [...PRODUCTS];
+
+            if (value === "name") {
+              sortedProducts.sort((a, b) =>
+                a.name.localeCompare(b.name)
+              );
+            }
+
+            if (value === "newest") {
+              sortedProducts.sort((a, b) =>
+                new Date(b.createdAt) - new Date(a.createdAt)
+              );
+            }
+
+            renderProducts(sortedProducts);
+          });
+
         }
 
         // UI helpers
@@ -1014,7 +741,7 @@
           // Search
           searchInput.addEventListener('input', (e) => {
             state.search = e.target.value;
-            applyFilters();
+            applyFilters(state.search);
           });
           // Sort
           sortSelect.addEventListener('change', (e) => {
@@ -1056,17 +783,10 @@
             if (state.notes.has(n)) { state.notes.delete(n); btn.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
             else { state.notes.add(n); btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
           }));
-          document.getElementById('applyDesktop').addEventListener('click', applyFilters);
+          const desktopFilter = document.querySelector('select[name="desktopfilter"]');
+          document.getElementById('applyDesktop').addEventListener('click', () => applyFilters(desktopFilter.value));
           document.getElementById('clearDesktop').addEventListener('click', () => {
-            // reset all filters -> show everything
-            state.JarsAndBottles = null;
-            state.exquisiteFragnances = null;
-            state.notes.clear();
-            setActive(colBtns, null); setActive(exqBtns, null);
-            setFilterButtonState(colBtns, false);
-            setFilterButtonState(exqBtns, false);
-            noteBtns.forEach(n => n.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'));
-            applyFilters();
+           renderProducts(PRODUCTS);
           });
 
           // Mobile sheet
@@ -1075,6 +795,26 @@
           const closeSheet = document.getElementById('closeSheet');
           const closeSheetBtn = document.getElementById('closeSheetBtn');
           const sheetPanel = sheet.querySelector('.sheet');
+          const applymobile = document.getElementById('applyMobile');
+          const clearmobile = document.getElementById('clearMobile');
+
+          clearmobile.addEventListener('click', () => {
+            
+            renderProducts(PRODUCTS);
+            hideSheet();
+          });
+
+
+
+          applymobile.addEventListener('click', () => {
+            // get select element correctly
+            const jarbottlefilter = document.querySelector('[name="jarbottlefilter"]');
+            const selectedJar = jarbottlefilter.value;
+            console.log("Selected Jar1:", selectedJar);
+            applyFilters(selectedJar);
+            console.log("Selected Jar:", selectedJar);
+            hideSheet();
+          });
 
           function openSheet() {
             sheet.classList.remove('hidden');
@@ -1091,40 +831,6 @@
           closeSheetBtn.addEventListener('click', hideSheet);
 
           // Mobile filters
-          const mColBtns = sheet.querySelectorAll('.m-filter');
-          const mExqBtns = sheet.querySelectorAll('.m-exq');
-          const mNoteBtns = sheet.querySelectorAll('.m-note');
-
-          mColBtns.forEach(btn => btn.addEventListener('click', () => {
-            state.JarsAndBottles = btn.dataset.filter;
-            state.exquisiteFragnances = null;
-            setActive(mColBtns, btn);
-            setActive(mExqBtns, null);
-            setFilterButtonState(mExqBtns, true);
-          }));
-          mExqBtns.forEach(btn => btn.addEventListener('click', () => {
-            state.exquisiteFragnances = btn.dataset.exq;
-            state.JarsAndBottles = null;
-            setActive(mExqBtns, btn);
-            setActive(mColBtns, null);
-            setFilterButtonState(mColBtns, true);
-          }));
-          mNoteBtns.forEach(btn => btn.addEventListener('click', () => {
-            const n = btn.dataset.note;
-            if (state.notes.has(n)) { state.notes.delete(n); btn.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
-            else { state.notes.add(n); btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
-          }));
-          document.getElementById('applyMobile').addEventListener('click', () => { applyFilters(); hideSheet(); });
-          document.getElementById('clearMobile').addEventListener('click', () => {
-            state.JarsAndBottles = null;
-            state.exquisiteFragnances = null;
-            state.notes.clear();
-            setActive(mColBtns, null); setActive(mExqBtns, null);
-            setFilterButtonState(mColBtns, false);
-            setFilterButtonState(mExqBtns, false);
-            mNoteBtns.forEach(n => n.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'));
-            applyFilters();
-          });
 
           // Modal controls
           document.getElementById('closeModal').addEventListener('click', closeProductModal);
@@ -1132,9 +838,7 @@
         }
         // Modal
         function openProductModal(id) {
-          const PRODUCTS = JSON.parse(
-            document.getElementById("products-data").textContent
-          );
+
 
           console.log("PRODUCTS:", PRODUCTS);
           const p = PRODUCTS.find(p => p._id === id);
@@ -1190,13 +894,13 @@
       <!-- RIGHT: product details -->
       <div class="w-full flex flex-col">
        ${Array.isArray(p.units?.jarBottleList)
-  ? p.units.jarBottleList.map(item => `
+              ? p.units.jarBottleList.map(item => `
       <span class="chip px-3 py-1 rounded-full text-xs">
         ${item}
       </span>
     `).join("")
-  : ""
-}
+              : ""
+            }
 
                     <h1 class="cormorant font-black text-base sm:text-3xl text-black-1500 leading-snug mt-3">${p.name}</h1>
 
@@ -1204,46 +908,51 @@
 
         <div class="mt-5 grid grid-cols-1 gap-4 text-sm">
 
-  <!-- SIZE DROPDOWN (ALL INDUSTRIES) -->
-  <div class="border border-gray-200 rounded-lg p-3">
-    <label class="text-gray-500 block mb-1">Size</label>
-    <select id="sizeSelect"
-      class="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[color:var(--gold)] focus:border-[color:var(--gold)]">
-      ${(p.sizeOptions || [p.size || "Standard"]).map(s =>
-            `<option value="${s}">${s}</option>`
-          ).join("")}
-    </select>
-  </div>
+<!-- SIZE DROPDOWN (ALL INDUSTRIES) -->
+<div class="border border-gray-200 rounded-lg p-3">
+  <label class="text-gray-500 block mb-1">Size</label>
 
-  <!-- FRAGRANCE DROPDOWN (ONLY FRAGNANCES) -->
-${Array.isArray(p.units?.industryList) && p.units.industryList.length
-  ? `
+  <select id="sizeSelect"
+    class="w-full rounded-md border border-gray-300 px-3 py-2
+           focus:ring-2 focus:ring-[color:var(--gold)]
+           focus:border-[color:var(--gold)]">
+
+           <option value="">All</option>
+    ${(p.units?.sizeList || ["Standard"])
+              .map(s => `<option value="${s}">${s}</option>`)
+              .join("")}
+
+  </select>
+</div>
+
+
+ ${p.units.fragranceList?.length
+              ? `
     <div class="border border-gray-200 rounded-lg p-3">
       <label class="text-gray-500 block mb-1">Fragrance</label>
+
       <select
         id="fragranceSelect"
         class="w-full rounded-md border border-gray-300 px-3 py-2
                focus:ring-2 focus:ring-[color:var(--gold)]
                focus:border-[color:var(--gold)]"
       >
-        ${p.units.industryList.map(f => `
-          <option value="${f}">${f}</option>
-        `).join("")}
+        ${p.units.fragranceList
+                .map(f => `<option value="${f}">${f}</option>`)
+                .join("")}
       </select>
     </div>
   `
-  : ""
-}
-
-</div>
+              : ""
+            }
 
 
         <div class="mt-auto pt-4 md:px-4">
           <a
             id="productWhatsAppBtn"
             href="https://wa.me/919311555255?text=${encodeURIComponent(
-            `Hi I am interested in ${p.name} https://arjanmalattarchand.com/images/products/${images[0]}`
-          )}"
+              `Hi I am interested in ${p.name} https://arjanmalattarchand.com/images/products/${images[0]}`
+            )}"
             target="_blank"
             class="gold-btn w-full mt-2 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
           >
@@ -1344,7 +1053,6 @@ ${Array.isArray(p.units?.industryList) && p.units.industryList.length
             b.disabled = false;
             b.classList.remove('opacity-50', 'pointer-events-none');
           });
-          applyFilters();
         })();
       </script>
       <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'982a742516c8a7ee',t:'MTc1ODQ2NzA1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
