@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
@@ -60,9 +74,9 @@
                                 </div>
                                 <% } %>
 
-                                <!-- Other fields (excluding industryList and fragranceList) -->
+                                <!-- Other fields (excluding industryList, fragranceList, and jarBottleList) -->
                                 <% for (const unitKey in units) { %>
-                                    <% if (unitKey !== 'industryList' && unitKey !== 'fragranceList') { %>
+                                    <% if (unitKey !== 'industryList' && unitKey !== 'fragranceList' && unitKey !== 'jarBottleList') { %>
                                     <div class="form-row">
                                         <div class="form-group-inline">
                                             <label for="<%= unitKey %>">
@@ -290,7 +304,7 @@
         // Initialize all selected values - call this after page loads
         function initializeSelectedValues() {
             <% for (const unitKey in units) { %>
-                <% if (unitKey !== 'industryList') { %>
+                <% if (unitKey !== 'industryList' && unitKey !== 'jarBottleList') { %>
                     // Ensure checkboxes are checked based on product data (in case they weren't rendered as checked)
                     <% if (isEdit && product && product.units && product.units[unitKey] && Array.isArray(product.units[unitKey])) { %>
                         const unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = '<%= unitKey %>';

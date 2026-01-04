@@ -18,15 +18,21 @@ export const renderHome = async (req, res) => {
       signature: true 
     }).limit(3).sort({ updatedAt: -1 });
     
+    // Get base URL for image links - use production domain
+    const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
+    
     res.render("index", { 
       seoData: seo.home,
-      signatureProducts: signatureProducts || []
+      signatureProducts: signatureProducts || [],
+      baseUrl
     });
   } catch (error) {
     console.error("Home page error:", error);
+    const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
     res.render("index", { 
       seoData: seo.home,
-      signatureProducts: []
+      signatureProducts: [],
+      baseUrl
     });
   }
 };
@@ -43,10 +49,15 @@ export const renderShop = async (req, res) => {
   try {
     // Only show active products on shop page
     const products = await Product.find({ active: true });
+    
+    // Get base URL for image links - use production domain
+    const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
+    
     res.render("shop", {
       seoData: seo.shop,
       products,
-      units: unitsData
+      units: unitsData,
+      baseUrl
     });
   } catch (error) {
     console.error("Shop page error:", error);

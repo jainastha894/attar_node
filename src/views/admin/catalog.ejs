@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalog - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
@@ -32,7 +46,7 @@
                         <div class="form-container">
                             <div class="catalog-controls" style="max-width: 600px; margin: 0 auto;">
                                 <div style="margin-bottom: 24px;">
-                                    <label for="industryFilter" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                    <label for="industryFilter" style="display: block; margin-bottom: 8px; font-weight: 600; color: #ffffff;">
                                         Select Industry (Optional)
                                     </label>
                                     <select id="industryFilter" style="width: 100%; padding: 10px; border: 2px solid #333; border-radius: 6px; background: #1a1a1a; color: #ffffff; font-size: 14px;">
@@ -139,38 +153,107 @@
             doc.rect(x, y, width, height, 'F');
         }
 
-        // Draw header on each page
+        // Draw header on each page - dark theme
         function drawPageHeader(doc, pageWidth, yPos, logoData, selectedIndustry) {
-            // Gold header bar
-            drawRect(doc, 0, 0, pageWidth, 25, COLORS.gold);
+            // Dark header bar with gold border
+            drawRect(doc, 0, 0, pageWidth, 28, COLORS.darkBg);
+            doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setLineWidth(1);
+            doc.setLineDash([], 0);
+            doc.rect(0, 0, pageWidth, 28);
             
             // Logo
             if (logoData) {
-                doc.addImage(logoData, 'JPEG', 15, 5, 50, 15);
+                doc.addImage(logoData, 'JPEG', 15, 6, 50, 16);
             }
             
-            // Company name
-            doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
-            doc.setFontSize(18);
-            doc.setFont(undefined, 'bold');
-            doc.text('Arjanmal Attarchand', pageWidth - 15, 12, { align: 'right' });
-            
-            // Catalog title
+            // Company name - white text
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
             doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Arjanmal Attarchand', pageWidth - 15, 15, { align: 'right' });
+            
+            // Catalog title - gold text
+            doc.setFontSize(14);
             doc.setFont(undefined, 'normal');
-            doc.text('Product Catalog', pageWidth / 2, 20, { align: 'center' });
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.text('Product Catalog', pageWidth / 2, 22, { align: 'center' });
             
             if (selectedIndustry) {
-                doc.setFontSize(12);
-                doc.text(`Industry: ${selectedIndustry}`, pageWidth / 2, 27, { align: 'center' });
+                doc.setFontSize(11);
+                doc.text(`Industry: ${selectedIndustry}`, pageWidth / 2, 28, { align: 'center' });
+                return 35;
             }
             
-            return 30;
+            return 32;
         }
 
-        // Draw product card
+        // Draw main cover page
+        async function drawCoverPage(doc, pageWidth, pageHeight, logoData) {
+            // Dark background
+            drawRect(doc, 0, 0, pageWidth, pageHeight, COLORS.darkBg);
+            
+            // Logo
+            if (logoData) {
+                doc.addImage(logoData, 'JPEG', pageWidth / 2 - 40, 50, 80, 30);
+            }
+            
+            // Company name - ARJANMAL in gold, ATTARCHAND in white/silver
+            doc.setFontSize(36);
+            doc.setFont(undefined, 'bold');
+            
+            // Calculate text width for positioning
+            const fullText = 'ARJANMAL ATTARCHAND';
+            const textWidth = doc.getTextWidth(fullText);
+            const startX = (pageWidth - textWidth) / 2;
+            
+            // ARJANMAL in gold
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            const arjanmalWidth = doc.getTextWidth('ARJANMAL');
+            doc.text('ARJANMAL', startX, 100);
+            
+            // ATTARCHAND in white/silver
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+            doc.text('ATTARCHAND', startX + arjanmalWidth + 5, 100);
+            
+            // Tagline - increased font - white text
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+            doc.text('Where tradition meets luxury', pageWidth / 2, 110, { align: 'center' });
+            doc.text('Since 1904', pageWidth / 2, 118, { align: 'center' });
+            
+            // Company info box - dark theme with gold border
+            const infoBoxY = 140;
+            const infoBoxHeight = 85;
+            drawRect(doc, pageWidth / 2 - 65, infoBoxY, 130, infoBoxHeight, COLORS.darkBg);
+            doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setLineWidth(2);
+            doc.rect(pageWidth / 2 - 65, infoBoxY, 130, infoBoxHeight);
+            
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Contact Information', pageWidth / 2, infoBoxY + 10, { align: 'center' });
+            
+            doc.setFontSize(13);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+            doc.text('772, Tilak Bazar, Khari Baoli', pageWidth / 2, infoBoxY + 22, { align: 'center' });
+            doc.text('New Delhi - 110006, Delhi, India', pageWidth / 2, infoBoxY + 30, { align: 'center' });
+            doc.text('Phone: +91 98115 55255', pageWidth / 2, infoBoxY + 38, { align: 'center' });
+            doc.text('Email: sales@arjanmalattarchand.com', pageWidth / 2, infoBoxY + 46, { align: 'center' });
+            
+            // Catalog title - white text
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+            doc.setFontSize(28);
+            doc.setFont(undefined, 'bold');
+            doc.text('PRODUCT CATALOG', pageWidth / 2, 250, { align: 'center' });
+        }
+
+        // Draw product card with better spacing
         async function drawProductCard(doc, product, x, y, cardWidth, cardHeight) {
-            const padding = 3;
+            const padding = 4;
             const innerX = x + padding;
             const innerY = y + padding;
             const innerWidth = cardWidth - (padding * 2);
@@ -182,20 +265,21 @@
             drawRect(doc, x, y, cardWidth, cardHeight, COLORS.white);
             doc.rect(x, y, cardWidth, cardHeight);
             
-            // Product name header (gold background)
-            const headerHeight = 8;
+            // Product name header (gold background) - increased font
+            const headerHeight = 10;
             drawRect(doc, innerX, innerY, innerWidth, headerHeight, COLORS.gold);
             doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
-            doc.setFontSize(12);
+            doc.setFontSize(18);
             doc.setFont(undefined, 'bold');
             const nameLines = doc.splitTextToSize(product.name, innerWidth - 4);
-            doc.text(nameLines, innerX + 2, innerY + 5.5);
+            const nameHeight = nameLines.length * 5.5;
+            doc.text(nameLines, innerX + 2, innerY + 6.5);
             
-            let currentY = innerY + headerHeight + 3;
+            let currentY = innerY + headerHeight + 4;
             
-            // Product images section
+            // Product images section - reduced height to prevent overlap
             if (product.images && product.images.length > 0) {
-                const imageSectionHeight = 35;
+                const imageSectionHeight = 30;
                 const imageAreaY = currentY;
                 const imageAreaHeight = imageSectionHeight;
                 const imageAreaWidth = innerWidth;
@@ -237,42 +321,337 @@
                 currentY += imageSectionHeight + 3;
             }
             
-            // Description
-            if (product.description) {
+            // Description - with better spacing and increased font
+            if (product.description && currentY < y + cardHeight - 20) {
                 doc.setTextColor(COLORS.textDark[0], COLORS.textDark[1], COLORS.textDark[2]);
-                doc.setFontSize(9);
+                doc.setFontSize(14);
                 doc.setFont(undefined, 'normal');
                 const descLines = doc.splitTextToSize(product.description, innerWidth - 4);
-                const descHeight = descLines.length * 4;
-                if (currentY + descHeight < y + cardHeight - 15) {
-                    doc.text(descLines, innerX + 2, currentY + 3);
-                    currentY += descHeight + 2;
+                const maxDescLines = Math.floor((y + cardHeight - currentY - 15) / 6);
+                const displayDescLines = descLines.slice(0, maxDescLines);
+                if (displayDescLines.length > 0) {
+                    doc.text(displayDescLines, innerX + 2, currentY + 3);
+                    currentY += displayDescLines.length * 6 + 2;
                 }
             }
             
-            // Product details (units)
-            if (product.units && currentY < y + cardHeight - 10) {
-                doc.setFontSize(8);
+            // Product details (units) - display ALL details with better spacing, increased font, and fixed alignment
+            if (product.units && currentY < y + cardHeight - 12) {
+                doc.setFontSize(13);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor(COLORS.darkGold[0], COLORS.darkGold[1], COLORS.darkGold[2]);
                 
                 let detailsY = currentY;
+                const maxDetailsHeight = y + cardHeight - detailsY - 8;
+                let usedHeight = 0;
+                
+                // Define order and labels for all unit fields
+                const unitOrder = ['industryList', 'subCategoryList', 'sizeList', 'colorList', 'shapeList', 'neckTypeList', 'materialList', 'fragranceList'];
+                const unitLabels = {
+                    'industryList': 'Industry',
+                    'subCategoryList': 'Sub Category',
+                    'sizeList': 'Size',
+                    'colorList': 'Color',
+                    'shapeList': 'Shape',
+                    'neckTypeList': 'Neck Type',
+                    'materialList': 'Material',
+                    'fragranceList': 'Fragrance'
+                };
+                
+                // Display units in order
+                for (const key of unitOrder) {
+                    if (!product.units[key] || !Array.isArray(product.units[key]) || product.units[key].length === 0) {
+                        continue;
+                    }
+                    
+                    if (usedHeight < maxDetailsHeight) {
+                        const label = unitLabels[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        const valueText = product.units[key].join(', ');
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`${label}:`, innerX + 2, detailsY);
+                        doc.setFont(undefined, 'normal');
+                        // Fixed alignment - increased spacing for values
+                        const valueLines = doc.splitTextToSize(valueText, innerWidth - 50);
+                        const valueHeight = valueLines.length * 5;
+                        if (usedHeight + valueHeight <= maxDetailsHeight) {
+                            doc.text(valueLines, innerX + 45, detailsY);
+                            detailsY += valueHeight;
+                            usedHeight += valueHeight;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                
+                // Display any remaining units that weren't in the ordered list
                 for (const [key, value] of Object.entries(product.units)) {
-                    if (Array.isArray(value) && value.length > 0 && detailsY < y + cardHeight - 8) {
-                        const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    if (unitOrder.includes(key)) continue; // Already displayed
+                    if (Array.isArray(value) && value.length > 0 && usedHeight < maxDetailsHeight) {
+                        let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
                         const valueText = value.join(', ');
                         doc.setFont(undefined, 'bold');
                         doc.text(`${label}:`, innerX + 2, detailsY);
                         doc.setFont(undefined, 'normal');
-                        const valueLines = doc.splitTextToSize(valueText, innerWidth - 25);
-                        doc.text(valueLines, innerX + 20, detailsY);
-                        detailsY += valueLines.length * 3.5;
+                        const valueLines = doc.splitTextToSize(valueText, innerWidth - 50);
+                        const valueHeight = valueLines.length * 5;
+                        if (usedHeight + valueHeight <= maxDetailsHeight) {
+                            doc.text(valueLines, innerX + 45, detailsY);
+                            detailsY += valueHeight;
+                            usedHeight += valueHeight;
+                        } else {
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        // Generate PDF
+        // Draw industry section header - dark theme with proper alignment and increased font
+        function drawIndustryHeader(doc, pageWidth, yPos, industryName) {
+            const headerHeight = 16;
+            const startY = yPos - 3;
+            // Dark background with gold border
+            drawRect(doc, 0, startY, pageWidth, headerHeight, COLORS.darkBg);
+            doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setLineWidth(1.5);
+            doc.setLineDash([], 0);
+            doc.rect(0, startY, pageWidth, headerHeight);
+            
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setFontSize(25);
+            doc.setFont(undefined, 'bold');
+            doc.text(industryName.toUpperCase(), pageWidth / 2, startY + 11, { align: 'center' });
+            return startY + headerHeight + 8;
+        }
+
+        // Helper function to get image path
+        function getImagePath(relPath) {
+            if (!relPath) return null;
+            return relPath.startsWith('/') ? window.location.origin + relPath : relPath;
+        }
+
+        // Normalize industry name for comparison
+        function normalizeIndustryName(str) {
+            return (str || "").toLowerCase().trim();
+        }
+
+        // ---------- INDUSTRY INTRO PAGE (BLANK PAGE WITH INDUSTRY NAME) ----------
+        async function addIndustryIntroPage(doc, industryName) {
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // Dark background
+            drawRect(doc, 0, 0, pageWidth, pageHeight, COLORS.darkBg);
+
+            // Industry name - gold text, full size, centered
+            if (industryName) {
+                doc.setFont(undefined, "bold");
+                doc.setFontSize(48);
+                doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                doc.text(industryName.toUpperCase(), pageWidth / 2, pageHeight / 2, { align: "center" });
+            }
+        }
+
+        // ---------- PRODUCT PAGE 1 – FULL IMAGE + NAME TOP-RIGHT ----------
+        async function addProductMainPage(doc, product, logoData) {
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // Dark background
+            drawRect(doc, 0, 0, pageWidth, pageHeight, COLORS.darkBg);
+
+            // Name on top-right - gold text
+            doc.setFont(undefined, "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            const productName = product.name || "";
+            const nameLines = doc.splitTextToSize(productName, pageWidth - 20);
+            doc.text(nameLines, pageWidth - 10, 18, { align: "right", maxWidth: pageWidth - 20 });
+
+            const hasImages = Array.isArray(product.images) && product.images.length > 0;
+            if (!hasImages) return;
+
+            const mainRel = product.images[0];
+            const mainPath = getImagePath(mainRel);
+            const imgData = await loadImageAsDataURL(mainPath);
+            if (!imgData) return;
+
+            const imgMarginX = 5;
+            const imgMarginTop = 28;
+            const imgWidth = pageWidth - imgMarginX * 2;
+            const imgHeight = pageHeight - imgMarginTop - 8;
+
+            try {
+                doc.addImage(imgData, "JPEG", imgMarginX, imgMarginTop, imgWidth, imgHeight);
+            } catch (e) {
+                console.error('Error adding main image:', e);
+            }
+
+            // If there is NO additional image, overlay text on the bottom
+            const hasExtraImages = product.images.length > 1;
+            if (!hasExtraImages && product.description) {
+                const panelHeight = 35;
+                const panelY = pageHeight - panelHeight - 6;
+
+                drawRect(doc, 5, panelY, pageWidth - 10, panelHeight, COLORS.darkBg);
+                doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                doc.setLineWidth(1);
+                doc.rect(5, panelY, pageWidth - 10, panelHeight);
+
+                doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                doc.setFontSize(11);
+                doc.setFont(undefined, "normal");
+
+                const descText = product.description.split("\n")[0] || product.description;
+                const textLines = doc.splitTextToSize(descText, pageWidth - 18);
+                doc.text(textLines, 9, panelY + 12);
+            }
+        }
+
+        // ---------- PRODUCT PAGE 2 – ALL DETAILS + ADDITIONAL IMAGES ----------
+        async function addProductDetailPage(doc, product) {
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const marginX = 15;
+            let y = 20;
+
+            // Dark background
+            drawRect(doc, 0, 0, pageWidth, pageHeight, COLORS.darkBg);
+
+            // Product name - gold text
+            doc.setFont(undefined, "bold");
+            doc.setFontSize(20);
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            const productName = product.name || "";
+            const nameLines = doc.splitTextToSize(productName, pageWidth - marginX * 2);
+            doc.text(nameLines, marginX, y);
+            y += nameLines.length * 7 + 8;
+
+            // Display ALL product details
+            if (product.units) {
+                const unitLabels = {
+                    'industryList': 'Industry',
+                    'subCategoryList': 'Sub Category',
+                    'sizeList': 'Size',
+                    'colorList': 'Color',
+                    'shapeList': 'Shape',
+                    'neckTypeList': 'Neck Type',
+                    'materialList': 'Material',
+                    'fragranceList': 'Fragrance'
+                };
+
+                const unitOrder = ['industryList', 'subCategoryList', 'sizeList', 'colorList', 'shapeList', 'neckTypeList', 'materialList', 'fragranceList'];
+
+                for (const key of unitOrder) {
+                    if (product.units[key] && Array.isArray(product.units[key]) && product.units[key].length > 0) {
+                        const label = unitLabels[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        const valueText = product.units[key].join(', ');
+                        
+                        doc.setFont(undefined, "bold");
+                        doc.setFontSize(13);
+                        doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                        doc.text(`${label}:`, marginX, y);
+                        
+                        doc.setFont(undefined, "normal");
+                        doc.setFontSize(12);
+                        doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+                        const valueLines = doc.splitTextToSize(valueText, pageWidth - marginX * 2 - 5);
+                        doc.text(valueLines, marginX + 35, y);
+                        y += valueLines.length * 5.5 + 6;
+                    }
+                }
+
+                // Display any remaining units not in the order list
+                for (const [key, value] of Object.entries(product.units)) {
+                    if (unitOrder.includes(key)) continue;
+                    if (Array.isArray(value) && value.length > 0) {
+                        let label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        const valueText = value.join(', ');
+                        
+                        doc.setFont(undefined, "bold");
+                        doc.setFontSize(13);
+                        doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                        doc.text(`${label}:`, marginX, y);
+                        
+                        doc.setFont(undefined, "normal");
+                        doc.setFontSize(12);
+                        doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+                        const valueLines = doc.splitTextToSize(valueText, pageWidth - marginX * 2 - 5);
+                        doc.text(valueLines, marginX + 35, y);
+                        y += valueLines.length * 5.5 + 6;
+                    }
+                }
+            }
+
+            // Description
+            if (product.description) {
+                doc.setFont(undefined, "bold");
+                doc.setFontSize(13);
+                doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                doc.text("Description:", marginX, y);
+                y += 8;
+
+                doc.setFont(undefined, "normal");
+                doc.setFontSize(12);
+                doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+                const descWidth = pageWidth - marginX * 2;
+                const descLines = doc.splitTextToSize(product.description, descWidth);
+                doc.text(descLines, marginX, y);
+                y += descLines.length * 6 + 12;
+            }
+
+            // More Images section
+            const hasExtraImages = Array.isArray(product.images) && product.images.length > 1;
+            if (hasExtraImages) {
+                doc.setFont(undefined, "bold");
+                doc.setFontSize(14);
+                doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                doc.text("More Images", marginX, y);
+                y += 10;
+
+                const otherImages = product.images.slice(1);
+                const cols = 3;
+                const thumbWidth = (pageWidth - marginX * 2 - (cols - 1) * 6) / cols;
+                const thumbHeight = thumbWidth;
+                const thumbTop = y;
+
+                let colIndex = 0;
+                let rowIndex = 0;
+
+                for (let i = 0; i < otherImages.length; i++) {
+                    if (i > 0 && i % cols === 0) {
+                        rowIndex++;
+                        colIndex = 0;
+                    }
+
+                    const src = getImagePath(otherImages[i]);
+                    const imgData = await loadImageAsDataURL(src);
+                    if (!imgData) {
+                        colIndex++;
+                        continue;
+                    }
+
+                    const x = marginX + colIndex * (thumbWidth + 6);
+                    const yPos = thumbTop + rowIndex * (thumbHeight + 8);
+                    if (yPos + thumbHeight > pageHeight - 10) break;
+
+                    doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+                    doc.setLineWidth(1);
+                    doc.rect(x - 1, yPos - 1, thumbWidth + 2, thumbHeight + 2);
+                    try {
+                        doc.addImage(imgData, "JPEG", x, yPos, thumbWidth, thumbHeight);
+                    } catch (e) {
+                        console.error('Error adding image:', e);
+                    }
+
+                    colIndex++;
+                }
+            }
+        }
+
+        // ---------- MAIN – BUILD CATALOGUE ----------
         async function generateCataloguePdf(selectedIndustry = '') {
             const statusDiv = document.getElementById('downloadStatus');
             statusDiv.style.display = 'block';
@@ -281,22 +660,6 @@
             statusDiv.style.color = '#856404';
 
             try {
-                // Filter products by industry if selected
-                let filteredProducts = PRODUCTS;
-                if (selectedIndustry) {
-                    filteredProducts = PRODUCTS.filter(p => {
-                        const industryList = p.units?.industryList || [];
-                        return industryList.includes(selectedIndustry);
-                    });
-                }
-
-                if (filteredProducts.length === 0) {
-                    statusDiv.textContent = 'No products found for selected industry.';
-                    statusDiv.style.background = '#f8d7da';
-                    statusDiv.style.color = '#721c24';
-                    return;
-                }
-
                 const doc = new jsPDF({
                     orientation: 'portrait',
                     unit: 'mm',
@@ -305,70 +668,81 @@
 
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const pageHeight = doc.internal.pageSize.getHeight();
-                const margin = 10;
-                const contentWidth = pageWidth - (margin * 2);
-                
-                // Card dimensions
-                const cardWidth = (contentWidth - 5) / 2; // 2 columns with gap
-                const cardHeight = 70;
-                const cardGap = 5;
-                
-                // Load logo
-                const logoData = await loadImageAsDataURL(COMPANY_LOGO_URL);
-                
-                let currentPage = 1;
-                let yPos = drawPageHeader(doc, pageWidth, margin, logoData, selectedIndustry);
-                let col = 0;
-                let row = 0;
 
-                // Generate date
-                const currentDate = new Date().toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                // Load logo once
+                const logoData = await loadImageAsDataURL(COMPANY_LOGO_URL);
+
+                // Draw main cover page (only once)
+                await drawCoverPage(doc, pageWidth, pageHeight, logoData);
+
+                // Group products by industry (case-insensitive)
+                const groupsMap = new Map();
+                PRODUCTS.forEach((p) => {
+                    const industryList = p.units?.industryList || [];
+                    industryList.forEach(industry => {
+                        const norm = normalizeIndustryName(industry);
+                        if (!norm) return;
+                        if (!groupsMap.has(norm)) {
+                            groupsMap.set(norm, { label: industry, products: [] });
+                        }
+                        groupsMap.get(norm).products.push(p);
+                    });
                 });
 
-                // Products grid layout
-                for (let i = 0; i < filteredProducts.length; i++) {
-                    const product = filteredProducts[i];
-                    
-                    // Calculate position
-                    let x = margin + col * (cardWidth + cardGap);
-                    let y = yPos + row * (cardHeight + cardGap);
-                    
-                    // Check if card fits on page
-                    if (y + cardHeight > pageHeight - 20) {
-                        // Add footer to current page
-                        const estimatedTotalPages = Math.ceil(filteredProducts.length / (Math.floor((pageHeight - 30 - 25) / (cardHeight + cardGap)) * 2));
-                        drawPageFooter(doc, pageWidth, pageHeight, currentPage, estimatedTotalPages, currentDate);
-                        
+                // Industry order
+                const orderRank = { 'fragnance': 1, 'fragrances': 1, 'food': 2, 'pharma': 3 };
+
+                let groupsToPrint = [];
+                if (!selectedIndustry || selectedIndustry === '') {
+                    groupsToPrint = Array.from(groupsMap.values()).sort(
+                        (a, b) =>
+                            (orderRank[normalizeIndustryName(a.label)] || 99) -
+                            (orderRank[normalizeIndustryName(b.label)] || 99)
+                    );
+                } else {
+                    const normSel = normalizeIndustryName(selectedIndustry);
+                    const grp = groupsMap.get(normSel);
+                    if (grp) groupsToPrint = [grp];
+                }
+
+                if (!groupsToPrint.length) {
+                    statusDiv.textContent = 'No industries/products found.';
+                    statusDiv.style.background = '#f8d7da';
+                    statusDiv.style.color = '#721c24';
+                    return;
+                }
+
+                // Process each industry group
+                for (const group of groupsToPrint) {
+                    const industryName = group.label;
+                    const industryProducts = group.products;
+                    if (!industryProducts.length) continue;
+
+                    // Add industry intro page (blank page with industry name)
+                    doc.addPage();
+                    await addIndustryIntroPage(doc, industryName);
+
+                    // Add product pages for each product
+                    for (const product of industryProducts) {
+                        // Main page (full image)
                         doc.addPage();
-                        currentPage++;
-                        yPos = drawPageHeader(doc, pageWidth, margin, logoData, selectedIndustry);
-                        col = 0;
-                        row = 0;
-                        
-                        // Recalculate position for new page
-                        x = margin + col * (cardWidth + cardGap);
-                        y = yPos + row * (cardHeight + cardGap);
-                    }
-                    
-                    // Draw product card
-                    await drawProductCard(doc, product, x, y, cardWidth, cardHeight);
-                    
-                    // Update position
-                    col++;
-                    if (col >= 2) {
-                        col = 0;
-                        row++;
+                        await addProductMainPage(doc, product, logoData);
+
+                        // Detail page (all details + additional images)
+                        doc.addPage();
+                        await addProductDetailPage(doc, product);
                     }
                 }
 
-                // Add footer to all pages
+                // Add footers to all pages except first (cover)
                 const totalPages = doc.internal.pages.length - 1;
                 for (let i = 1; i <= totalPages; i++) {
                     doc.setPage(i);
-                    drawPageFooter(doc, pageWidth, pageHeight, i, totalPages, currentDate);
+                    if (i === 1) {
+                        // Cover page - no footer
+                        continue;
+                    }
+                    drawPageFooter(doc, pageWidth, pageHeight, i, totalPages, null);
                 }
 
                 // Download
@@ -378,7 +752,7 @@
                 
                 doc.save(fileName);
 
-                statusDiv.textContent = `PDF generated successfully! (${filteredProducts.length} products, ${totalPages} pages)`;
+                statusDiv.textContent = `PDF generated successfully! (${PRODUCTS.length} products, ${totalPages} pages)`;
                 statusDiv.style.background = '#d4edda';
                 statusDiv.style.color = '#155724';
             } catch (error) {
@@ -389,26 +763,25 @@
             }
         }
 
-        // Draw page footer
+        // Draw page footer - dark theme
         function drawPageFooter(doc, pageWidth, pageHeight, currentPage, totalPages, date) {
-            // Gold footer bar
-            drawRect(doc, 0, pageHeight - 15, pageWidth, 15, COLORS.gold);
+            // Dark footer bar with gold border
+            drawRect(doc, 0, pageHeight - 15, pageWidth, 15, COLORS.darkBg);
+            doc.setDrawColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setLineWidth(1);
+            doc.rect(0, pageHeight - 15, pageWidth, 15);
             
-            // Page number
-            doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
-            doc.setFontSize(10);
+            // Page number - gold text
+            doc.setTextColor(COLORS.gold[0], COLORS.gold[1], COLORS.gold[2]);
+            doc.setFontSize(11);
             doc.setFont(undefined, 'bold');
-            doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+            doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 7, { align: 'center' });
             
-            // Date
-            if (date) {
-                doc.setFontSize(8);
-                doc.setFont(undefined, 'normal');
-                doc.text(`Generated on: ${date}`, pageWidth - 10, pageHeight - 5, { align: 'right' });
-            }
-            
-            // Company info
-            doc.text('Arjanmal Attarchand | Product Catalog', 10, pageHeight - 5);
+            // Company info - white text
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(COLORS.white[0], COLORS.white[1], COLORS.white[2]);
+            doc.text('Arjanmal Attarchand | Product Catalog', 10, pageHeight - 6);
         }
 
         // Event listeners

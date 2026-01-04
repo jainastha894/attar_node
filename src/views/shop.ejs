@@ -77,7 +77,7 @@
                   <option value="All"
                     class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
                     data-filter="all">All</option>
-                  <% units.jarBottleList.forEach(item=> { %>
+                  <% units.subCategoryList.forEach(item=> { %>
                     <option value="<%= item %>"
                       class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
                       data-filter="<%= item %>">
@@ -124,7 +124,7 @@
               <option value="All"
                 class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
                 data-filter="All">All</option>
-              <% units.jarBottleList.forEach(item=> { %>
+              <% units.subCategoryList.forEach(item=> { %>
                 <option value="<%= item %>"
                   class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
                   data-filter="<%= item %>">
@@ -238,6 +238,9 @@
 
         let filteredProducts = [...PRODUCTS];
         let currentDisplayedProducts = [...PRODUCTS];
+
+        // Base URL for image links - use production domain
+        const BASE_URL = '<%= baseUrl %>' || window.location.origin;
 
         // State
         const state = {
@@ -391,7 +394,7 @@
 
           <!-- INDUSTRY -->
           <p class="text-xs text-gray-500 flex-shrink-0 mb-2">
-            ${(p.units?.jarBottleList || []).map(item => `
+            ${(p.units?.subCategoryList || []).map(item => `
               <span class="text-[10px] px-2 py-0.5 rounded-full border border-gray-300 text-gray-600 inline-block mr-1 mb-1">
                 ${item}
               </span>
@@ -400,7 +403,7 @@
 
           <!-- CTA - Always at bottom with fixed position -->
           <div class="mt-auto pt-2 flex-shrink-0" style="margin-top: auto;">
-            <a href="https://wa.me/919311555255?text=Hi%20I%20am%20interested%20in%20${encodeURIComponent(p.name)}%20${encodeURIComponent(window.location.origin + (p.images?.[0] || '/uploads/default.png'))}" 
+            <a href="https://wa.me/919311555255?text=Hi%20I%20am%20interested%20in%20${encodeURIComponent(p.name)}%0A${encodeURIComponent(BASE_URL + (p.images?.[0] || '/uploads/default.png'))}" 
                target="_blank"
                onclick="event.stopPropagation()"
                class="gold-btn w-full py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2" style="min-height: 40px;">
@@ -431,8 +434,8 @@
             });
           }
 
-          // If All selected → no jar/bottle filtering
-          if (selectedJar === "all") {
+          // If All selected → no jar/bottle filtering (case-insensitive check)
+          if (selectedJar && selectedJar.toLowerCase() === "all") {
             // Apply search filter if any
             if (term) {
               products = products.filter(p => 
@@ -452,12 +455,12 @@
               return false;
             }
 
-            /* ---------------- JAR/BOTTLE FILTER ---------------- */
-            if (!p.units.jarBottleList) {
+            /* ---------------- JAR/BOTTLE FILTER (using subCategoryList) ---------------- */
+            if (!p.units.subCategoryList) {
               return false;
             }
 
-            if (!p.units.jarBottleList.includes(selectedJar)) {
+            if (!p.units.subCategoryList.includes(selectedJar)) {
               return false;
             }
 
@@ -671,8 +674,8 @@
 
       <!-- RIGHT: product details -->
       <div class="w-full flex flex-col">
-       ${Array.isArray(p.units?.jarBottleList)
-              ? p.units.jarBottleList.map(item => `
+       ${Array.isArray(p.units?.subCategoryList)
+              ? p.units.subCategoryList.map(item => `
       <span class="chip px-3 py-1 rounded-full text-xs">
         ${item}
       </span>
@@ -729,7 +732,7 @@
           <a
             id="productWhatsAppBtn"
             href="https://wa.me/919311555255?text=${encodeURIComponent(
-              `Hi I am interested in ${p.name} ${window.location.origin}${images[0]}`
+              `Hi I am interested in ${p.name}\n${BASE_URL}${images[0]}`
             )}"
             target="_blank"
             class="gold-btn w-full mt-2 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
@@ -768,7 +771,10 @@
 
           // Build WhatsApp message
           function updateWhatsApp(imgPath = images[0]) {
-            const imgUrl = window.location.origin + imgPath;
+            // Ensure absolute URL using BASE_URL
+            const imgUrl = imgPath.startsWith('http') 
+              ? imgPath 
+              : BASE_URL + (imgPath.startsWith('/') ? imgPath : '/' + imgPath);
 
             const sizeVal = sizeSelect ? sizeSelect.value : '';
             const fragVal = fragranceSelect ? fragranceSelect.value : '';
@@ -777,7 +783,7 @@
               `Hi I am interested in ${p.name}\n` +
               (sizeVal ? `Size: ${sizeVal}\n` : '') +
               (fragVal ? `Fragrance: ${fragVal}\n` : '') +
-              imgUrl;
+              `\n${imgUrl}`;
 
             waBtn.href = `https://wa.me/919311555255?text=${encodeURIComponent(msg)}`;
           }
@@ -807,7 +813,7 @@
           if (sizeSelect) {
             sizeSelect.addEventListener('change', () => {
               // Extract path from src (remove origin if present)
-              const imgPath = mainImgEl.src.replace(window.location.origin, '');
+              const imgPath = mainImgEl.src.replace(BASE_URL, '').replace(window.location.origin, '');
               updateWhatsApp(imgPath);
             });
           }
@@ -816,7 +822,7 @@
           if (fragranceSelect) {
             fragranceSelect.addEventListener('change', () => {
               // Extract path from src (remove origin if present)
-              const imgPath = mainImgEl.src.replace(window.location.origin, '');
+              const imgPath = mainImgEl.src.replace(BASE_URL, '').replace(window.location.origin, '');
               updateWhatsApp(imgPath);
             });
           }

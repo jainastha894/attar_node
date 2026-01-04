@@ -427,13 +427,18 @@ body {
     box-shadow: 2px 0 10px rgba(255, 215, 0, 0.2);
     display: flex;
     flex-direction: column;
-    transition: width 0.3s ease;
+    transition: none;
     overflow: hidden;
     position: fixed;
     top: 70px;
     left: 0;
     height: calc(100vh - 70px - 60px); /* Subtract header (70px) and footer (60px) */
     z-index: 100;
+    will-change: width;
+}
+
+.sidebar.transitions-enabled {
+    transition: width 0.3s ease;
 }
 
 .sidebar.minimized {
@@ -455,7 +460,7 @@ body {
     padding: 16px 24px;
     color: #ffffff;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: padding 0.3s ease, background-color 0.2s ease, color 0.2s ease;
     font-size: 15px;
     border-left: 3px solid transparent;
     gap: 14px;
@@ -485,13 +490,16 @@ body {
 }
 
 .nav-text {
-    transition: opacity 0.3s, width 0.3s;
+    transition: opacity 0.25s ease, max-width 0.25s ease, visibility 0.25s ease;
     overflow: hidden;
+    max-width: 200px;
+    visibility: visible;
 }
 
 .sidebar.minimized .nav-text {
     opacity: 0;
-    width: 0;
+    max-width: 0;
+    visibility: hidden;
     overflow: hidden;
 }
 
@@ -524,12 +532,17 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     background: #1a1a1a;
-    transition: margin-left 0.3s ease, width 0.3s ease;
+    transition: none;
     margin-left: 260px;
     width: calc(100vw - 260px);
     min-height: calc(100vh - 70px);
     padding-bottom: 60px;
     box-sizing: border-box;
+    will-change: margin-left, width;
+}
+
+.main-content.transitions-enabled {
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 /* When sidebar is minimized, adjust main content */

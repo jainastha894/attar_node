@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body>
     <div class="main-wrapper">
@@ -25,6 +39,44 @@
                     </div>
                     <div class="content-body">
                         <div class="product-list">
+                            <!-- Filter Section -->
+                            <div class="form-container" style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #FFD700; font-weight: 600;">Filters</h3>
+                                <div class="form-row">
+                                    <div class="form-group-inline">
+                                        <label for="filterName">Product Name</label>
+                                        <input type="text" id="filterName" placeholder="Search by name...">
+                                    </div>
+                                    <div class="form-group-inline">
+                                        <label for="filterIndustry">Industry</label>
+                                        <select id="filterIndustry">
+                                            <option value="">All Industries</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-inline">
+                                        <label for="filterSize">Size</label>
+                                        <select id="filterSize">
+                                            <option value="">All Sizes</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-inline">
+                                        <label for="filterStatus">Status</label>
+                                        <select id="filterStatus">
+                                            <option value="">All Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                            <option value="featured">Featured</option>
+                                            <option value="outofstock">Out of Stock</option>
+                                            <option value="signature">Signature</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top: 20px;">
+                                    <button type="button" id="applyFilters" class="btn btn-save">Apply Filters</button>
+                                    <button type="button" id="clearFilters" class="btn btn-cancel">Clear Filters</button>
+                                </div>
+                            </div>
+                            
                             <div class="product-list-header">
                                 <h2>All Products</h2>
                                 <input type="text" class="search-box" placeholder="Search products..." id="searchProducts">
@@ -65,14 +117,102 @@
     <script>
         const PRODUCTS = JSON.parse(document.getElementById('products-data').textContent);
         
+        // Get unique values for filter dropdowns
+        function getUniqueIndustries() {
+            const industries = new Set();
+            PRODUCTS.forEach(product => {
+                const industryList = product.units?.industryList || [];
+                industryList.forEach(ind => industries.add(ind));
+            });
+            return Array.from(industries).sort();
+        }
+        
+        function getUniqueSizes() {
+            const sizes = new Set();
+            PRODUCTS.forEach(product => {
+                const sizeList = product.units?.sizeList || [];
+                sizeList.forEach(size => sizes.add(size));
+            });
+            return Array.from(sizes).sort();
+        }
+        
+        // Populate filter dropdowns
+        function populateFilterDropdowns() {
+            const industryFilter = document.getElementById('filterIndustry');
+            const sizeFilter = document.getElementById('filterSize');
+            
+            if (industryFilter) {
+                const industries = getUniqueIndustries();
+                industries.forEach(ind => {
+                    const option = document.createElement('option');
+                    option.value = ind;
+                    option.textContent = ind;
+                    industryFilter.appendChild(option);
+                });
+            }
+            
+            if (sizeFilter) {
+                const sizes = getUniqueSizes();
+                sizes.forEach(size => {
+                    const option = document.createElement('option');
+                    option.value = size;
+                    option.textContent = size;
+                    sizeFilter.appendChild(option);
+                });
+            }
+        }
+        
         // Render Product List
-        function renderProductList(searchTerm = '') {
+        function renderProductList(searchTerm = '', filters = {}) {
             const productTableBody = document.getElementById('productTableBody');
             if (!productTableBody) return;
             
-            const filteredProducts = PRODUCTS.filter(product => 
-                product.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            let filteredProducts = PRODUCTS.filter(product => {
+                // Name filter (from search box or filter section)
+                const nameFilter = filters.name || searchTerm;
+                if (nameFilter && !product.name.toLowerCase().includes(nameFilter.toLowerCase())) {
+                    return false;
+                }
+                
+                // Industry filter
+                if (filters.industry) {
+                    const industryList = product.units?.industryList || [];
+                    if (!industryList.includes(filters.industry)) {
+                        return false;
+                    }
+                }
+                
+                // Size filter
+                if (filters.size) {
+                    const sizeList = product.units?.sizeList || [];
+                    if (!sizeList.includes(filters.size)) {
+                        return false;
+                    }
+                }
+                
+                // Status filter
+                if (filters.status) {
+                    switch(filters.status) {
+                        case 'active':
+                            if (!product.active) return false;
+                            break;
+                        case 'inactive':
+                            if (product.active) return false;
+                            break;
+                        case 'featured':
+                            if (!product.featured) return false;
+                            break;
+                        case 'outofstock':
+                            if (!product.outofstock) return false;
+                            break;
+                        case 'signature':
+                            if (!product.signature) return false;
+                            break;
+                    }
+                }
+                
+                return true;
+            });
 
             if (filteredProducts.length === 0) {
                 productTableBody.innerHTML = `
@@ -104,14 +244,18 @@
                 const industryList = product.units?.industryList || [];
                 const industryDisplay = industryList.length > 0 ? industryList.join(', ') : 'N/A';
                 
+                // Get all sizes display
+                const sizeList = product.units?.sizeList || [];
+                const sizeDisplay = sizeList.length > 0 ? sizeList.join(', ') : 'N/A';
+                
                 return `
                 <tr>
                     <td>
                         <img src="${firstImage}" alt="${product.name}" class="product-image-cell" onerror="this.src='/uploads/default.png'">
                     </td>
                     <td>${product.name}</td>
-                    <td>${industryDisplay}</td>
-                    <td>${product.units?.sizeList?.[0] || 'N/A'}</td>
+                    <td style="color: #ffffff;">${industryDisplay}</td>
+                    <td>${sizeDisplay}</td>
                     <td>${badges}</td>
                     <td>
                         <div class="action-buttons" style="display: flex; flex-direction: column; gap: 6px;">
@@ -145,15 +289,73 @@
             `}).join('');
         }
 
+        // Get current filters
+        function getCurrentFilters() {
+            return {
+                name: document.getElementById('filterName')?.value || '',
+                industry: document.getElementById('filterIndustry')?.value || '',
+                size: document.getElementById('filterSize')?.value || '',
+                status: document.getElementById('filterStatus')?.value || ''
+            };
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('filterName').value = '';
+            document.getElementById('filterIndustry').value = '';
+            document.getElementById('filterSize').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('searchProducts').value = '';
+            // Reset to show all products
+            renderProductList('', {});
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchProducts')?.value || '';
+            const filters = getCurrentFilters();
+            renderProductList(searchTerm, filters);
+        }
+        
         // Search functionality
         document.addEventListener('DOMContentLoaded', () => {
+            populateFilterDropdowns();
             renderProductList();
+            
+            // Search box - still works in real-time
             const searchProducts = document.getElementById('searchProducts');
             if (searchProducts) {
-                searchProducts.addEventListener('input', (e) => {
-                    renderProductList(e.target.value);
+                searchProducts.addEventListener('input', () => {
+                    const searchTerm = searchProducts.value || '';
+                    const filters = getCurrentFilters();
+                    renderProductList(searchTerm, filters);
                 });
             }
+            
+            // Apply Filters button
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', applyFilters);
+            }
+            
+            // Clear Filters button
+            const clearFiltersBtn = document.getElementById('clearFilters');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+            
+            // Allow Enter key to apply filters in filter inputs
+            const filterInputs = ['filterName', 'filterIndustry', 'filterSize', 'filterStatus'];
+            filterInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            applyFilters();
+                        }
+                    });
+                }
+            });
         });
 
         // Product Actions
