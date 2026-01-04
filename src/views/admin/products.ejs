@@ -94,14 +94,15 @@
                 if (product.bestSeller) badges += '<span class="badge badge-featured">Best Seller</span>';
                 if (product.onSale) badges += '<span class="badge badge-featured">On Sale</span>';
                 if (product.outofstock) badges += '<span class="badge badge-inactive">Out of Stock</span>';
+                if (product.signature) badges += '<span class="badge badge-featured" style="background: #FFD700; color: #000;">Signature</span>';
                 
                 const firstImage = (product.images && product.images.length > 0) 
                     ? product.images[0] 
                     : '/uploads/default.png';
                 
-                // Get units display
-                const jarBottleList = product.units?.jarBottleList || [];
-                const unitsDisplay = jarBottleList.length > 0 ? jarBottleList.join(', ') : 'N/A';
+                // Get industry display
+                const industryList = product.units?.industryList || [];
+                const industryDisplay = industryList.length > 0 ? industryList.join(', ') : 'N/A';
                 
                 return `
                 <tr>
@@ -109,7 +110,7 @@
                         <img src="${firstImage}" alt="${product.name}" class="product-image-cell" onerror="this.src='/uploads/default.png'">
                     </td>
                     <td>${product.name}</td>
-                    <td>${unitsDisplay}</td>
+                    <td>${industryDisplay}</td>
                     <td>${product.units?.sizeList?.[0] || 'N/A'}</td>
                     <td>${badges}</td>
                     <td>
@@ -126,12 +127,18 @@
                                 style="padding: 6px 12px; font-size: 12px; min-width: 100px;">
                                 ${product.outofstock ? 'Mark In Stock' : 'Mark Out of Stock'}
                             </button>
+                            <button 
+                                class="btn-icon ${product.signature ? 'btn-active' : 'btn-inactive'}" 
+                                onclick="toggleSignature('${product._id}', ${product.signature})"
+                                style="padding: 6px 12px; font-size: 12px; min-width: 100px; background: ${product.signature ? '#FFD700' : '#6c757d'}; color: ${product.signature ? '#000' : '#fff'};">
+                                ${product.signature ? 'Remove Signature' : 'Add Signature'}
+                            </button>
                         </div>
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editProduct('${product._id}')">Edit</button>
-                            <button class="btn-icon btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                            <button class="btn-icon btn-edit" onclick="window.editProduct('${product._id}')">Edit</button>
+                            <button class="btn-icon btn-delete" onclick="window.deleteProduct('${product._id}')">Delete</button>
                         </div>
                     </td>
                 </tr>
@@ -241,6 +248,57 @@
             } catch (error) {
                 console.error('Error toggling active status:', error);
                 alert(`Error updating product status: ${error.message}`);
+            }
+        };
+
+        // Toggle Signature Status
+        window.toggleSignature = async (id, currentStatus) => {
+            try {
+                // If trying to add signature, check if we already have 3
+                if (!currentStatus) {
+                    const signatureCount = PRODUCTS.filter(p => p.signature).length;
+                    if (signatureCount >= 3) {
+                        alert('Maximum 3 signature products allowed. Please remove a signature product first before adding a new one.');
+                        return;
+                    }
+                }
+                
+                const response = await fetch(`/admin/products/toggle-signature/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ signature: !currentStatus })
+                });
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    console.error('Error parsing response:', parseError);
+                    alert('Error: Invalid response from server');
+                    return;
+                }
+                
+                if (response.ok && data.success) {
+                    // Update local array
+                    const product = PRODUCTS.find(p => p._id === id);
+                    if (product) {
+                        product.signature = !currentStatus;
+                    }
+                    renderProductList();
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
+                    successMsg.textContent = `Product ${!currentStatus ? 'added to' : 'removed from'} signature collection`;
+                    document.body.appendChild(successMsg);
+                    setTimeout(() => successMsg.remove(), 2000);
+                } else {
+                    alert(data.message || `Failed to update signature status. Status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error toggling signature status:', error);
+                alert(`Error updating signature status: ${error.message}`);
             }
         };
 

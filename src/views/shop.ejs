@@ -203,6 +203,25 @@
           const initialProducts = applySort(PRODUCTS);
           renderProducts(initialProducts);
           
+          // Check if product ID is in URL to open modal
+          const urlParams = new URLSearchParams(window.location.search);
+          const productId = urlParams.get('product');
+          if (productId) {
+            // Wait for page to fully load, then open modal
+            setTimeout(() => {
+              if (typeof window.openProductModal === 'function') {
+                window.openProductModal(productId);
+              } else {
+                // If function not ready, wait a bit more
+                setTimeout(() => {
+                  if (typeof window.openProductModal === 'function') {
+                    window.openProductModal(productId);
+                  }
+                }, 1000);
+              }
+            }, 800);
+          }
+          
           // Navbar blur on scroll
           const nav = document.getElementById('navbar');
           if (nav) {
@@ -402,10 +421,18 @@
 
         function applyFilters(selectedJar) {
           const term = state.search.toLowerCase().trim();
+          let products = [...PRODUCTS];
 
-          // If All selected → no filtering
+          // Apply industry filter if set from URL
+          if (state.industry) {
+            products = products.filter(p => {
+              const industryList = p.units?.industryList || [];
+              return industryList.includes(state.industry);
+            });
+          }
+
+          // If All selected → no jar/bottle filtering
           if (selectedJar === "all") {
-            let products = [...PRODUCTS];
             // Apply search filter if any
             if (term) {
               products = products.filter(p => 
@@ -418,7 +445,7 @@
             return;
           }
 
-          let filteredProducts = PRODUCTS.filter(p => {
+          let filteredProducts = products.filter(p => {
 
             /* ---------------- SEARCH FILTER ---------------- */
             if (term && !p.name.toLowerCase().includes(term)) {
@@ -455,6 +482,18 @@
         if (selectedIndustry) {
           // Lock industry for this page
           state.industry = selectedIndustry;
+          // Filter products by industry on page load
+          let industryProducts = PRODUCTS.filter(p => {
+            const industryList = p.units?.industryList || [];
+            return industryList.includes(selectedIndustry);
+          });
+          // Apply initial sort
+          industryProducts = applySort(industryProducts);
+          renderProducts(industryProducts);
+        } else {
+          // No industry filter - show all products with sort
+          const initialProducts = applySort(PRODUCTS);
+          renderProducts(initialProducts);
         }
         
         // Handle search query from URL
@@ -462,7 +501,6 @@
         if (searchQuery) {
           state.search = searchQuery;
           searchInput.value = searchQuery;
-          applyFilters(state.JarsAndBottles || 'all');
         }
 
 
@@ -568,8 +606,8 @@
           document.getElementById('closeModal').addEventListener('click', closeProductModal);
           document.getElementById('xModal').addEventListener('click', closeProductModal);
         }
-        // Modal
-        function openProductModal(id) {
+        // Modal - Make it globally accessible
+        window.openProductModal = function(id) {
 
 
           console.log("PRODUCTS:", PRODUCTS);

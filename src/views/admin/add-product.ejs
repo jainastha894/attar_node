@@ -30,7 +30,7 @@
                     <div class="content-body">
                         <div class="form-container">
                             <div class="success-message" id="addProductSuccess"></div>
-                            <form id="addProductForm" action="<%= isEdit ? `/admin/products/edit/${product._id}` : '/admin/products/add' %>" method="POST"
+                            <form id="addProductForm" action="<%= isEdit && product && product._id ? `/admin/products/edit/${product._id}` : '/admin/products/add' %>" method="POST"
                                 enctype="multipart/form-data">
 
                                 <div class="form-row">
@@ -195,11 +195,10 @@
             </div>
 
             <!-- Footer Placeholder -->
-            <div id="footer-placeholder">(%-include('partials/footer.ejs')%)</div>
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
         </div>
     </div>
     <script src="/js/partials-loader.js"></script>
-    <script src="js/units-sync.js"></script>
     <script src="/js/script.js"></script>
     <script src="/js/header-handler.js"></script>
     <script>
@@ -256,7 +255,15 @@
 
         // Update selected values display in placeholder
         function updateSelected(unitKey) {
-            const checkboxes = document.querySelectorAll(`input[name="${unitKey}[]"]:checked`);
+            // Use attribute selector to handle brackets in name - try multiple selector methods
+            let checkboxes = document.querySelectorAll(`input[name="${unitKey}[]"]:checked`);
+            
+            // Fallback: if no checkboxes found, try finding all checkboxes with this name and filter checked ones
+            if (checkboxes.length === 0) {
+                const allCheckboxes = document.querySelectorAll(`input[name="${unitKey}[]"]`);
+                checkboxes = Array.from(allCheckboxes).filter(cb => cb.checked);
+            }
+            
             const tagsContainer = document.getElementById(`tags-${unitKey}`);
             const placeholder = document.getElementById(`placeholder-${unitKey}`);
             
@@ -278,6 +285,35 @@
                     });
                 }
             }
+        }
+
+        // Initialize all selected values - call this after page loads
+        function initializeSelectedValues() {
+            <% for (const unitKey in units) { %>
+                <% if (unitKey !== 'industryList') { %>
+                    // Ensure checkboxes are checked based on product data (in case they weren't rendered as checked)
+                    <% if (isEdit && product && product.units && product.units[unitKey] && Array.isArray(product.units[unitKey])) { %>
+                        const unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = '<%= unitKey %>';
+                        const productValues<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = <%- JSON.stringify(product.units[unitKey]) %>;
+                        // First, uncheck all checkboxes for this unit
+                        const allCheckboxes<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = document.querySelectorAll(`input[name="${unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>}[]"]`);
+                        allCheckboxes<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>.forEach(cb => cb.checked = false);
+                        // Then check the ones that should be checked
+                        productValues<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>.forEach(item => {
+                            // Escape special characters for querySelector
+                            const escapedValue = item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const checkbox = document.querySelector(`input[name="${unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>}[]"][value="${escapedValue}"]`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    <% } %>
+                    // Update the display - use setTimeout to ensure DOM is ready
+                    setTimeout(() => {
+                        updateSelected('<%= unitKey %>');
+                    }, 10);
+                <% } %>
+            <% } %>
         }
 
         // Close dropdowns when clicking outside
@@ -324,15 +360,47 @@
 
         // Initialize selected values on page load
         document.addEventListener("DOMContentLoaded", () => {
-            <% for (const unitKey in units) { %>
-                <% if (unitKey !== 'industryList') { %>
-                    updateSelected('<%= unitKey %>');
-                <% } %>
-            <% } %>
-            // Handle industry change if product has industry
-            <% if (product && product.units && product.units.industryList && Array.isArray(product.units.industryList) && product.units.industryList.length > 0) { %>
-                handleIndustryChange('<%= product.units.industryList[0] %>');
-            <% } %>
+            // Multiple attempts to ensure checkboxes are loaded
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            function tryInitialize() {
+                attempts++;
+                // Check if at least one checkbox exists
+                const hasCheckboxes = document.querySelectorAll('input[type="checkbox"][name$="[]"]').length > 0;
+                
+                if (hasCheckboxes || attempts >= maxAttempts) {
+                    // Handle industry change first if product has industry (for edit mode)
+                    <% if (isEdit && product && product.units && product.units.industryList && Array.isArray(product.units.industryList) && product.units.industryList.length > 0) { %>
+                        const industryValue = '<%= product.units.industryList[0] %>';
+                        if (industryValue) {
+                            // Set the industry dropdown value
+                            const industrySelect = document.getElementById('industryList');
+                            if (industrySelect) {
+                                industrySelect.value = industryValue;
+                            }
+                            // Show fragrance list if needed
+                            handleIndustryChange(industryValue);
+                        }
+                    <% } %>
+                    
+                    // Wait a bit for industry change to take effect, then initialize all values
+                    setTimeout(() => {
+                        initializeSelectedValues();
+                        
+                        // One more update after a short delay to ensure everything is synced
+                        setTimeout(() => {
+                            initializeSelectedValues();
+                        }, 100);
+                    }, 150);
+                } else {
+                    // Retry after a short delay if checkboxes aren't ready
+                    setTimeout(tryInitialize, 50);
+                }
+            }
+            
+            // Start initialization with a small delay to ensure DOM is fully ready
+            setTimeout(tryInitialize, 150);
         });
     </script>
 </body>

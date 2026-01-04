@@ -432,7 +432,7 @@ body {
     position: fixed;
     top: 70px;
     left: 0;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 70px - 60px); /* Subtract header (70px) and footer (60px) */
     z-index: 100;
 }
 
@@ -460,18 +460,28 @@ body {
     border-left: 3px solid transparent;
     gap: 14px;
     white-space: nowrap;
+    min-height: 54px; /* Fixed height to prevent flickering */
+    height: 54px;
+    box-sizing: border-box;
 }
 
 .sidebar.minimized .nav-item {
     padding: 16px;
     justify-content: center;
+    min-height: 54px; /* Fixed height even when minimized */
+    height: 54px;
 }
 
 .nav-icon {
     font-size: 22px;
     min-width: 22px;
+    width: 22px;
+    height: 22px;
     text-align: center;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-text {

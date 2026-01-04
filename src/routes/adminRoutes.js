@@ -18,6 +18,7 @@ import {
   deleteProduct,
   toggleActive,
   toggleStock,
+  toggleSignature,
   updateProfile,
   removeProfilePic,
   changePassword,
@@ -80,6 +81,12 @@ router.patch(
   "/admin/products/toggle-stock/:id",
   isAdminAuth,
   toggleStock
+);
+
+router.patch(
+  "/admin/products/toggle-signature/:id",
+  isAdminAuth,
+  toggleSignature
 );
 
 // Profile routes

@@ -341,8 +341,10 @@ export const editProductPage = async (req, res) => {
     }
     const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
+    // Convert Mongoose document to plain object for EJS template
+    const productObj = product.toObject();
     res.render("admin/add-product", {
-      product,
+      product: productObj,
       units: unitsData,
       isEdit: true
     });
@@ -368,26 +370,34 @@ export const updateProduct = async (req, res) => {
     // Handle images - keep existing if no new ones uploaded
     let imagePaths = existingProduct.images || [];
     if (req.files && req.files.length > 0) {
-      // Delete old images if needed (optional - you might want to keep them)
+      // Replace with new images if uploaded
       imagePaths = req.files.map(file => `/uploads/${file.filename}`);
     }
 
-    // Dynamic units
+    // Dynamic units - build from req.body (only selected items will be included)
     const selectedUnits = {};
     for (const unitKey in unitsData) {
-      if (req.body[unitKey]) {
-        if (unitKey === 'industryList') {
+      if (unitKey === 'industryList') {
+        // Industry is a single select
+        if (req.body[unitKey]) {
           selectedUnits[unitKey] = [req.body[unitKey]];
-        } else {
-          selectedUnits[unitKey] = Array.isArray(req.body[unitKey])
+        }
+      } else {
+        // Multi-select checkboxes - will be an array if checked, undefined if none checked
+        if (req.body[unitKey]) {
+          const values = Array.isArray(req.body[unitKey])
             ? req.body[unitKey]
             : [req.body[unitKey]];
+          if (values.length > 0 && values[0]) {
+            selectedUnits[unitKey] = values;
+          }
         }
+        // If not in req.body, it means nothing was selected, so don't include it
       }
     }
 
     // Update product
-    await Product.findByIdAndUpdate(id, {
+    const updateData = {
       name: productName,
       description,
       images: imagePaths.length > 0 ? imagePaths : ["/uploads/default.png"],
@@ -398,12 +408,14 @@ export const updateProduct = async (req, res) => {
       onSale: !!req.body.onSale,
       outofstock: !!req.body.outofstock,
       active: !!req.body.active
-    });
+    };
+
+    await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
     res.redirect("/admin/products");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error updating product");
+    console.error("Error updating product:", err);
+    res.status(500).send("Error updating product: " + err.message);
   }
 };
 
@@ -448,6 +460,37 @@ export const toggleStock = async (req, res) => {
   } catch (error) {
     console.error("Toggle stock error:", error);
     res.status(500).json({ success: false, message: "Error updating stock status" });
+  }
+};
+
+export const toggleSignature = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { signature } = req.body;
+    
+    // If trying to add signature, check if we already have 3
+    if (signature) {
+      const signatureCount = await Product.countDocuments({ signature: true });
+      if (signatureCount >= 3) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Maximum 3 signature products allowed. Please remove a signature product first." 
+        });
+      }
+    }
+    
+    const product = await Product.findByIdAndUpdate(id, { signature }, { new: true });
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    res.json({ 
+      success: true, 
+      message: `Product ${signature ? 'added to' : 'removed from'} signature collection`, 
+      product 
+    });
+  } catch (error) {
+    console.error("Toggle signature error:", error);
+    res.status(500).json({ success: false, message: "Error updating signature status" });
   }
 };
 export const adminLogin = (req, res, next) => {

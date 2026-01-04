@@ -10,8 +10,25 @@ const seo = JSON.parse(fs.readFileSync(seoPath, "utf8"));
 const unitsPath = path.join(process.cwd(), "src/config/units.json");
 const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
-export const renderHome = (req, res) => {
-  res.render("index", { seoData: seo.home });
+export const renderHome = async (req, res) => {
+  try {
+    // Get signature products (max 3)
+    const signatureProducts = await Product.find({ 
+      active: true, 
+      signature: true 
+    }).limit(3).sort({ updatedAt: -1 });
+    
+    res.render("index", { 
+      seoData: seo.home,
+      signatureProducts: signatureProducts || []
+    });
+  } catch (error) {
+    console.error("Home page error:", error);
+    res.render("index", { 
+      seoData: seo.home,
+      signatureProducts: []
+    });
+  }
 };
 
 export const renderAbout = (req, res) => {
