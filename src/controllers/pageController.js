@@ -24,7 +24,8 @@ export const renderContact = (req, res) => {
 
 export const renderShop = async (req, res) => {
   try {
-    const products = await Product.find();
+    // Only show active products on shop page
+    const products = await Product.find({ active: true });
     res.render("shop", {
       seoData: seo.shop,
       products,
@@ -34,4 +35,12 @@ export const renderShop = async (req, res) => {
     console.error("Shop page error:", error);
     res.status(500).send("Something went wrong");
   }
+};
+
+export const renderPrivacy = (req, res) => {
+  res.render("privacy");
+};
+
+export const renderTerms = (req, res) => {
+  res.render("terms");
 };

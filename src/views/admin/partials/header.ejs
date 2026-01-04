@@ -11,20 +11,26 @@
         <div class="user-profile-wrapper">
             <div class="user-profile" id="userProfileBtn">
                 <div class="user-avatar" id="userAvatar">
+                    <% if (typeof admin !== 'undefined' && admin && admin.profilePic) { %>
+                    <img src="<%= admin.profilePic %>" alt="Profile" id="userAvatarImg"
+                        style="display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <span id="userAvatarText" style="display: none;"><%= admin && admin.fullName ? admin.fullName.charAt(0).toUpperCase() : 'A' %></span>
+                    <% } else { %>
                     <img src="" alt="Profile" id="userAvatarImg"
                         style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                    <span id="userAvatarText">A</span>
+                    <span id="userAvatarText" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; font-weight: bold; color: #000000; background: #FFD700; border-radius: 50%;"><%= typeof admin !== 'undefined' && admin && admin.fullName ? admin.fullName.charAt(0).toUpperCase() : 'A' %></span>
+                    <% } %>
                 </div>
                 <div class="user-info">
-                    <div class="user-name" id="userNameDisplay">Admin User</div>
-                    <div class="user-role" id="userRoleDisplay">Administrator</div>
+                    <div class="user-name" id="userNameDisplay"><%= typeof admin !== 'undefined' && admin && admin.fullName ? admin.fullName : 'Admin User' %></div>
+                    <div class="user-role" id="userRoleDisplay"><%= typeof admin !== 'undefined' && admin && admin.role ? admin.role : 'Administrator' %></div>
                 </div>
                 <span class="dropdown-arrow">▼</span>
             </div>
             <div class="user-dropdown" id="userDropdown">
                 <div class="dropdown-item" id="profileSettingsBtn">
                     <span class="dropdown-icon">⚙️</span>
-                    <span>Profile Settings</span>
+                    <span>Edit Profile</span>
                 </div>
                 <div class="dropdown-item" id="viewProfileBtn">
                     <span class="dropdown-icon">👤</span>

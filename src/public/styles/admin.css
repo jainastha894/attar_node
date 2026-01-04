@@ -522,8 +522,14 @@ body {
     box-sizing: border-box;
 }
 
-.sidebar.minimized ~ .main-content,
+/* When sidebar is minimized, adjust main content */
 .main-content.sidebar-minimized {
+    margin-left: 80px;
+    width: calc(100vw - 80px);
+}
+
+/* Alternative selector for when sidebar is in dashboard-body */
+.dashboard-body:has(.sidebar.minimized) .main-content {
     margin-left: 80px;
     width: calc(100vw - 80px);
 }
@@ -692,6 +698,14 @@ body {
     gap: 6px;
     align-items: center;
     width: 100%;
+    position: relative;
+}
+
+.selected-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
 }
 
 .multi-select-display:hover {
@@ -710,20 +724,29 @@ body {
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    white-space: nowrap;
 }
 
 .selected-tag .remove-tag {
     cursor: pointer;
     font-weight: bold;
-    margin-left: 2px;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.2s;
+}
+
+.selected-tag .remove-tag:hover {
+    color: #c62828;
 }
 
 .multi-select-placeholder {
     color: #888;
     font-size: 14px;
+    flex-shrink: 0;
 }
 
 .multi-select-dropdown {
@@ -1030,6 +1053,30 @@ body {
 .btn-delete:hover {
     background: #ff4444;
     color: #ffffff;
+}
+
+.btn-active {
+    background: #4caf50;
+    color: #ffffff;
+    border: 1px solid #4caf50;
+}
+
+.btn-active:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+}
+
+.btn-inactive {
+    background: #f44336;
+    color: #ffffff;
+    border: 1px solid #f44336;
+}
+
+.btn-inactive:hover {
+    background: #da190b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4);
 }
 
 /* Units Management */

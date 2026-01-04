@@ -3,6 +3,7 @@ node_modules/
 
 # Environment variables / secrets
 .env
+src/public/uploads
 
 # Logs
 logs/

@@ -15,18 +15,40 @@
                     <h1>Admin Login</h1>
                     <p>Arjanmal Attarchand</p>
                 </div>
+                <% if (typeof error !== 'undefined' || (typeof req !== 'undefined' && req.query && req.query.error)) { %>
+                <div id="loginError" class="error-message" style="display: block; background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                    Invalid username or password. Please try again.
+                </div>
+                <% } else { %>
                 <div id="loginError" class="error-message"></div>
+                <% } %>
                 <form action="/admin/login" method="post" id="loginForm">
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
+                        <input type="text" id="username" name="username" placeholder="Enter username" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" placeholder="Enter password" required>
                     </div>
                     <button type="submit" class="btn-primary">Login</button>
                 </form>
+                <script>
+                    // Show error from URL parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.get('error') === 'invalid') {
+                        const errorDiv = document.getElementById('loginError');
+                        if (errorDiv) {
+                            errorDiv.style.display = 'block';
+                            errorDiv.style.background = '#f8d7da';
+                            errorDiv.style.color = '#721c24';
+                            errorDiv.style.padding = '12px';
+                            errorDiv.style.borderRadius = '6px';
+                            errorDiv.style.marginBottom = '16px';
+                            errorDiv.textContent = 'Invalid username or password. Please try again.';
+                        }
+                    }
+                </script>
             </div>
         </div>
 

@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <!-- Header Placeholder -->
+            <div id="header-placeholder"> <%- include('partials/header') %></div>
+
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+                <!-- Sidebar Placeholder -->
+                <div id="sidebar-placeholder"> <%- include('partials/sidebar') %></div>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Product Catalog</h1>
+                        <p>Download product catalog as PDF</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="form-container">
+                            <div class="catalog-controls" style="max-width: 600px; margin: 0 auto;">
+                                <div style="margin-bottom: 24px;">
+                                    <label for="industryFilter" style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+                                        Select Industry (Optional)
+                                    </label>
+                                    <select id="industryFilter" style="width: 100%; padding: 10px; border: 2px solid #333; border-radius: 6px; background: #1a1a1a; color: #ffffff; font-size: 14px;">
+                                        <option value="">All Products</option>
+                                        <% if (units && units.industryList) { %>
+                                            <% units.industryList.forEach(industry => { %>
+                                                <option value="<%= industry %>"><%= industry %></option>
+                                            <% }) %>
+                                        <% } %>
+                                    </select>
+                                </div>
+
+                                <button id="downloadPdfBtn" class="btn btn-save" style="width: 100%; padding: 12px; font-size: 16px;">
+                                    📥 Download Catalog PDF
+                                </button>
+
+                                <div id="downloadStatus" style="margin-top: 16px; padding: 12px; border-radius: 6px; display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Footer Placeholder -->
+            <div id="footer-placeholder">(%-include('partials/footer.ejs')%)</div>
+        </div>
+    </div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script id="products-data" type="application/json">
+        <%- JSON.stringify(products || []) %>
+    </script>
+    <script>
+        const { jsPDF } = window.jspdf;
+        const PRODUCTS = JSON.parse(document.getElementById('products-data').textContent);
+        const COMPANY_LOGO_URL = "/images/Arjan-attar-logo.png";
+
+        // Brand colors
+        const COLORS = {
+            gold: [255, 215, 0],
+            darkGold: [184, 134, 11],
+            darkBg: [26, 26, 26],
+            lightGray: [245, 245, 245],
+            textDark: [51, 51, 51],
+            white: [255, 255, 255]
+        };
+
+        // Load image as data URL
+        function loadImageAsDataURL(src) {
+            return new Promise((resolve) => {
+                if (!src) {
+                    resolve(null);
+                    return;
+                }
+
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement("canvas");
+                        const maxWidth = 800;
+                        const maxHeight = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Resize if too large
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = width * ratio;
+                            height = height * ratio;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+                        resolve(dataUrl);
+                    } catch (err) {
+                        console.error("Canvas error:", err);
+                        resolve(null);
+                    }
+                };
+
+                img.onerror = () => {
+                    console.error("Error loading image:", src);
+                    resolve(null);
+                };
+
+                // Handle relative paths
+                if (src.startsWith('/')) {
+                    img.src = window.location.origin + src;
+                } else {
+                    img.src = src;
+                }
+            });
+        }
+
+        // Draw colored rectangle
+        function drawRect(doc, x, y, width, height, color) {
+            doc.setFillColor(color[0], color[1], color[2]);
+            doc.rect(x, y, width, height, 'F');
+        }
+
+        // Draw header on each page
+        function drawPageHeader(doc, pageWidth, yPos, logoData, selectedIndustry) {
+            // Gold header bar
+            drawRect(doc, 0, 0, pageWidth, 25, COLORS.gold);
+            
+            // Logo
+            if (logoData) {
+                doc.addImage(logoData, 'JPEG', 15, 5, 50, 15);
+            }
+            
+            // Company name
+            doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.text('Arjanmal Attarchand', pageWidth - 15, 12, { align: 'right' });
+            
+            // Catalog title
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'normal');
+            doc.text('Product Catalog', pageWidth / 2, 20, { align: 'center' });
+            
+            if (selectedIndustry) {
+                doc.setFontSize(12);
+                doc.text(`Industry: ${selectedIndustry}`, pageWidth / 2, 27, { align: 'center' });
+            }
+            
+            return 30;
+        }
+
+        // Draw product card
+        async function drawProductCard(doc, product, x, y, cardWidth, cardHeight) {
+            const padding = 3;
+            const innerX = x + padding;
+            const innerY = y + padding;
+            const innerWidth = cardWidth - (padding * 2);
+            const innerHeight = cardHeight - (padding * 2);
+            
+            // Card background with border
+            doc.setDrawColor(COLORS.darkGold[0], COLORS.darkGold[1], COLORS.darkGold[2]);
+            doc.setLineWidth(0.5);
+            drawRect(doc, x, y, cardWidth, cardHeight, COLORS.white);
+            doc.rect(x, y, cardWidth, cardHeight);
+            
+            // Product name header (gold background)
+            const headerHeight = 8;
+            drawRect(doc, innerX, innerY, innerWidth, headerHeight, COLORS.gold);
+            doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            const nameLines = doc.splitTextToSize(product.name, innerWidth - 4);
+            doc.text(nameLines, innerX + 2, innerY + 5.5);
+            
+            let currentY = innerY + headerHeight + 3;
+            
+            // Product images section
+            if (product.images && product.images.length > 0) {
+                const imageSectionHeight = 35;
+                const imageAreaY = currentY;
+                const imageAreaHeight = imageSectionHeight;
+                const imageAreaWidth = innerWidth;
+                
+                // Load all images
+                const imagePromises = product.images.slice(0, 4).map(img => {
+                    const imgPath = img.startsWith('/') ? window.location.origin + img : img;
+                    return loadImageAsDataURL(imgPath);
+                });
+                
+                const imageDataArray = await Promise.all(imagePromises);
+                const validImages = imageDataArray.filter(img => img !== null);
+                
+                if (validImages.length > 0) {
+                    const imagesPerRow = Math.min(validImages.length, 2);
+                    const imageWidth = (imageAreaWidth - (imagesPerRow - 1) * 2) / imagesPerRow;
+                    const imageHeight = imageAreaHeight / Math.ceil(validImages.length / 2);
+                    
+                    validImages.forEach((imgData, idx) => {
+                        const row = Math.floor(idx / 2);
+                        const col = idx % 2;
+                        const imgX = innerX + col * (imageWidth + 2);
+                        const imgY = imageAreaY + row * imageHeight;
+                        
+                        // Image border
+                        doc.setDrawColor(200, 200, 200);
+                        doc.setLineWidth(0.3);
+                        doc.rect(imgX, imgY, imageWidth, imageHeight);
+                        
+                        // Add image
+                        try {
+                            doc.addImage(imgData, 'JPEG', imgX + 0.5, imgY + 0.5, imageWidth - 1, imageHeight - 1);
+                        } catch (e) {
+                            console.error('Error adding image:', e);
+                        }
+                    });
+                }
+                
+                currentY += imageSectionHeight + 3;
+            }
+            
+            // Description
+            if (product.description) {
+                doc.setTextColor(COLORS.textDark[0], COLORS.textDark[1], COLORS.textDark[2]);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                const descLines = doc.splitTextToSize(product.description, innerWidth - 4);
+                const descHeight = descLines.length * 4;
+                if (currentY + descHeight < y + cardHeight - 15) {
+                    doc.text(descLines, innerX + 2, currentY + 3);
+                    currentY += descHeight + 2;
+                }
+            }
+            
+            // Product details (units)
+            if (product.units && currentY < y + cardHeight - 10) {
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(COLORS.darkGold[0], COLORS.darkGold[1], COLORS.darkGold[2]);
+                
+                let detailsY = currentY;
+                for (const [key, value] of Object.entries(product.units)) {
+                    if (Array.isArray(value) && value.length > 0 && detailsY < y + cardHeight - 8) {
+                        const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        const valueText = value.join(', ');
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`${label}:`, innerX + 2, detailsY);
+                        doc.setFont(undefined, 'normal');
+                        const valueLines = doc.splitTextToSize(valueText, innerWidth - 25);
+                        doc.text(valueLines, innerX + 20, detailsY);
+                        detailsY += valueLines.length * 3.5;
+                    }
+                }
+            }
+        }
+
+        // Generate PDF
+        async function generateCataloguePdf(selectedIndustry = '') {
+            const statusDiv = document.getElementById('downloadStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = 'Generating PDF... Please wait...';
+            statusDiv.style.background = '#fff3cd';
+            statusDiv.style.color = '#856404';
+
+            try {
+                // Filter products by industry if selected
+                let filteredProducts = PRODUCTS;
+                if (selectedIndustry) {
+                    filteredProducts = PRODUCTS.filter(p => {
+                        const industryList = p.units?.industryList || [];
+                        return industryList.includes(selectedIndustry);
+                    });
+                }
+
+                if (filteredProducts.length === 0) {
+                    statusDiv.textContent = 'No products found for selected industry.';
+                    statusDiv.style.background = '#f8d7da';
+                    statusDiv.style.color = '#721c24';
+                    return;
+                }
+
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 10;
+                const contentWidth = pageWidth - (margin * 2);
+                
+                // Card dimensions
+                const cardWidth = (contentWidth - 5) / 2; // 2 columns with gap
+                const cardHeight = 70;
+                const cardGap = 5;
+                
+                // Load logo
+                const logoData = await loadImageAsDataURL(COMPANY_LOGO_URL);
+                
+                let currentPage = 1;
+                let yPos = drawPageHeader(doc, pageWidth, margin, logoData, selectedIndustry);
+                let col = 0;
+                let row = 0;
+
+                // Generate date
+                const currentDate = new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                // Products grid layout
+                for (let i = 0; i < filteredProducts.length; i++) {
+                    const product = filteredProducts[i];
+                    
+                    // Calculate position
+                    let x = margin + col * (cardWidth + cardGap);
+                    let y = yPos + row * (cardHeight + cardGap);
+                    
+                    // Check if card fits on page
+                    if (y + cardHeight > pageHeight - 20) {
+                        // Add footer to current page
+                        const estimatedTotalPages = Math.ceil(filteredProducts.length / (Math.floor((pageHeight - 30 - 25) / (cardHeight + cardGap)) * 2));
+                        drawPageFooter(doc, pageWidth, pageHeight, currentPage, estimatedTotalPages, currentDate);
+                        
+                        doc.addPage();
+                        currentPage++;
+                        yPos = drawPageHeader(doc, pageWidth, margin, logoData, selectedIndustry);
+                        col = 0;
+                        row = 0;
+                        
+                        // Recalculate position for new page
+                        x = margin + col * (cardWidth + cardGap);
+                        y = yPos + row * (cardHeight + cardGap);
+                    }
+                    
+                    // Draw product card
+                    await drawProductCard(doc, product, x, y, cardWidth, cardHeight);
+                    
+                    // Update position
+                    col++;
+                    if (col >= 2) {
+                        col = 0;
+                        row++;
+                    }
+                }
+
+                // Add footer to all pages
+                const totalPages = doc.internal.pages.length - 1;
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    drawPageFooter(doc, pageWidth, pageHeight, i, totalPages, currentDate);
+                }
+
+                // Download
+                const fileName = selectedIndustry 
+                    ? `Catalog_${selectedIndustry.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+                    : `Catalog_All_Products_${new Date().toISOString().split('T')[0]}.pdf`;
+                
+                doc.save(fileName);
+
+                statusDiv.textContent = `PDF generated successfully! (${filteredProducts.length} products, ${totalPages} pages)`;
+                statusDiv.style.background = '#d4edda';
+                statusDiv.style.color = '#155724';
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                statusDiv.textContent = 'Error generating PDF. Please try again.';
+                statusDiv.style.background = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+            }
+        }
+
+        // Draw page footer
+        function drawPageFooter(doc, pageWidth, pageHeight, currentPage, totalPages, date) {
+            // Gold footer bar
+            drawRect(doc, 0, pageHeight - 15, pageWidth, 15, COLORS.gold);
+            
+            // Page number
+            doc.setTextColor(COLORS.darkBg[0], COLORS.darkBg[1], COLORS.darkBg[2]);
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+            
+            // Date
+            if (date) {
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Generated on: ${date}`, pageWidth - 10, pageHeight - 5, { align: 'right' });
+            }
+            
+            // Company info
+            doc.text('Arjanmal Attarchand | Product Catalog', 10, pageHeight - 5);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const industrySelect = document.getElementById('industryFilter');
+            const downloadBtn = document.getElementById('downloadPdfBtn');
+
+            downloadBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = 'Generating...';
+
+                try {
+                    await generateCataloguePdf(industrySelect.value);
+                } catch (err) {
+                    console.error('Error:', err);
+                    alert('Something went wrong while generating the PDF.');
+                } finally {
+                    downloadBtn.disabled = false;
+                    downloadBtn.textContent = '📥 Download Catalog PDF';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
+

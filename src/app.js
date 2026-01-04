@@ -1,21 +1,21 @@
+import dotenv from "dotenv";
 import express from "express";
+import session from "express-session";
+import mongoose from "mongoose";
+import passport from "passport";
 import path from "path";
 import { fileURLToPath } from "url";
-import pageRoutes from "./routes/pageRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js"
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import session from "express-session";
-import passport from "passport";
 import { passportConfig } from "./config/passportConfig.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import pageRoutes from "./routes/pageRoutes.js";
+dotenv.config({
+  path: path.resolve(process.cwd(), ".env"),
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
 
 try {
   await mongoose.connect(process.env.MONGOURL);
@@ -56,6 +56,7 @@ app.set("views", path.join(__dirname, "views"));
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Parse JSON request bodies
 
 // Routes
 app.use("/", pageRoutes);

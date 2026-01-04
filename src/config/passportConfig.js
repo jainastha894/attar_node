@@ -6,7 +6,7 @@ export const passportConfig= ()=>{
     passport.use("local", new LocalStrategy(
       async function (username, password, done) {
         try {
-          // Here you would typically find the user in your database
+          // Hardcoded credentials - no database
           if (username === "ArjanAttarsAdmin" && password === "addingproducts200") {
             console.log("User authenticated successfully");
             return done(null, { username: "ArjanAttarsAdmin" });

@@ -30,11 +30,12 @@
                             <form id="profileSettingsForm">
                                 <div class="profile-settings-header">
                                     <div class="profile-avatar-large" id="profileAvatarContainer">
-                                        <img id="profileAvatarImg" src="" alt="Profile">
-                                        <span id="profileAvatarText">A</span>
+                                        <img id="profileAvatarImg" src="" alt="Profile" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                        <span id="profileAvatarText" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 48px; font-weight: bold; color: #000000; background: #FFD700; border-radius: 50%;">A</span>
                                         <div class="avatar-upload-btn" id="avatarUploadBtn" title="Change Photo">
                                             📷
                                         </div>
+                                        <button type="button" class="avatar-remove-btn" id="removePicBtn" title="Remove Photo" style="position: absolute; bottom: 0; right: 0; background: #ff4444; color: white; border: 2px solid white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; <%= admin && admin.profilePic ? '' : 'display: none;' %>">×</button>
                                         <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
                                     </div>
                                     <div>
@@ -42,13 +43,16 @@
                                         <p id="profileDisplayRole">Administrator</p>
                                     </div>
                                 </div>
+                                <script>
+                                    window.ADMIN_DATA = <%- JSON.stringify(admin || null) %>;
+                                </script>
 
                                 <div class="profile-section">
                                     <h3>Personal Information</h3>
                                     
                                     <div class="form-group-profile">
-                                        <label for="userId">User ID</label>
-                                        <input type="text" id="userId" readonly>
+                                        <label for="userId">Username</label>
+                                        <input type="text" id="userId" value="<%= admin ? admin.username : 'ArjanAttarsAdmin' %>" readonly>
                                     </div>
 
                                     <div class="form-group-profile">
@@ -115,9 +119,9 @@
             <div id="footer-placeholder"><%- include('partials/footer') %></div>
         </div>
     </div>
-    <script src="js/partials-loader.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/header-handler.js"></script>
-    <script src="js/profile-settings.js"></script>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script src="/js/profile-settings.js"></script>
 </body>
 </html>

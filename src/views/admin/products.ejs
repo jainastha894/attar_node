@@ -37,6 +37,7 @@
                                         <th>Industry</th>
                                         <th>Size</th>
                                         <th>Status</th>
+                                        <th>Quick Actions</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -55,25 +56,28 @@
             <div id="footer-placeholder"><%- include('partials/footer') %></div>
         </div>
     </div>
-    <script src="js/partials-loader.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/header-handler.js"></script>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script id="products-data" type="application/json">
+        <%- JSON.stringify(products || []) %>
+    </script>
     <script>
+        const PRODUCTS = JSON.parse(document.getElementById('products-data').textContent);
+        
         // Render Product List
         function renderProductList(searchTerm = '') {
             const productTableBody = document.getElementById('productTableBody');
             if (!productTableBody) return;
             
-            const products = JSON.parse(localStorage.getItem('products') || '[]');
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.industry.toLowerCase().includes(searchTerm.toLowerCase())
+            const filteredProducts = PRODUCTS.filter(product => 
+                product.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
 
             if (filteredProducts.length === 0) {
                 productTableBody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
                             ${searchTerm ? 'No products found' : 'No products added yet'}
                         </td>
                     </tr>
@@ -86,20 +90,48 @@
                 if (product.active) badges += '<span class="badge badge-active">Active</span>';
                 else badges += '<span class="badge badge-inactive">Inactive</span>';
                 if (product.featured) badges += '<span class="badge badge-featured">Featured</span>';
+                if (product.topRated) badges += '<span class="badge badge-featured">Top Rated</span>';
+                if (product.bestSeller) badges += '<span class="badge badge-featured">Best Seller</span>';
+                if (product.onSale) badges += '<span class="badge badge-featured">On Sale</span>';
+                if (product.outofstock) badges += '<span class="badge badge-inactive">Out of Stock</span>';
+                
+                const firstImage = (product.images && product.images.length > 0) 
+                    ? product.images[0] 
+                    : '/uploads/default.png';
+                
+                // Get units display
+                const jarBottleList = product.units?.jarBottleList || [];
+                const unitsDisplay = jarBottleList.length > 0 ? jarBottleList.join(', ') : 'N/A';
                 
                 return `
                 <tr>
                     <td>
-                        <img src="${product.images[0]}" alt="${product.name}" class="product-image-cell">
+                        <img src="${firstImage}" alt="${product.name}" class="product-image-cell" onerror="this.src='/uploads/default.png'">
                     </td>
                     <td>${product.name}</td>
-                    <td>${product.industry}</td>
-                    <td>${product.size}</td>
+                    <td>${unitsDisplay}</td>
+                    <td>${product.units?.sizeList?.[0] || 'N/A'}</td>
                     <td>${badges}</td>
                     <td>
+                        <div class="action-buttons" style="display: flex; flex-direction: column; gap: 6px;">
+                            <button 
+                                class="btn-icon ${product.active ? 'btn-active' : 'btn-inactive'}" 
+                                onclick="toggleActive('${product._id}', ${product.active})"
+                                style="padding: 6px 12px; font-size: 12px; min-width: 100px;">
+                                ${product.active ? 'Deactivate' : 'Activate'}
+                            </button>
+                            <button 
+                                class="btn-icon ${product.outofstock ? 'btn-inactive' : 'btn-active'}" 
+                                onclick="toggleStock('${product._id}', ${product.outofstock})"
+                                style="padding: 6px 12px; font-size: 12px; min-width: 100px;">
+                                ${product.outofstock ? 'Mark In Stock' : 'Mark Out of Stock'}
+                            </button>
+                        </div>
+                    </td>
+                    <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editProduct(${product.id})">Edit</button>
-                            <button class="btn-icon btn-delete" onclick="deleteProduct(${product.id})">Delete</button>
+                            <button class="btn-icon btn-edit" onclick="editProduct('${product._id}')">Edit</button>
+                            <button class="btn-icon btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
                         </div>
                     </td>
                 </tr>
@@ -119,14 +151,10 @@
 
         // Product Actions
         window.editProduct = (id) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#FFF8DC;color:#8B4513;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
-            messageDiv.textContent = 'Edit functionality will be implemented';
-            document.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.remove(), 2000);
+            window.location.href = `/admin/products/edit/${id}`;
         };
 
-        window.deleteProduct = (id) => {
+        window.deleteProduct = async (id) => {
             const messageDiv = document.createElement('div');
             messageDiv.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:white;padding:20px 28px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:9999;text-align:center;';
             messageDiv.innerHTML = `
@@ -136,17 +164,126 @@
             `;
             document.body.appendChild(messageDiv);
             
-            document.getElementById('confirmDelete').onclick = () => {
-                const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const updatedProducts = products.filter(p => p.id !== id);
-                localStorage.setItem('products', JSON.stringify(updatedProducts));
-                renderProductList();
-                messageDiv.remove();
+            document.getElementById('confirmDelete').onclick = async () => {
+                try {
+                    const response = await fetch(`/admin/products/delete/${id}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        // Remove from local array and re-render
+                        const index = PRODUCTS.findIndex(p => p._id === id);
+                        if (index > -1) {
+                            PRODUCTS.splice(index, 1);
+                        }
+                        renderProductList();
+                        messageDiv.remove();
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
+                        successMsg.textContent = 'Product deleted successfully';
+                        document.body.appendChild(successMsg);
+                        setTimeout(() => successMsg.remove(), 2000);
+                        // Reload page to refresh data
+                        setTimeout(() => window.location.reload(), 2000);
+                    } else {
+                        alert(data.message || 'Failed to delete product');
+                        messageDiv.remove();
+                    }
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                    alert('Error deleting product');
+                    messageDiv.remove();
+                }
             };
             
             document.getElementById('cancelDelete').onclick = () => {
                 messageDiv.remove();
             };
+        };
+
+        // Toggle Active/Inactive
+        window.toggleActive = async (id, currentStatus) => {
+            try {
+                const response = await fetch(`/admin/products/toggle-active/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ active: !currentStatus })
+                });
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    console.error('Error parsing response:', parseError);
+                    alert('Error: Invalid response from server');
+                    return;
+                }
+                
+                if (response.ok && data.success) {
+                    // Update local array
+                    const product = PRODUCTS.find(p => p._id === id);
+                    if (product) {
+                        product.active = !currentStatus;
+                    }
+                    renderProductList();
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
+                    successMsg.textContent = `Product ${!currentStatus ? 'activated' : 'deactivated'} successfully`;
+                    document.body.appendChild(successMsg);
+                    setTimeout(() => successMsg.remove(), 2000);
+                } else {
+                    alert(data.message || `Failed to update product status. Status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error toggling active status:', error);
+                alert(`Error updating product status: ${error.message}`);
+            }
+        };
+
+        // Toggle Stock Status
+        window.toggleStock = async (id, currentStatus) => {
+            try {
+                const response = await fetch(`/admin/products/toggle-stock/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ outofstock: !currentStatus })
+                });
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    console.error('Error parsing response:', parseError);
+                    alert('Error: Invalid response from server');
+                    return;
+                }
+                
+                if (response.ok && data.success) {
+                    // Update local array
+                    const product = PRODUCTS.find(p => p._id === id);
+                    if (product) {
+                        product.outofstock = !currentStatus;
+                    }
+                    renderProductList();
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
+                    successMsg.textContent = `Product marked as ${!currentStatus ? 'out of stock' : 'in stock'}`;
+                    document.body.appendChild(successMsg);
+                    setTimeout(() => successMsg.remove(), 2000);
+                } else {
+                    alert(data.message || `Failed to update stock status. Status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error toggling stock status:', error);
+                alert(`Error updating stock status: ${error.message}`);
+            }
         };
     </script>
 </body>
