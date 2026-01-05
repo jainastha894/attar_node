@@ -204,9 +204,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-          // Apply initial sort
-          const initialProducts = applySort(PRODUCTS);
-          renderProducts(initialProducts);
+          // Initial render is handled by the URL param check below (lines 488+)
+          // which correctly handles filtering logic. We don't want to overwrite it here.
 
           // Check if product ID is in URL to open modal
           const urlParams = new URLSearchParams(window.location.search);

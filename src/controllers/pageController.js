@@ -1,6 +1,6 @@
+import fs from "fs";
 import path from "path";
 import Product from "../models/product.js";
-import fs from "fs";
 
 // Load SEO JSON once
 const seoPath = path.join(process.cwd(), "src", "config", "seo.json");
@@ -13,15 +13,15 @@ const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 export const renderHome = async (req, res) => {
   try {
     // Get signature products (max 3)
-    const signatureProducts = await Product.find({ 
-      active: true, 
-      signature: true 
+    const signatureProducts = await Product.find({
+      active: true,
+      signature: true
     }).limit(3).sort({ updatedAt: -1 });
-    
+
     // Get base URL for image links - use production domain
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    
-    res.render("index", { 
+
+    res.render("index", {
       seoData: seo.home,
       signatureProducts: signatureProducts || [],
       baseUrl
@@ -29,7 +29,7 @@ export const renderHome = async (req, res) => {
   } catch (error) {
     console.error("Home page error:", error);
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    res.render("index", { 
+    res.render("index", {
       seoData: seo.home,
       signatureProducts: [],
       baseUrl
@@ -48,11 +48,22 @@ export const renderContact = (req, res) => {
 export const renderShop = async (req, res) => {
   try {
     // Only show active products on shop page
-    const products = await Product.find({ active: true });
-    
+    const productsDocs = await Product.find({ active: true });
+
+    // Robust manual conversion for Shop page (same as Admin fix)
+    const products = productsDocs.map(doc => {
+      const p = doc.toObject();
+      if (doc.units && doc.units instanceof Map) {
+        p.units = Object.fromEntries(doc.units);
+      } else if (!p.units) {
+        p.units = {};
+      }
+      return p;
+    });
+
     // Get base URL for image links - use production domain
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    
+
     res.render("shop", {
       seoData: seo.shop,
       products,
