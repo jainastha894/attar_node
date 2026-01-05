@@ -9,13 +9,16 @@
     "Ittar Bottles",
     "Clear Glass Bottles",
     "Amber Glass Jars",
-    "Clear Glass Jars"
+    "Clear Glass Jars",
+    "Spray Bottles"
   ],
   "sizeList": [
     "3ml",
     "6ml",
     "12ml",
-    "24ml"
+    "24ml",
+    "50ml",
+    "100ml"
   ],
   "colorList": [
     "Clear",

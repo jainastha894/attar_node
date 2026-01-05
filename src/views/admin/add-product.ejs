@@ -343,17 +343,101 @@
         const imageUpload = document.getElementById("imageUpload");
         const imageInput = document.getElementById("imageInput");
         const imagePreview = document.getElementById("imagePreview");
+        
+        // Track images to remove (for existing images in edit mode)
+        const imagesToRemove = [];
+        // Track new file objects (for newly uploaded images)
+        const newImageFiles = [];
+
+        // Function to create image preview with remove button
+        function createImagePreview(imgSrc, isExisting = false, imagePath = null) {
+            const previewItem = document.createElement("div");
+            previewItem.className = "preview-item";
+            previewItem.style.position = "relative";
+            previewItem.style.width = "120px";
+            previewItem.style.height = "120px";
+            previewItem.style.borderRadius = "8px";
+            previewItem.style.overflow = "hidden";
+            previewItem.style.border = "2px solid #FFD700";
+            previewItem.style.background = "#1a1a1a";
+            previewItem.style.margin = "5px";
+            
+            const img = document.createElement("img");
+            img.src = imgSrc;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "preview-remove";
+            removeBtn.innerHTML = "×";
+            removeBtn.style.position = "absolute";
+            removeBtn.style.top = "4px";
+            removeBtn.style.right = "4px";
+            removeBtn.style.width = "28px";
+            removeBtn.style.height = "28px";
+            removeBtn.style.borderRadius = "50%";
+            removeBtn.style.background = "rgba(255, 0, 0, 0.9)";
+            removeBtn.style.color = "#ffffff";
+            removeBtn.style.border = "none";
+            removeBtn.style.cursor = "pointer";
+            removeBtn.style.fontSize = "20px";
+            removeBtn.style.fontWeight = "bold";
+            removeBtn.style.display = "flex";
+            removeBtn.style.alignItems = "center";
+            removeBtn.style.justifyContent = "center";
+            removeBtn.style.zIndex = "10";
+            removeBtn.style.transition = "all 0.2s";
+            
+            removeBtn.onmouseover = function() {
+                this.style.background = "rgba(255, 0, 0, 1)";
+                this.style.transform = "scale(1.1)";
+            };
+            removeBtn.onmouseout = function() {
+                this.style.background = "rgba(255, 0, 0, 0.9)";
+                this.style.transform = "scale(1)";
+            };
+            
+            removeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (isExisting && imagePath) {
+                    // Mark existing image for removal
+                    imagesToRemove.push(imagePath);
+                } else {
+                    // Remove from new files array
+                    const fileIndex = newImageFiles.findIndex(f => URL.createObjectURL(f) === imgSrc);
+                    if (fileIndex !== -1) {
+                        newImageFiles.splice(fileIndex, 1);
+                        URL.revokeObjectURL(imgSrc);
+                    }
+                }
+                
+                previewItem.remove();
+                updateImageInput();
+            };
+            
+            previewItem.appendChild(img);
+            previewItem.appendChild(removeBtn);
+            imagePreview.appendChild(previewItem);
+        }
+
+        // Function to update the file input based on remaining new files
+        function updateImageInput() {
+            const dt = new DataTransfer();
+            newImageFiles.forEach(file => {
+                dt.items.add(file);
+            });
+            imageInput.files = dt.files;
+        }
 
         // Load existing images if in edit mode
         <% if (isEdit && product && product.images && product.images.length > 0) { %>
         const existingImages = <%- JSON.stringify(product.images) %>;
         existingImages.forEach(imgPath => {
-            const img = document.createElement("img");
-            img.src = imgPath;
-            img.style.width = "80px";
-            img.style.margin = "5px";
-            img.style.borderRadius = "6px";
-            imagePreview.appendChild(img);
+            createImagePreview(imgPath, true, imgPath);
         });
         <% } %>
 
@@ -363,13 +447,23 @@
 
         imageInput.addEventListener("change", () => {
             Array.from(imageInput.files).forEach(file => {
-                const img = document.createElement("img");
-                img.src = URL.createObjectURL(file);
-                img.style.width = "80px";
-                img.style.margin = "5px";
-                img.style.borderRadius = "6px";
-                imagePreview.appendChild(img);
+                const objectURL = URL.createObjectURL(file);
+                newImageFiles.push(file);
+                createImagePreview(objectURL, false);
             });
+            updateImageInput();
+        });
+        
+        // Add hidden input to track images to remove
+        const removeImagesInput = document.createElement("input");
+        removeImagesInput.type = "hidden";
+        removeImagesInput.name = "imagesToRemove";
+        removeImagesInput.id = "imagesToRemove";
+        document.getElementById("addProductForm").appendChild(removeImagesInput);
+        
+        // Update hidden input before form submission
+        document.getElementById("addProductForm").addEventListener("submit", function(e) {
+            removeImagesInput.value = JSON.stringify(imagesToRemove);
         });
 
         // Initialize selected values on page load

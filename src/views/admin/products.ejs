@@ -81,6 +81,7 @@
                                 <h2>All Products</h2>
                                 <input type="text" class="search-box" placeholder="Search products..." id="searchProducts">
                             </div>
+                            <div class="table-wrapper">
                             <table class="product-table">
                                 <thead>
                                     <tr>
@@ -95,10 +96,11 @@
                                 </thead>
                                 <tbody id="productTableBody">
                                     <tr>
-                                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">No products added yet</td>
+                                        <td colspan="7" style="text-align: center; padding: 40px; color: #999;">No products added yet</td>
                                     </tr>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </main>
@@ -121,8 +123,14 @@
         function getUniqueIndustries() {
             const industries = new Set();
             PRODUCTS.forEach(product => {
-                const industryList = product.units?.industryList || [];
-                industryList.forEach(ind => industries.add(ind));
+                if (product.units && product.units.industryList) {
+                    const industryList = Array.isArray(product.units.industryList) 
+                        ? product.units.industryList 
+                        : [product.units.industryList];
+                    industryList.forEach(ind => {
+                        if (ind) industries.add(ind);
+                    });
+                }
             });
             return Array.from(industries).sort();
         }
@@ -130,8 +138,14 @@
         function getUniqueSizes() {
             const sizes = new Set();
             PRODUCTS.forEach(product => {
-                const sizeList = product.units?.sizeList || [];
-                sizeList.forEach(size => sizes.add(size));
+                if (product.units && product.units.sizeList) {
+                    const sizeList = Array.isArray(product.units.sizeList) 
+                        ? product.units.sizeList 
+                        : [product.units.sizeList];
+                    sizeList.forEach(size => {
+                        if (size) sizes.add(size);
+                    });
+                }
             });
             return Array.from(sizes).sort();
         }
@@ -176,7 +190,12 @@
                 
                 // Industry filter
                 if (filters.industry) {
-                    const industryList = product.units?.industryList || [];
+                    if (!product.units || !product.units.industryList) {
+                        return false;
+                    }
+                    const industryList = Array.isArray(product.units.industryList) 
+                        ? product.units.industryList 
+                        : [product.units.industryList];
                     if (!industryList.includes(filters.industry)) {
                         return false;
                     }
@@ -184,7 +203,12 @@
                 
                 // Size filter
                 if (filters.size) {
-                    const sizeList = product.units?.sizeList || [];
+                    if (!product.units || !product.units.sizeList) {
+                        return false;
+                    }
+                    const sizeList = Array.isArray(product.units.sizeList) 
+                        ? product.units.sizeList 
+                        : [product.units.sizeList];
                     if (!sizeList.includes(filters.size)) {
                         return false;
                     }
@@ -228,12 +252,12 @@
             productTableBody.innerHTML = filteredProducts.map(product => {
                 let badges = '';
                 if (product.active) badges += '<span class="badge badge-active">Active</span>';
-                else badges += '<span class="badge badge-inactive">Inactive</span>';
-                if (product.featured) badges += '<span class="badge badge-featured">Featured</span>';
-                if (product.topRated) badges += '<span class="badge badge-featured">Top Rated</span>';
-                if (product.bestSeller) badges += '<span class="badge badge-featured">Best Seller</span>';
-                if (product.onSale) badges += '<span class="badge badge-featured">On Sale</span>';
-                if (product.outofstock) badges += '<span class="badge badge-inactive">Out of Stock</span>';
+                else badges += '<span class="badge badge-inactive" style="background: #f44336 !important; color: #ffffff !important;">Inactive</span>';
+                if (product.featured) badges += '<span class="badge badge-featured" style="background: #FFD700 !important; color: #000000 !important;">Featured</span>';
+                if (product.topRated) badges += '<span class="badge badge-featured" style="background: #FFD700 !important; color: #000000 !important;">Top Rated</span>';
+                if (product.bestSeller) badges += '<span class="badge badge-featured" style="background: #FFD700 !important; color: #000000 !important;">Best Seller</span>';
+                if (product.onSale) badges += '<span class="badge badge-featured" style="background: #FFD700 !important; color: #000000 !important;">On Sale</span>';
+                if (product.outofstock) badges += '<span class="badge badge-inactive" style="background: #f44336 !important; color: #ffffff !important;">Out of Stock</span>';
                 if (product.signature) badges += '<span class="badge badge-featured" style="background: #FFD700; color: #000;">Signature</span>';
                 
                 const firstImage = (product.images && product.images.length > 0) 
@@ -241,11 +265,21 @@
                     : '/uploads/default.png';
                 
                 // Get industry display
-                const industryList = product.units?.industryList || [];
+                let industryList = [];
+                if (product.units && product.units.industryList) {
+                    industryList = Array.isArray(product.units.industryList) 
+                        ? product.units.industryList 
+                        : [product.units.industryList];
+                }
                 const industryDisplay = industryList.length > 0 ? industryList.join(', ') : 'N/A';
                 
                 // Get all sizes display
-                const sizeList = product.units?.sizeList || [];
+                let sizeList = [];
+                if (product.units && product.units.sizeList) {
+                    sizeList = Array.isArray(product.units.sizeList) 
+                        ? product.units.sizeList 
+                        : [product.units.sizeList];
+                }
                 const sizeDisplay = sizeList.length > 0 ? sizeList.join(', ') : 'N/A';
                 
                 return `
@@ -254,8 +288,8 @@
                         <img src="${firstImage}" alt="${product.name}" class="product-image-cell" onerror="this.src='/uploads/default.png'">
                     </td>
                     <td>${product.name}</td>
-                    <td style="color: #ffffff;">${industryDisplay}</td>
-                    <td>${sizeDisplay}</td>
+                    <td style="color: #ffffff !important;">${industryDisplay}</td>
+                    <td style="color: #ffffff !important;">${sizeDisplay}</td>
                     <td>${badges}</td>
                     <td>
                         <div class="action-buttons" style="display: flex; flex-direction: column; gap: 6px;">
@@ -385,7 +419,9 @@
                         if (index > -1) {
                             PRODUCTS.splice(index, 1);
                         }
-                        renderProductList();
+                        const filters = getCurrentFilters();
+                        const searchTerm = document.getElementById('searchProducts')?.value || '';
+                        renderProductList(searchTerm, filters);
                         messageDiv.remove();
                         // Show success message
                         const successMsg = document.createElement('div');
@@ -437,7 +473,9 @@
                     if (product) {
                         product.active = !currentStatus;
                     }
-                    renderProductList();
+                    const filters = getCurrentFilters();
+                    const searchTerm = document.getElementById('searchProducts')?.value || '';
+                    renderProductList(searchTerm, filters);
                     // Show success message
                     const successMsg = document.createElement('div');
                     successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
@@ -488,7 +526,9 @@
                     if (product) {
                         product.signature = !currentStatus;
                     }
-                    renderProductList();
+                    const filters = getCurrentFilters();
+                    const searchTerm = document.getElementById('searchProducts')?.value || '';
+                    renderProductList(searchTerm, filters);
                     // Show success message
                     const successMsg = document.createElement('div');
                     successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';
@@ -530,7 +570,9 @@
                     if (product) {
                         product.outofstock = !currentStatus;
                     }
-                    renderProductList();
+                    const filters = getCurrentFilters();
+                    const searchTerm = document.getElementById('searchProducts')?.value || '';
+                    renderProductList(searchTerm, filters);
                     // Show success message
                     const successMsg = document.createElement('div');
                     successMsg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#d4edda;color:#155724;padding:16px 24px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;';

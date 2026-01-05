@@ -5,13 +5,12 @@ import Admin from "../models/admin.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 
-
 const unitsPath = path.join(process.cwd(), "src/config/units.json");
 
 export const unitsPage = (req, res) => {
   const unitsPath = path.join(process.cwd(), "src/config/units.json");
   const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
-    res.render("admin/units", {
+  res.render("admin/units", {
     units: unitsData
   });
 };
@@ -32,49 +31,80 @@ export const addProduct = async (req, res) => {
 
     // 1️⃣ Basic fields
     const { productName, description } = req.body;
+    
+    if (!productName || !description) {
+      return res.status(400).send("Product name and description are required");
+    }
 
     // 2️⃣ Images → store relative paths (relative to static directory)
     const imagePaths = req.files && req.files.length > 0
       ? req.files.map(file => `/uploads/${file.filename}`)
       : [];
 
-    // 3️⃣ Dynamic units
+    // 3️⃣ Dynamic units - capture ALL unit fields from form
     const selectedUnits = {};
 
+    // Process all unit types from unitsData
     for (const unitKey in unitsData) {
       if (req.body[unitKey]) {
         // Handle industryList as single value, others as arrays
         if (unitKey === 'industryList') {
+          // Industry is a single select dropdown
           selectedUnits[unitKey] = [req.body[unitKey]];
         } else {
-        selectedUnits[unitKey] = Array.isArray(req.body[unitKey])
-          ? req.body[unitKey]
-          : [req.body[unitKey]];
+          // Multi-select checkboxes (sizeList, colorList, fragranceList, etc.)
+          const values = Array.isArray(req.body[unitKey])
+            ? req.body[unitKey]
+            : [req.body[unitKey]];
+          // Filter out empty values
+          const filteredValues = values.filter(val => val && val.trim() !== '');
+          if (filteredValues.length > 0) {
+            selectedUnits[unitKey] = filteredValues;
+          }
         }
       }
     }
 
-    // 4️⃣ Boolean flags (unchecked = undefined)
-    const product = new Product({
-      name: productName,
-      description,
-      images: imagePaths.length > 0 ? imagePaths : ["/uploads/default.png"],
-      units: selectedUnits,
+    // Also check for fragranceList specifically (it might be conditionally shown)
+    if (req.body.fragranceList) {
+      const fragranceValues = Array.isArray(req.body.fragranceList)
+        ? req.body.fragranceList
+        : [req.body.fragranceList];
+      const filteredFragrance = fragranceValues.filter(val => val && val.trim() !== '');
+      if (filteredFragrance.length > 0) {
+        selectedUnits.fragranceList = filteredFragrance;
+      }
+    }
 
-      featured: !!req.body.featured,
-      topRated: !!req.body.topRated,
-      bestSeller: !!req.body.bestSeller,
-      onSale: !!req.body.onSale,
-      outofstock: !!req.body.outofstock,
-      active: !!req.body.active
+    // 4️⃣ Boolean flags - explicitly set all flags from form
+    const product = new Product({
+      name: productName.trim(),
+      description: description.trim(),
+      images: imagePaths.length > 0 ? imagePaths : ["/uploads/default.png"],
+      units: selectedUnits, // Mongoose will convert plain object to Map automatically
+
+      featured: req.body.featured === 'on' || req.body.featured === true,
+      topRated: req.body.topRated === 'on' || req.body.topRated === true,
+      bestSeller: req.body.bestSeller === 'on' || req.body.bestSeller === true,
+      onSale: req.body.onSale === 'on' || req.body.onSale === true,
+      outofstock: req.body.outofstock === 'on' || req.body.outofstock === true,
+      active: req.body.active === 'on' || req.body.active === true || req.body.active === undefined, // Default to true if not specified
+      signature: false // Default to false, can be set later via toggle
     });
 
-    await product.save();
+    // Save to database
+    const savedProduct = await product.save();
+    console.log('Product saved successfully to database:', savedProduct._id);
+    console.log('Product name:', savedProduct.name);
+    console.log('Product description:', savedProduct.description);
+    console.log('Product images:', savedProduct.images);
+    console.log('Product units:', Object.fromEntries(savedProduct.units || new Map()));
+    console.log('Product flags - featured:', savedProduct.featured, 'topRated:', savedProduct.topRated, 'bestSeller:', savedProduct.bestSeller, 'onSale:', savedProduct.onSale, 'outofstock:', savedProduct.outofstock, 'active:', savedProduct.active);
 
-   res.redirect("/admin/products");
+    res.redirect("/admin/products");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error adding product");
+    console.error("Error adding product to database:", err);
+    res.status(500).send("Error adding product: " + err.message);
   }
 };
 
@@ -133,7 +163,18 @@ export const dashboardPage = async(req, res) => {
 export const productListPage = async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
-    res.render("admin/products", { products });
+    // Convert Mongoose documents to plain objects for JSON serialization
+    // Handle Map type units by converting to plain object
+    const productsArray = products.map(p => {
+      const productObj = p.toObject ? p.toObject() : p;
+      // Convert Map to plain object if units is a Map
+      if (productObj.units && productObj.units instanceof Map) {
+        productObj.units = Object.fromEntries(productObj.units);
+      }
+      return productObj;
+    });
+    console.log('ProductListPage - Found', productsArray.length, 'products');
+    res.render("admin/products", { products: productsArray });
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).send("Error loading products");
@@ -359,7 +400,7 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
-    const { productName, description } = req.body;
+    const { productName, description, imagesToRemove } = req.body;
 
     // Get existing product
     const existingProduct = await Product.findById(id);
@@ -367,15 +408,44 @@ export const updateProduct = async (req, res) => {
       return res.status(404).send("Product not found");
     }
 
-    // Handle images - keep existing if no new ones uploaded
+    // Handle images - start with existing images
     let imagePaths = existingProduct.images || [];
+    
+    // Remove images that were marked for removal
+    if (imagesToRemove) {
+      try {
+        const imagesToRemoveArray = JSON.parse(imagesToRemove);
+        if (Array.isArray(imagesToRemoveArray)) {
+          // Delete the image files from the server
+          imagesToRemoveArray.forEach(imgPath => {
+            const fullPath = path.join(process.cwd(), "src", "public", imgPath);
+            if (fs.existsSync(fullPath)) {
+              try {
+                fs.unlinkSync(fullPath);
+              } catch (err) {
+                console.error(`Error deleting image ${imgPath}:`, err);
+              }
+            }
+          });
+          
+          // Remove from imagePaths array
+          imagePaths = imagePaths.filter(img => !imagesToRemoveArray.includes(img));
+        }
+      } catch (parseErr) {
+        console.error("Error parsing imagesToRemove:", parseErr);
+      }
+    }
+    
+    // Add new images if uploaded
     if (req.files && req.files.length > 0) {
-      // Replace with new images if uploaded
-      imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+      const newImagePaths = req.files.map(file => `/uploads/${file.filename}`);
+      imagePaths = [...imagePaths, ...newImagePaths];
     }
 
-    // Dynamic units - build from req.body (only selected items will be included)
+    // Dynamic units - build from req.body (capture ALL unit fields)
     const selectedUnits = {};
+    
+    // Process all unit types from unitsData
     for (const unitKey in unitsData) {
       if (unitKey === 'industryList') {
         // Industry is a single select
@@ -383,38 +453,63 @@ export const updateProduct = async (req, res) => {
           selectedUnits[unitKey] = [req.body[unitKey]];
         }
       } else {
-        // Multi-select checkboxes - will be an array if checked, undefined if none checked
+        // Multi-select checkboxes (sizeList, colorList, fragranceList, etc.)
         if (req.body[unitKey]) {
           const values = Array.isArray(req.body[unitKey])
             ? req.body[unitKey]
             : [req.body[unitKey]];
-          if (values.length > 0 && values[0]) {
-            selectedUnits[unitKey] = values;
+          // Filter out empty values
+          const filteredValues = values.filter(val => val && val.trim() !== '');
+          if (filteredValues.length > 0) {
+            selectedUnits[unitKey] = filteredValues;
           }
         }
         // If not in req.body, it means nothing was selected, so don't include it
       }
     }
 
-    // Update product
+    // Also check for fragranceList specifically (it might be conditionally shown)
+    if (req.body.fragranceList) {
+      const fragranceValues = Array.isArray(req.body.fragranceList)
+        ? req.body.fragranceList
+        : [req.body.fragranceList];
+      const filteredFragrance = fragranceValues.filter(val => val && val.trim() !== '');
+      if (filteredFragrance.length > 0) {
+        selectedUnits.fragranceList = filteredFragrance;
+      }
+    }
+
+    // Update product - save ALL fields to database
     const updateData = {
-      name: productName,
-      description,
+      name: productName.trim(),
+      description: description.trim(),
       images: imagePaths.length > 0 ? imagePaths : ["/uploads/default.png"],
-      units: selectedUnits,
-      featured: !!req.body.featured,
-      topRated: !!req.body.topRated,
-      bestSeller: !!req.body.bestSeller,
-      onSale: !!req.body.onSale,
-      outofstock: !!req.body.outofstock,
-      active: !!req.body.active
+      units: selectedUnits, // Mongoose will convert plain object to Map automatically
+      featured: req.body.featured === 'on' || req.body.featured === true,
+      topRated: req.body.topRated === 'on' || req.body.topRated === true,
+      bestSeller: req.body.bestSeller === 'on' || req.body.bestSeller === true,
+      onSale: req.body.onSale === 'on' || req.body.onSale === true,
+      outofstock: req.body.outofstock === 'on' || req.body.outofstock === true,
+      active: req.body.active === 'on' || req.body.active === true || req.body.active === undefined
+      // Note: signature is not updated here, it's managed via toggle endpoint
     };
 
-    await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    
+    if (!updatedProduct) {
+      return res.status(404).send("Product not found");
+    }
+
+    console.log('Product updated successfully in database:', updatedProduct._id);
+    console.log('Updated product name:', updatedProduct.name);
+    console.log('Updated product description:', updatedProduct.description);
+    console.log('Updated product images:', updatedProduct.images);
+    console.log('Updated product units:', Object.fromEntries(updatedProduct.units || new Map()));
+    console.log('Updated product flags - featured:', updatedProduct.featured, 'topRated:', updatedProduct.topRated, 'bestSeller:', updatedProduct.bestSeller, 'onSale:', updatedProduct.onSale, 'outofstock:', updatedProduct.outofstock, 'active:', updatedProduct.active);
 
     res.redirect("/admin/products");
   } catch (err) {
-    console.error("Error updating product:", err);
+    console.error("Error updating product in database:", err);
     res.status(500).send("Error updating product: " + err.message);
   }
 };

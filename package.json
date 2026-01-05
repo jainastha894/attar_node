@@ -22,7 +22,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "migrate": "node src/scripts/migrateToDatabase.js"
   },
   "author": "astha jain",
   "license": "ISC",
