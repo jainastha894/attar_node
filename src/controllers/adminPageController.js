@@ -31,7 +31,7 @@ export const addProduct = async (req, res) => {
 
     // 1️⃣ Basic fields
     const { productName, description } = req.body;
-    
+
     if (!productName || !description) {
       return res.status(400).send("Product name and description are required");
     }
@@ -146,11 +146,11 @@ export const loginPage = (req, res) => {
   res.render("admin/login");
 };
 
-export const dashboardPage = async(req, res) => {
-    let totalproducts= await Product.countDocuments();
-  let featuredproducts= await Product.countDocuments({featured:true});
-  let outofstockproducts= await Product.countDocuments({outofstock:true});
-  let activeproducts= await Product.countDocuments({active:true});
+export const dashboardPage = async (req, res) => {
+  let totalproducts = await Product.countDocuments();
+  let featuredproducts = await Product.countDocuments({ featured: true });
+  let outofstockproducts = await Product.countDocuments({ outofstock: true });
+  let activeproducts = await Product.countDocuments({ active: true });
 
   res.render("admin/dashboard", {
     totalproducts,
@@ -165,14 +165,7 @@ export const productListPage = async (req, res) => {
     const products = await Product.find().sort({ createdAt: -1 });
     // Convert Mongoose documents to plain objects for JSON serialization
     // Handle Map type units by converting to plain object
-    const productsArray = products.map(p => {
-      const productObj = p.toObject ? p.toObject() : p;
-      // Convert Map to plain object if units is a Map
-      if (productObj.units && productObj.units instanceof Map) {
-        productObj.units = Object.fromEntries(productObj.units);
-      }
-      return productObj;
-    });
+    const productsArray = products.map(p => p.toObject());
     console.log('ProductListPage - Found', productsArray.length, 'products');
     res.render("admin/products", { products: productsArray });
   } catch (error) {
@@ -181,14 +174,14 @@ export const productListPage = async (req, res) => {
   }
 };
 
-export const profilePage = async(req, res) => {
+export const profilePage = async (req, res) => {
   try {
     let totalproducts = await Product.countDocuments();
-    let activeproducts = await Product.countDocuments({active:true});
+    let activeproducts = await Product.countDocuments({ active: true });
 
     // Get admin data
     const admin = await Admin.findOne({ username: req.user?.username || "ArjanAttarsAdmin" });
-    
+
     res.render("admin/profile", {
       totalproducts,
       activeproducts,
@@ -204,7 +197,7 @@ export const profileSettingsPage = async (req, res) => {
   try {
     // Get admin data
     const admin = await Admin.findOne({ username: req.user?.username || "ArjanAttarsAdmin" });
-    
+
     res.render("admin/profileSetting", {
       admin: admin || null
     });
@@ -218,7 +211,7 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullName, email, phone, role, bio } = req.body;
     let username = "ArjanAttarsAdmin";
-    
+
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -231,9 +224,9 @@ export const updateProfile = async (req, res) => {
         }
       }
     }
-    
+
     let admin = await Admin.findOne({ username });
-    
+
     if (!admin) {
       // Create admin if doesn't exist
       const hashedPassword = await bcrypt.hash("addingproducts200", 10);
@@ -254,7 +247,7 @@ export const updateProfile = async (req, res) => {
       if (role) admin.role = role;
       if (bio !== undefined) admin.bio = bio;
     }
-    
+
     // Handle profile picture upload
     if (req.file) {
       // Delete old profile picture if exists
@@ -266,9 +259,9 @@ export const updateProfile = async (req, res) => {
       }
       admin.profilePic = `/uploads/${req.file.filename}`;
     }
-    
+
     await admin.save();
-    
+
     res.json({ success: true, message: "Profile updated successfully", admin });
   } catch (error) {
     console.error("Update profile error:", error);
@@ -279,7 +272,7 @@ export const updateProfile = async (req, res) => {
 export const removeProfilePic = async (req, res) => {
   try {
     let username = "ArjanAttarsAdmin";
-    
+
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -292,13 +285,13 @@ export const removeProfilePic = async (req, res) => {
         }
       }
     }
-    
+
     const admin = await Admin.findOne({ username });
-    
+
     if (!admin) {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
-    
+
     // Delete profile picture file if exists
     if (admin.profilePic) {
       const picPath = path.join(process.cwd(), "src", "public", admin.profilePic);
@@ -306,10 +299,10 @@ export const removeProfilePic = async (req, res) => {
         fs.unlinkSync(picPath);
       }
     }
-    
+
     admin.profilePic = null;
     await admin.save();
-    
+
     res.json({ success: true, message: "Profile picture removed successfully", admin });
   } catch (error) {
     console.error("Remove profile pic error:", error);
@@ -321,7 +314,7 @@ export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     let username = "ArjanAttarsAdmin";
-    
+
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -334,23 +327,23 @@ export const changePassword = async (req, res) => {
         }
       }
     }
-    
+
     const admin = await Admin.findOne({ username });
-    
+
     if (!admin) {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
-    
+
     // Verify current password
     const isMatch = await admin.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Current password is incorrect" });
     }
-    
+
     // Update password
     admin.password = newPassword; // Will be hashed by pre-save hook
     await admin.save();
-    
+
     res.json({ success: true, message: "Password changed successfully" });
   } catch (error) {
     console.error("Change password error:", error);
@@ -363,8 +356,9 @@ export const catalogPage = async (req, res) => {
     const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
     const products = await Product.find({ active: true }).sort({ name: 1 });
+    const productsArray = products.map(p => p.toObject());
     res.render("admin/catalog", {
-      products,
+      products: productsArray,
       units: unitsData
     });
   } catch (error) {
@@ -377,6 +371,7 @@ export const editProductPage = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findById(id);
+    console.log(product);
     if (!product) {
       return res.status(404).send("Product not found");
     }
@@ -410,7 +405,7 @@ export const updateProduct = async (req, res) => {
 
     // Handle images - start with existing images
     let imagePaths = existingProduct.images || [];
-    
+
     // Remove images that were marked for removal
     if (imagesToRemove) {
       try {
@@ -427,7 +422,7 @@ export const updateProduct = async (req, res) => {
               }
             }
           });
-          
+
           // Remove from imagePaths array
           imagePaths = imagePaths.filter(img => !imagesToRemoveArray.includes(img));
         }
@@ -435,7 +430,7 @@ export const updateProduct = async (req, res) => {
         console.error("Error parsing imagesToRemove:", parseErr);
       }
     }
-    
+
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
       const newImagePaths = req.files.map(file => `/uploads/${file.filename}`);
@@ -444,7 +439,7 @@ export const updateProduct = async (req, res) => {
 
     // Dynamic units - build from req.body (capture ALL unit fields)
     const selectedUnits = {};
-    
+
     // Process all unit types from unitsData
     for (const unitKey in unitsData) {
       if (unitKey === 'industryList') {
@@ -495,7 +490,7 @@ export const updateProduct = async (req, res) => {
     };
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-    
+
     if (!updatedProduct) {
       return res.status(404).send("Product not found");
     }
@@ -562,26 +557,26 @@ export const toggleSignature = async (req, res) => {
   try {
     const { id } = req.params;
     const { signature } = req.body;
-    
+
     // If trying to add signature, check if we already have 3
     if (signature) {
       const signatureCount = await Product.countDocuments({ signature: true });
       if (signatureCount >= 3) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Maximum 3 signature products allowed. Please remove a signature product first." 
+        return res.status(400).json({
+          success: false,
+          message: "Maximum 3 signature products allowed. Please remove a signature product first."
         });
       }
     }
-    
+
     const product = await Product.findByIdAndUpdate(id, { signature }, { new: true });
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.json({ 
-      success: true, 
-      message: `Product ${signature ? 'added to' : 'removed from'} signature collection`, 
-      product 
+    res.json({
+      success: true,
+      message: `Product ${signature ? 'added to' : 'removed from'} signature collection`,
+      product
     });
   } catch (error) {
     console.error("Toggle signature error:", error);
