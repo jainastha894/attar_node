@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leads - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+            <div class="dashboard-body">
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Lead Management</h1>
+                        <p>Manage contact form submissions</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="product-list">
+                            <!-- Filter Section -->
+                            <div class="form-container" style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #FFD700; font-weight: 600;">Filters</h3>
+                                <form id="filterForm" method="GET" action="/admin/leads">
+                                    <div class="form-row">
+                                        <div class="form-group-inline">
+                                            <label for="filterStatus">Status</label>
+                                            <select id="filterStatus" name="status">
+                                                <option value="all" <%= currentFilters.status === 'all' ? 'selected' : '' %>>All Status (<%= statusCounts.all %>)</option>
+                                                <option value="new" <%= currentFilters.status === 'new' ? 'selected' : '' %>>New (<%= statusCounts.new %>)</option>
+                                                <option value="contacted" <%= currentFilters.status === 'contacted' ? 'selected' : '' %>>Contacted (<%= statusCounts.contacted %>)</option>
+                                                <option value="in_progress" <%= currentFilters.status === 'in_progress' ? 'selected' : '' %>>In Progress (<%= statusCounts.in_progress %>)</option>
+                                                <option value="resolved" <%= currentFilters.status === 'resolved' ? 'selected' : '' %>>Resolved (<%= statusCounts.resolved %>)</option>
+                                                <option value="archived" <%= currentFilters.status === 'archived' ? 'selected' : '' %>>Archived (<%= statusCounts.archived %>)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="filterSubject">Subject</label>
+                                            <select id="filterSubject" name="subject">
+                                                <option value="all" <%= currentFilters.subject === 'all' ? 'selected' : '' %>>All Subjects (<%= subjectCounts.all %>)</option>
+                                                <option value="general" <%= currentFilters.subject === 'general' ? 'selected' : '' %>>General (<%= subjectCounts.general %>)</option>
+                                                <option value="customer" <%= currentFilters.subject === 'customer' ? 'selected' : '' %>>Customer Support (<%= subjectCounts.customer %>)</option>
+                                                <option value="order" <%= currentFilters.subject === 'order' ? 'selected' : '' %>>Order Support (<%= subjectCounts.order %>)</option>
+                                                <option value="wholesale" <%= currentFilters.subject === 'wholesale' ? 'selected' : '' %>>Wholesale (<%= subjectCounts.wholesale %>)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="filterSearch">Search</label>
+                                            <input type="text" id="filterSearch" name="search" placeholder="Search by name, email, phone..." value="<%= currentFilters.search %>">
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortBy">Sort By</label>
+                                            <select id="sortBy" name="sortBy">
+                                                <option value="createdAt" <%= currentFilters.sortBy === 'createdAt' ? 'selected' : '' %>>Date</option>
+                                                <option value="firstName" <%= currentFilters.sortBy === 'firstName' ? 'selected' : '' %>>Name</option>
+                                                <option value="status" <%= currentFilters.sortBy === 'status' ? 'selected' : '' %>>Status</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortOrder">Order</label>
+                                            <select id="sortOrder" name="sortOrder">
+                                                <option value="desc" <%= currentFilters.sortOrder === 'desc' ? 'selected' : '' %>>Newest First</option>
+                                                <option value="asc" <%= currentFilters.sortOrder === 'asc' ? 'selected' : '' %>>Oldest First</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions" style="margin-top: 20px;">
+                                        <button type="submit" class="btn btn-save">Apply Filters</button>
+                                        <a href="/admin/leads" class="btn btn-cancel">Clear Filters</a>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="product-list-header">
+                                <h2>All Leads (<%= leads.length %>)</h2>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leadTableBody">
+                                        <% if (leads && leads.length > 0) { %>
+                                            <% leads.forEach(lead => { %>
+                                            <tr>
+                                                <td><%= lead.firstName %> <%= lead.lastName %></td>
+                                                <td><%= lead.email %></td>
+                                                <td><%= lead.phone || 'N/A' %></td>
+                                                <td><%= lead.subject.charAt(0).toUpperCase() + lead.subject.slice(1) %></td>
+                                                <td>
+                                                    <span class="badge badge-<%= lead.status === 'new' ? 'new' : lead.status === 'contacted' ? 'contacted' : lead.status === 'in_progress' ? 'inprogress' : lead.status === 'resolved' ? 'resolved' : 'archived' %>">
+                                                        <%= lead.status.charAt(0).toUpperCase() + lead.status.slice(1).replace('_', ' ') %>
+                                                    </span>
+                                                </td>
+                                                <td><%= new Date(lead.createdAt).toLocaleDateString() %></td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <a href="/admin/leads/<%= lead._id %>" class="btn-icon btn-edit">View</a>
+                                                        <button class="btn-icon btn-delete" onclick="deleteLead('<%= lead._id %>')">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7" style="text-align: center; padding: 40px; color: #999;">No leads found</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script>
+        function deleteLead(id) {
+            if (confirm('Are you sure you want to delete this lead?')) {
+                fetch(`/admin/leads/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error deleting lead: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting lead');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+

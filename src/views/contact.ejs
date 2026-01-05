@@ -387,11 +387,45 @@
 
       if (ok) {
         const btn = e.target.querySelector('button[type="submit"]');
-        const txt = btn.textContent; btn.textContent = 'Sending...'; btn.disabled = true;
-        setTimeout(() => {
-          e.target.classList.add('hidden');
-          document.getElementById('successMessage').classList.remove('hidden');
-        }, 1200);
+        const txt = btn.textContent; 
+        btn.textContent = 'Sending...'; 
+        btn.disabled = true;
+        
+        // Collect form data
+        const formData = {
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          subject: document.getElementById('subject').value,
+          message: document.getElementById('message').value.trim()
+        };
+        
+        // Submit to server
+        fetch('/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            e.target.classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+          } else {
+            alert(data.message || 'Error sending message. Please try again.');
+            btn.textContent = txt;
+            btn.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error sending message. Please try again.');
+          btn.textContent = txt;
+          btn.disabled = false;
+        });
       }
     });
 

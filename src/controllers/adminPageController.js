@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import Product from "../models/product.js";
 import Admin from "../models/admin.js";
+import Lead from "../models/lead.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 
@@ -158,17 +159,41 @@ export const loginPage = (req, res) => {
 };
 
 export const dashboardPage = async(req, res) => {
-    let totalproducts= await Product.countDocuments();
-  let featuredproducts= await Product.countDocuments({featured:true});
-  let outofstockproducts= await Product.countDocuments({outofstock:true});
-  let activeproducts= await Product.countDocuments({active:true});
+  try {
+    let totalproducts = await Product.countDocuments();
+    let featuredproducts = await Product.countDocuments({featured:true});
+    let outofstockproducts = await Product.countDocuments({outofstock:true});
+    let activeproducts = await Product.countDocuments({active:true});
+    
+    // Lead statistics
+    let totalLeads = await Lead.countDocuments();
+    let newLeads = await Lead.countDocuments({status: "new"});
+    let contactedLeads = await Lead.countDocuments({status: "contacted"});
+    let inProgressLeads = await Lead.countDocuments({status: "in_progress"});
+    let resolvedLeads = await Lead.countDocuments({status: "resolved"});
+    
+    // Recent leads (last 5)
+    let recentLeads = await Lead.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('firstName lastName email subject status createdAt');
 
-  res.render("admin/dashboard", {
-    totalproducts,
-    featuredproducts,
-    outofstockproducts,
-    activeproducts
-  });
+    res.render("admin/dashboard", {
+      totalproducts,
+      featuredproducts,
+      outofstockproducts,
+      activeproducts,
+      totalLeads,
+      newLeads,
+      contactedLeads,
+      inProgressLeads,
+      resolvedLeads,
+      recentLeads: recentLeads || []
+    });
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    res.status(500).send("Error loading dashboard");
+  }
 };
 
 export const productListPage = async (req, res) => {
@@ -650,4 +675,135 @@ export const adminLogout = (req, res) => {
   req.logout(() => {
     res.redirect("/admin");
   });
+};
+
+// Lead Management Controllers
+export const leadListPage = async (req, res) => {
+  try {
+    const { status, subject, search, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+    
+    // Build filter query
+    let filter = {};
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+    if (subject && subject !== 'all') {
+      filter.subject = subject;
+    }
+    if (search) {
+      filter.$or = [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+        { message: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // Sort options
+    const sortOptions = {};
+    sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    const leads = await Lead.find(filter)
+      .sort(sortOptions)
+      .limit(1000);
+
+    // Get statistics for filters
+    const statusCounts = {
+      all: await Lead.countDocuments(),
+      new: await Lead.countDocuments({ status: 'new' }),
+      contacted: await Lead.countDocuments({ status: 'contacted' }),
+      in_progress: await Lead.countDocuments({ status: 'in_progress' }),
+      resolved: await Lead.countDocuments({ status: 'resolved' }),
+      archived: await Lead.countDocuments({ status: 'archived' })
+    };
+
+    const subjectCounts = {
+      all: await Lead.countDocuments(),
+      general: await Lead.countDocuments({ subject: 'general' }),
+      customer: await Lead.countDocuments({ subject: 'customer' }),
+      order: await Lead.countDocuments({ subject: 'order' }),
+      wholesale: await Lead.countDocuments({ subject: 'wholesale' })
+    };
+
+    res.render("admin/leads", {
+      leads: leads || [],
+      statusCounts,
+      subjectCounts,
+      currentFilters: {
+        status: status || 'all',
+        subject: subject || 'all',
+        search: search || '',
+        sortBy,
+        sortOrder
+      }
+    });
+  } catch (error) {
+    console.error("Lead list page error:", error);
+    res.status(500).send("Error loading leads");
+  }
+};
+
+export const leadDetailPage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lead = await Lead.findById(id);
+    
+    if (!lead) {
+      return res.status(404).send("Lead not found");
+    }
+
+    res.render("admin/lead-detail", {
+      lead: lead.toObject ? lead.toObject() : lead
+    });
+  } catch (error) {
+    console.error("Lead detail page error:", error);
+    res.status(500).send("Error loading lead details");
+  }
+};
+
+export const updateLeadStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, notes } = req.body;
+
+    const updateData = { status };
+    
+    if (status === 'contacted' && !req.body.contactedAt) {
+      updateData.contactedAt = new Date();
+    }
+    if (status === 'resolved' && !req.body.resolvedAt) {
+      updateData.resolvedAt = new Date();
+    }
+    if (notes !== undefined) {
+      updateData.notes = notes;
+    }
+
+    const lead = await Lead.findByIdAndUpdate(id, updateData, { new: true });
+    
+    if (!lead) {
+      return res.status(404).json({ success: false, message: "Lead not found" });
+    }
+
+    res.json({ success: true, message: "Lead status updated successfully", lead });
+  } catch (error) {
+    console.error("Update lead status error:", error);
+    res.status(500).json({ success: false, message: "Error updating lead status" });
+  }
+};
+
+export const deleteLead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lead = await Lead.findByIdAndDelete(id);
+    
+    if (!lead) {
+      return res.status(404).json({ success: false, message: "Lead not found" });
+    }
+    
+    res.json({ success: true, message: "Lead deleted successfully" });
+  } catch (error) {
+    console.error("Delete lead error:", error);
+    res.status(500).json({ success: false, message: "Error deleting lead" });
+  }
 };

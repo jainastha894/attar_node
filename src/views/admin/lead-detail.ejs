@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Details - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+            <div class="dashboard-body">
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Lead Details</h1>
+                        <p>View and manage lead information</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="form-container">
+                            <div class="form-row">
+                                <div class="form-group-inline">
+                                    <label>First Name</label>
+                                    <input type="text" value="<%= lead.firstName %>" readonly>
+                                </div>
+                                <div class="form-group-inline">
+                                    <label>Last Name</label>
+                                    <input type="text" value="<%= lead.lastName %>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group-inline">
+                                    <label>Email</label>
+                                    <input type="email" value="<%= lead.email %>" readonly>
+                                </div>
+                                <div class="form-group-inline">
+                                    <label>Phone</label>
+                                    <input type="tel" value="<%= lead.phone || 'N/A' %>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group-inline">
+                                    <label>Subject</label>
+                                    <input type="text" value="<%= lead.subject.charAt(0).toUpperCase() + lead.subject.slice(1) %>" readonly>
+                                </div>
+                                <div class="form-group-inline">
+                                    <label>Status</label>
+                                    <select id="statusSelect">
+                                        <option value="new" <%= lead.status === 'new' ? 'selected' : '' %>>New</option>
+                                        <option value="contacted" <%= lead.status === 'contacted' ? 'selected' : '' %>>Contacted</option>
+                                        <option value="in_progress" <%= lead.status === 'in_progress' ? 'selected' : '' %>>In Progress</option>
+                                        <option value="resolved" <%= lead.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+                                        <option value="archived" <%= lead.status === 'archived' ? 'selected' : '' %>>Archived</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group-inline" style="grid-column: 1/-1;">
+                                    <label>Message</label>
+                                    <textarea rows="6" readonly><%= lead.message %></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group-inline" style="grid-column: 1/-1;">
+                                    <label>Notes</label>
+                                    <textarea id="notesInput" rows="4" placeholder="Add internal notes about this lead..."><%= lead.notes || '' %></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group-inline">
+                                    <label>Submitted</label>
+                                    <input type="text" value="<%= new Date(lead.createdAt).toLocaleString() %>" readonly>
+                                </div>
+                                <% if (lead.contactedAt) { %>
+                                <div class="form-group-inline">
+                                    <label>Contacted</label>
+                                    <input type="text" value="<%= new Date(lead.contactedAt).toLocaleString() %>" readonly>
+                                </div>
+                                <% } %>
+                                <% if (lead.resolvedAt) { %>
+                                <div class="form-group-inline">
+                                    <label>Resolved</label>
+                                    <input type="text" value="<%= new Date(lead.resolvedAt).toLocaleString() %>" readonly>
+                                </div>
+                                <% } %>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-save" onclick="updateLead()">Save Changes</button>
+                                <a href="/admin/leads" class="btn btn-cancel">Back to Leads</a>
+                                <button type="button" class="btn btn-delete" onclick="deleteLead()">Delete Lead</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script>
+        const leadId = '<%= lead._id %>';
+        
+        function updateLead() {
+            const status = document.getElementById('statusSelect').value;
+            const notes = document.getElementById('notesInput').value;
+            
+            fetch(`/admin/leads/${leadId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status, notes })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Lead updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Error updating lead: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating lead');
+            });
+        }
+        
+        function deleteLead() {
+            if (confirm('Are you sure you want to delete this lead? This action cannot be undone.')) {
+                fetch(`/admin/leads/${leadId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lead deleted successfully!');
+                        window.location.href = '/admin/leads';
+                    } else {
+                        alert('Error deleting lead: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting lead');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+

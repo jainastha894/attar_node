@@ -22,6 +22,10 @@ import {
   updateProfile,
   removeProfilePic,
   changePassword,
+  leadListPage,
+  leadDetailPage,
+  updateLeadStatus,
+  deleteLead,
 } from "../controllers/adminPageController.js";
 import { isAdminAuth } from "../middleware/isAdminAuth.js";
 import { addAdminData } from "../middleware/adminData.js";
@@ -137,5 +141,11 @@ router.post(
   isAdminAuth,
   changePassword
 );
+
+// Lead Management Routes
+router.get("/admin/leads", isAdminAuth, leadListPage);
+router.get("/admin/leads/:id", isAdminAuth, leadDetailPage);
+router.patch("/admin/leads/:id/status", isAdminAuth, updateLeadStatus);
+router.delete("/admin/leads/:id", isAdminAuth, deleteLead);
 
 export default router;

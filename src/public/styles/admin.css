@@ -1244,6 +1244,31 @@ html {
     color: #ffffff;
 }
 
+.badge-new {
+    background: #4CAF50;
+    color: #ffffff;
+}
+
+.badge-contacted {
+    background: #2196F3;
+    color: #ffffff;
+}
+
+.badge-inprogress {
+    background: #FF9800;
+    color: #ffffff;
+}
+
+.badge-resolved {
+    background: #9E9E9E;
+    color: #ffffff;
+}
+
+.badge-archived {
+    background: #607D8B;
+    color: #ffffff;
+}
+
 /* Pagination Styles */
 .pagination-container {
     display: flex;

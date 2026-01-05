@@ -37,7 +37,7 @@
                 <main class="main-content">
                     <div class="content-header">
                         <h1>Dashboard</h1>
-                        <p>Overview of your products</p>
+                        <p>Overview of your products and leads</p>
                     </div>
                     <div class="content-body">
                         <div class="stats-grid">
@@ -57,7 +57,65 @@
                                 <h3>Out of Stock</h3>
                                 <div class="stat-value" id="outOfStockProducts"><%= outofstockproducts %></div>
                             </div>
+                            <div class="stat-card">
+                                <h3>Total Leads</h3>
+                                <div class="stat-value" id="totalLeads"><%= totalLeads || 0 %></div>
                             </div>
+                            <div class="stat-card">
+                                <h3>New Leads</h3>
+                                <div class="stat-value" style="color: #4CAF50;"><%= newLeads || 0 %></div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Contacted</h3>
+                                <div class="stat-value" style="color: #2196F3;"><%= contactedLeads || 0 %></div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>In Progress</h3>
+                                <div class="stat-value" style="color: #FF9800;"><%= inProgressLeads || 0 %></div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Resolved</h3>
+                                <div class="stat-value" style="color: #9E9E9E;"><%= resolvedLeads || 0 %></div>
+                            </div>
+                        </div>
+                        
+                        <% if (recentLeads && recentLeads.length > 0) { %>
+                        <div style="margin-top: 30px;">
+                            <h2 style="color: #FFD700; margin-bottom: 20px;">Recent Leads</h2>
+                            <div class="table-wrapper">
+                                <table class="product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% recentLeads.forEach(lead => { %>
+                                        <tr>
+                                            <td><%= lead.firstName %> <%= lead.lastName %></td>
+                                            <td><%= lead.email %></td>
+                                            <td><%= lead.subject %></td>
+                                            <td>
+                                                <span class="badge badge-<%= lead.status === 'new' ? 'new' : lead.status === 'contacted' ? 'contacted' : lead.status === 'in_progress' ? 'inprogress' : 'resolved' %>">
+                                                    <%= lead.status.charAt(0).toUpperCase() + lead.status.slice(1).replace('_', ' ') %>
+                                                </span>
+                                            </td>
+                                            <td><%= new Date(lead.createdAt).toLocaleDateString() %></td>
+                                            <td>
+                                                <a href="/admin/leads/<%= lead._id %>" class="btn-icon btn-edit">View</a>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <% } %>
                     </div>
                 </main>
             </div>

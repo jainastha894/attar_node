@@ -1,5 +1,6 @@
 import path from "path";
 import Product from "../models/product.js";
+import Lead from "../models/lead.js";
 import fs from "fs";
 
 // Load SEO JSON once
@@ -43,6 +44,45 @@ export const renderAbout = (req, res) => {
 
 export const renderContact = (req, res) => {
   res.render("contact", { seoData: seo.contact });
+};
+
+export const submitContactForm = async (req, res) => {
+  try {
+    const { firstName, lastName, email, phone, subject, message } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !subject || !message) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "All required fields must be filled" 
+      });
+    }
+
+    // Create new lead
+    const lead = new Lead({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      phone: phone ? phone.trim() : "",
+      subject: subject.trim(),
+      message: message.trim(),
+      status: "new"
+    });
+
+    await lead.save();
+    console.log('✅ New lead created:', lead._id);
+
+    res.json({ 
+      success: true, 
+      message: "Thank you for contacting us! We'll get back to you soon." 
+    });
+  } catch (error) {
+    console.error("Error submitting contact form:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error submitting form. Please try again." 
+    });
+  }
 };
 
 export const renderShop = async (req, res) => {
