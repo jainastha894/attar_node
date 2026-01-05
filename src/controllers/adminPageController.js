@@ -10,7 +10,7 @@ const unitsPath = path.join(process.cwd(), "src/config/units.json");
 export const unitsPage = (req, res) => {
   const unitsPath = path.join(process.cwd(), "src/config/units.json");
   const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
-  res.render("admin/units", {
+    res.render("admin/units", {
     units: unitsData
   });
 };
@@ -21,19 +21,26 @@ export const addProductPage = (req, res) => {
   res.render("admin/add-product", {
     units: unitsData,
     product: null,
-    isEdit: false
+    isEdit: false,
+    query: req.query
   });
 };
 
 export const addProduct = async (req, res) => {
   try {
+    console.log('=== Add Product Request ===');
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+    console.log('Files:', req.files ? req.files.map(f => f.filename) : 'No files');
+    
+    const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
     // 1️⃣ Basic fields
     const { productName, description } = req.body;
 
     if (!productName || !description) {
-      return res.status(400).send("Product name and description are required");
+      console.error('Validation failed: Product name or description missing');
+      return res.redirect("/admin/products/add?error=" + encodeURIComponent("Product name and description are required"));
     }
 
     // 2️⃣ Images → store relative paths (relative to static directory)
@@ -54,8 +61,8 @@ export const addProduct = async (req, res) => {
         } else {
           // Multi-select checkboxes (sizeList, colorList, fragranceList, etc.)
           const values = Array.isArray(req.body[unitKey])
-            ? req.body[unitKey]
-            : [req.body[unitKey]];
+          ? req.body[unitKey]
+          : [req.body[unitKey]];
           // Filter out empty values
           const filteredValues = values.filter(val => val && val.trim() !== '');
           if (filteredValues.length > 0) {
@@ -76,6 +83,8 @@ export const addProduct = async (req, res) => {
       }
     }
 
+    console.log('Selected units:', JSON.stringify(selectedUnits, null, 2));
+
     // 4️⃣ Boolean flags - explicitly set all flags from form
     const product = new Product({
       name: productName.trim(),
@@ -93,8 +102,9 @@ export const addProduct = async (req, res) => {
     });
 
     // Save to database
+    console.log('Attempting to save product to database...');
     const savedProduct = await product.save();
-    console.log('Product saved successfully to database:', savedProduct._id);
+    console.log('✅ Product saved successfully to database:', savedProduct._id);
     console.log('Product name:', savedProduct.name);
     console.log('Product description:', savedProduct.description);
     console.log('Product images:', savedProduct.images);
@@ -103,8 +113,9 @@ export const addProduct = async (req, res) => {
 
     res.redirect("/admin/products");
   } catch (err) {
-    console.error("Error adding product to database:", err);
-    res.status(500).send("Error adding product: " + err.message);
+    console.error("❌ Error adding product to database:", err);
+    console.error("Error stack:", err.stack);
+    return res.redirect("/admin/products/add?error=" + encodeURIComponent("Error adding product: " + err.message));
   }
 };
 
@@ -146,11 +157,11 @@ export const loginPage = (req, res) => {
   res.render("admin/login");
 };
 
-export const dashboardPage = async (req, res) => {
-  let totalproducts = await Product.countDocuments();
-  let featuredproducts = await Product.countDocuments({ featured: true });
-  let outofstockproducts = await Product.countDocuments({ outofstock: true });
-  let activeproducts = await Product.countDocuments({ active: true });
+export const dashboardPage = async(req, res) => {
+    let totalproducts= await Product.countDocuments();
+  let featuredproducts= await Product.countDocuments({featured:true});
+  let outofstockproducts= await Product.countDocuments({outofstock:true});
+  let activeproducts= await Product.countDocuments({active:true});
 
   res.render("admin/dashboard", {
     totalproducts,
@@ -165,7 +176,14 @@ export const productListPage = async (req, res) => {
     const products = await Product.find().sort({ createdAt: -1 });
     // Convert Mongoose documents to plain objects for JSON serialization
     // Handle Map type units by converting to plain object
-    const productsArray = products.map(p => p.toObject());
+    const productsArray = products.map(p => {
+      const productObj = p.toObject ? p.toObject() : p;
+      // Convert Map to plain object if units is a Map
+      if (productObj.units && productObj.units instanceof Map) {
+        productObj.units = Object.fromEntries(productObj.units);
+      }
+      return productObj;
+    });
     console.log('ProductListPage - Found', productsArray.length, 'products');
     res.render("admin/products", { products: productsArray });
   } catch (error) {
@@ -174,14 +192,14 @@ export const productListPage = async (req, res) => {
   }
 };
 
-export const profilePage = async (req, res) => {
+export const profilePage = async(req, res) => {
   try {
     let totalproducts = await Product.countDocuments();
-    let activeproducts = await Product.countDocuments({ active: true });
+    let activeproducts = await Product.countDocuments({active:true});
 
     // Get admin data
     const admin = await Admin.findOne({ username: req.user?.username || "ArjanAttarsAdmin" });
-
+    
     res.render("admin/profile", {
       totalproducts,
       activeproducts,
@@ -197,7 +215,7 @@ export const profileSettingsPage = async (req, res) => {
   try {
     // Get admin data
     const admin = await Admin.findOne({ username: req.user?.username || "ArjanAttarsAdmin" });
-
+    
     res.render("admin/profileSetting", {
       admin: admin || null
     });
@@ -211,7 +229,7 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullName, email, phone, role, bio } = req.body;
     let username = "ArjanAttarsAdmin";
-
+    
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -224,9 +242,9 @@ export const updateProfile = async (req, res) => {
         }
       }
     }
-
+    
     let admin = await Admin.findOne({ username });
-
+    
     if (!admin) {
       // Create admin if doesn't exist
       const hashedPassword = await bcrypt.hash("addingproducts200", 10);
@@ -247,7 +265,7 @@ export const updateProfile = async (req, res) => {
       if (role) admin.role = role;
       if (bio !== undefined) admin.bio = bio;
     }
-
+    
     // Handle profile picture upload
     if (req.file) {
       // Delete old profile picture if exists
@@ -259,9 +277,9 @@ export const updateProfile = async (req, res) => {
       }
       admin.profilePic = `/uploads/${req.file.filename}`;
     }
-
+    
     await admin.save();
-
+    
     res.json({ success: true, message: "Profile updated successfully", admin });
   } catch (error) {
     console.error("Update profile error:", error);
@@ -272,7 +290,7 @@ export const updateProfile = async (req, res) => {
 export const removeProfilePic = async (req, res) => {
   try {
     let username = "ArjanAttarsAdmin";
-
+    
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -285,13 +303,13 @@ export const removeProfilePic = async (req, res) => {
         }
       }
     }
-
+    
     const admin = await Admin.findOne({ username });
-
+    
     if (!admin) {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
-
+    
     // Delete profile picture file if exists
     if (admin.profilePic) {
       const picPath = path.join(process.cwd(), "src", "public", admin.profilePic);
@@ -299,10 +317,10 @@ export const removeProfilePic = async (req, res) => {
         fs.unlinkSync(picPath);
       }
     }
-
+    
     admin.profilePic = null;
     await admin.save();
-
+    
     res.json({ success: true, message: "Profile picture removed successfully", admin });
   } catch (error) {
     console.error("Remove profile pic error:", error);
@@ -314,7 +332,7 @@ export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     let username = "ArjanAttarsAdmin";
-
+    
     // Try to get username from user object
     if (req.user) {
       if (typeof req.user === 'object' && req.user.username) {
@@ -327,23 +345,23 @@ export const changePassword = async (req, res) => {
         }
       }
     }
-
+    
     const admin = await Admin.findOne({ username });
-
+    
     if (!admin) {
       return res.status(404).json({ success: false, message: "Admin not found" });
     }
-
+    
     // Verify current password
     const isMatch = await admin.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Current password is incorrect" });
     }
-
+    
     // Update password
     admin.password = newPassword; // Will be hashed by pre-save hook
     await admin.save();
-
+    
     res.json({ success: true, message: "Password changed successfully" });
   } catch (error) {
     console.error("Change password error:", error);
@@ -356,9 +374,8 @@ export const catalogPage = async (req, res) => {
     const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
     const products = await Product.find({ active: true }).sort({ name: 1 });
-    const productsArray = products.map(p => p.toObject());
     res.render("admin/catalog", {
-      products: productsArray,
+      products,
       units: unitsData
     });
   } catch (error) {
@@ -371,18 +388,37 @@ export const editProductPage = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findById(id);
-    console.log(product);
     if (!product) {
       return res.status(404).send("Product not found");
     }
     const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
+    
     // Convert Mongoose document to plain object for EJS template
-    const productObj = product.toObject();
+    const productObj = product.toObject ? product.toObject() : product;
+    
+    // Convert Map to plain object if units is a Map
+    if (productObj.units && productObj.units instanceof Map) {
+      productObj.units = Object.fromEntries(productObj.units);
+    }
+    
+    // Ensure all unit fields are arrays for consistent handling
+    if (productObj.units) {
+      for (const key in productObj.units) {
+        if (productObj.units[key] && !Array.isArray(productObj.units[key])) {
+          productObj.units[key] = [productObj.units[key]];
+        }
+      }
+    }
+    
+    console.log('Edit product page - Product ID:', id);
+    console.log('Product units:', JSON.stringify(productObj.units, null, 2));
+    
     res.render("admin/add-product", {
       product: productObj,
       units: unitsData,
-      isEdit: true
+      isEdit: true,
+      query: req.query
     });
   } catch (error) {
     console.error("Edit product page error:", error);
@@ -392,7 +428,13 @@ export const editProductPage = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
+    console.log('=== Update Product Request ===');
+    console.log('Product ID:', req.params.id);
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+    console.log('Files:', req.files ? req.files.map(f => f.filename) : 'No files');
+    
     const { id } = req.params;
+    const unitsPath = path.join(process.cwd(), "src/config/units.json");
     const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
     const { productName, description, imagesToRemove } = req.body;
@@ -405,7 +447,7 @@ export const updateProduct = async (req, res) => {
 
     // Handle images - start with existing images
     let imagePaths = existingProduct.images || [];
-
+    
     // Remove images that were marked for removal
     if (imagesToRemove) {
       try {
@@ -422,7 +464,7 @@ export const updateProduct = async (req, res) => {
               }
             }
           });
-
+          
           // Remove from imagePaths array
           imagePaths = imagePaths.filter(img => !imagesToRemoveArray.includes(img));
         }
@@ -430,7 +472,7 @@ export const updateProduct = async (req, res) => {
         console.error("Error parsing imagesToRemove:", parseErr);
       }
     }
-
+    
     // Add new images if uploaded
     if (req.files && req.files.length > 0) {
       const newImagePaths = req.files.map(file => `/uploads/${file.filename}`);
@@ -439,7 +481,7 @@ export const updateProduct = async (req, res) => {
 
     // Dynamic units - build from req.body (capture ALL unit fields)
     const selectedUnits = {};
-
+    
     // Process all unit types from unitsData
     for (const unitKey in unitsData) {
       if (unitKey === 'industryList') {
@@ -489,13 +531,17 @@ export const updateProduct = async (req, res) => {
       // Note: signature is not updated here, it's managed via toggle endpoint
     };
 
+    console.log('Selected units:', JSON.stringify(selectedUnits, null, 2));
+    console.log('Attempting to update product in database...');
+    
     const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-
+    
     if (!updatedProduct) {
+      console.error('Product not found with ID:', id);
       return res.status(404).send("Product not found");
     }
 
-    console.log('Product updated successfully in database:', updatedProduct._id);
+    console.log('✅ Product updated successfully in database:', updatedProduct._id);
     console.log('Updated product name:', updatedProduct.name);
     console.log('Updated product description:', updatedProduct.description);
     console.log('Updated product images:', updatedProduct.images);
@@ -504,7 +550,8 @@ export const updateProduct = async (req, res) => {
 
     res.redirect("/admin/products");
   } catch (err) {
-    console.error("Error updating product in database:", err);
+    console.error("❌ Error updating product in database:", err);
+    console.error("Error stack:", err.stack);
     res.status(500).send("Error updating product: " + err.message);
   }
 };
@@ -557,26 +604,26 @@ export const toggleSignature = async (req, res) => {
   try {
     const { id } = req.params;
     const { signature } = req.body;
-
+    
     // If trying to add signature, check if we already have 3
     if (signature) {
       const signatureCount = await Product.countDocuments({ signature: true });
       if (signatureCount >= 3) {
-        return res.status(400).json({
-          success: false,
-          message: "Maximum 3 signature products allowed. Please remove a signature product first."
+        return res.status(400).json({ 
+          success: false, 
+          message: "Maximum 3 signature products allowed. Please remove a signature product first." 
         });
       }
     }
-
+    
     const product = await Product.findByIdAndUpdate(id, { signature }, { new: true });
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
-    res.json({
-      success: true,
-      message: `Product ${signature ? 'added to' : 'removed from'} signature collection`,
-      product
+    res.json({ 
+      success: true, 
+      message: `Product ${signature ? 'added to' : 'removed from'} signature collection`, 
+      product 
     });
   } catch (error) {
     console.error("Toggle signature error:", error);

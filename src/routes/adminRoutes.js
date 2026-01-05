@@ -52,7 +52,21 @@ router.get("/admin/catalog", isAdminAuth, catalogPage);
 router.post(
   "/admin/products/add",
   isAdminAuth,
-  upload.array("productImages", 10),
+  (req, res, next) => {
+    upload.array("productImages", 10)(req, res, (err) => {
+      if (err) {
+        console.error("Multer upload error:", err);
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).send("File size too large. Maximum size is 10MB.");
+        }
+        if (err.message === 'Only image files are allowed!') {
+          return res.status(400).send("Only image files are allowed!");
+        }
+        return res.status(400).send("File upload error: " + err.message);
+      }
+      next();
+    });
+  },
   resizeImages,
   addProduct
 );
@@ -60,7 +74,21 @@ router.post(
 router.post(
   "/admin/products/edit/:id",
   isAdminAuth,
-  upload.array("productImages", 10),
+  (req, res, next) => {
+    upload.array("productImages", 10)(req, res, (err) => {
+      if (err) {
+        console.error("Multer upload error:", err);
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).send("File size too large. Maximum size is 10MB.");
+        }
+        if (err.message === 'Only image files are allowed!') {
+          return res.status(400).send("Only image files are allowed!");
+        }
+        return res.status(400).send("File upload error: " + err.message);
+      }
+      next();
+    });
+  },
   resizeImages,
   updateProduct
 );

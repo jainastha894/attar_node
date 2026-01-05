@@ -33,11 +33,7 @@ const productSchema = new mongoose.Schema(
     active: { type: Boolean, default: false },
     signature: { type: Boolean, default: false }
   },
-  {
-    timestamps: true,
-    toObject: { flattenMaps: true },
-    toJSON: { flattenMaps: true }
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model("Product", productSchema);

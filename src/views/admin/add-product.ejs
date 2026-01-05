@@ -44,6 +44,11 @@
                     <div class="content-body">
                         <div class="form-container">
                             <div class="success-message" id="addProductSuccess"></div>
+                            <% if (typeof query !== 'undefined' && query.error) { %>
+                            <div class="error-message" style="background-color: #f44336; color: white; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+                                <%= decodeURIComponent(query.error) %>
+                            </div>
+                            <% } %>
                             <form id="addProductForm" action="<%= isEdit && product && product._id ? `/admin/products/edit/${product._id}` : '/admin/products/add' %>" method="POST"
                                 enctype="multipart/form-data">
 
@@ -66,8 +71,11 @@
                                         <label for="industryList">Industry *</label>
                                         <select id="industryList" name="industryList" onchange="handleIndustryChange(this.value)" required>
                                             <option value="">Select Industry</option>
-                                            <% units.industryList.forEach(item => { %>
-                                                <option value="<%= item %>" <%= (product && product.units && product.units.industryList && product.units.industryList.includes(item)) ? 'selected' : '' %>><%= item %></option>
+                                            <% units.industryList.forEach(item => { 
+                                                const productIndustryList = product && product.units && product.units.industryList ? product.units.industryList : [];
+                                                const isSelected = Array.isArray(productIndustryList) && productIndustryList.includes(item);
+                                            %>
+                                                <option value="<%= item %>" <%= isSelected ? 'selected' : '' %>><%= item %></option>
                                             <% }) %>
                                         </select>
                                     </div>
@@ -239,11 +247,8 @@
                 // Show fragrance list only if "Fragrance" or "Fragrances" is selected
                 if (selectedIndustry && (selectedIndustry.toLowerCase().includes("fragrance") || selectedIndustry.toLowerCase().includes("fragnance"))) {
                     fragranceRow.style.display = "block";
-                    // Make it required
-                    const fragranceInputs = fragranceRow.querySelectorAll('input[type="checkbox"]');
-                    fragranceInputs.forEach(input => {
-                        input.setAttribute("required", "required");
-                    });
+                    // Don't make checkboxes required - we'll validate in JavaScript instead
+                    // HTML5 required on checkboxes doesn't work well
                 } else {
                     fragranceRow.style.display = "none";
                     // Remove required and uncheck all
@@ -454,17 +459,70 @@
             updateImageInput();
         });
         
-        // Add hidden input to track images to remove
-        const removeImagesInput = document.createElement("input");
-        removeImagesInput.type = "hidden";
-        removeImagesInput.name = "imagesToRemove";
-        removeImagesInput.id = "imagesToRemove";
-        document.getElementById("addProductForm").appendChild(removeImagesInput);
+        // Setup form submission handler
+        function setupFormSubmission() {
+            const form = document.getElementById("addProductForm");
+            if (!form) {
+                console.error('Form element not found!');
+                return;
+            }
+            
+            // Add hidden input to track images to remove
+            const removeImagesInput = document.createElement("input");
+            removeImagesInput.type = "hidden";
+            removeImagesInput.name = "imagesToRemove";
+            removeImagesInput.id = "imagesToRemove";
+            form.appendChild(removeImagesInput);
+            
+            // Update hidden input before form submission
+            form.addEventListener("submit", function(e) {
+                console.log('Form submit event triggered');
+                
+                // Validate fragrance selection if Fragrance industry is selected
+                const industrySelect = document.getElementById('industryList');
+                const fragranceRow = document.getElementById("fragranceListRow");
+                if (industrySelect && industrySelect.value && 
+                    (industrySelect.value.toLowerCase().includes("fragrance") || industrySelect.value.toLowerCase().includes("fragnance")) &&
+                    fragranceRow && fragranceRow.style.display !== 'none') {
+                    const fragranceCheckboxes = fragranceRow.querySelectorAll('input[type="checkbox"]');
+                    const hasFragranceSelected = Array.from(fragranceCheckboxes).some(cb => cb.checked);
+                    if (!hasFragranceSelected) {
+                        e.preventDefault();
+                        alert('Please select at least one fragrance option.');
+                        return false;
+                    }
+                }
+                
+                // Check form validity for other required fields
+                if (!this.checkValidity()) {
+                    console.error('Form validation failed');
+                    this.reportValidity();
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Don't prevent default - let form submit normally
+                removeImagesInput.value = JSON.stringify(imagesToRemove);
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Saving...';
+                }
+                
+                console.log('Form submitting to:', this.action);
+                // Form will submit normally to the server
+                return true;
+            });
+        }
         
-        // Update hidden input before form submission
-        document.getElementById("addProductForm").addEventListener("submit", function(e) {
-            removeImagesInput.value = JSON.stringify(imagesToRemove);
-        });
+        // Setup form when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupFormSubmission);
+        } else {
+            setupFormSubmission();
+        }
 
         // Initialize selected values on page load
         document.addEventListener("DOMContentLoaded", () => {

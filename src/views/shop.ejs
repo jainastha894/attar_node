@@ -98,11 +98,10 @@
             </div>
           </aside>
 
-          <!-- Products Grid -->
+            <!-- Products Grid -->
           <section id="products" class="flex-1">
             <!-- Grid: 2 columns on mobile -->
-            <div id="productsGrid"
-              class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5 items-start">
+            <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5 items-start">
               <!-- rendered via JS -->
             </div>
           </section>
@@ -164,11 +163,11 @@
     </div>
 
     <%- include('partials/footer') %>
-      <a href="https://wa.me/919811555255" class="whatsapp-float" target="_blank" rel="nofollow noopener"
+ <a href="https://wa.me/919811555255" class="whatsapp-float" target="_blank" rel="nofollow noopener"
         aria-label="Chat on WhatsApp">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"
-          alt="WhatsApp chat with Arjanmal Attarchand Delhi NCR" />
-      </a>
+            alt="WhatsApp chat with Arjanmal Attarchand Delhi NCR" />
+    </a>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
       <script id="products-data" type="application/json">
   <%- JSON.stringify(products) %>
@@ -204,9 +203,10 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-          // Initial render is handled by the URL param check below (lines 488+)
-          // which correctly handles filtering logic. We don't want to overwrite it here.
-
+          // Apply initial sort
+          const initialProducts = applySort(PRODUCTS);
+          renderProducts(initialProducts);
+          
           // Check if product ID is in URL to open modal
           const urlParams = new URLSearchParams(window.location.search);
           const productId = urlParams.get('product');
@@ -225,7 +225,7 @@
               }
             }, 800);
           }
-
+          
           // Navbar blur on scroll
           const nav = document.getElementById('navbar');
           if (nav) {
@@ -252,7 +252,7 @@
           // null = no filter applied (show everything). When user clicks a filter it becomes
           // either a specific value (e.g. "Perfume Bottles") or the explicit "all" token.
           JarsAndBottles: null,
-          exquisiteFragrances: null,
+          exquisiteFragnances: null,
           notes: new Set(),
           sort: 'name',
         };
@@ -265,7 +265,7 @@
           if (!imgValue) return null;
           if (/^https?:\/\//i.test(imgValue)) return imgValue;      // full URL
           if (imgValue.startsWith("")) return imgValue;      // already ...
-          return `images/products/${imgValue}`;              // relative like "fragrance/bottle1.png"
+          return `images/products/${imgValue}`;              // relative like "fragnances/bottle1.png"
         }
 
         // ---------- DOM READY ---------- PDF 
@@ -360,7 +360,7 @@
 
           // Update current displayed products
           currentDisplayedProducts = [...list];
-
+          
           // Update count
           countEl.textContent = `Showing ${list.length} product${list.length !== 1 ? 's' : ''}`;
 
@@ -434,6 +434,10 @@
           if (state.industry) {
             products = products.filter(p => {
               const industryList = p.units?.industryList || [];
+              // Ensure industryList is an array
+              if (!Array.isArray(industryList)) {
+                return false;
+              }
               return industryList.includes(state.industry);
             });
           }
@@ -442,7 +446,7 @@
           if (selectedJar && selectedJar.toLowerCase() === "all") {
             // Apply search filter if any
             if (term) {
-              products = products.filter(p =>
+              products = products.filter(p => 
                 p.name.toLowerCase().includes(term)
               );
             }
@@ -489,11 +493,23 @@
         if (selectedIndustry) {
           // Lock industry for this page
           state.industry = selectedIndustry;
+          console.log('Filtering by industry:', selectedIndustry);
           // Filter products by industry on page load
           let industryProducts = PRODUCTS.filter(p => {
             const industryList = p.units?.industryList || [];
-            return industryList.includes(selectedIndustry);
+            // Ensure industryList is an array
+            const isArray = Array.isArray(industryList);
+            if (!isArray) {
+              console.warn('Product', p.name, 'has non-array industryList:', industryList);
+              return false;
+            }
+            const matches = industryList.includes(selectedIndustry);
+            if (matches) {
+              console.log('Product', p.name, 'matches industry', selectedIndustry);
+            }
+            return matches;
           });
+          console.log(`Found ${industryProducts.length} products for industry "${selectedIndustry}"`);
           // Apply initial sort
           industryProducts = applySort(industryProducts);
           renderProducts(industryProducts);
@@ -502,7 +518,7 @@
           const initialProducts = applySort(PRODUCTS);
           renderProducts(initialProducts);
         }
-
+        
         // Handle search query from URL
         const searchQuery = urlParams.get('q');
         if (searchQuery) {
@@ -614,7 +630,7 @@
           document.getElementById('xModal').addEventListener('click', closeProductModal);
         }
         // Modal - Make it globally accessible
-        window.openProductModal = function (id) {
+        window.openProductModal = function(id) {
 
 
           console.log("PRODUCTS:", PRODUCTS);
@@ -776,8 +792,8 @@
           // Build WhatsApp message
           function updateWhatsApp(imgPath = images[0]) {
             // Ensure absolute URL using BASE_URL
-            const imgUrl = imgPath.startsWith('http')
-              ? imgPath
+            const imgUrl = imgPath.startsWith('http') 
+              ? imgPath 
               : BASE_URL + (imgPath.startsWith('/') ? imgPath : '/' + imgPath);
 
             const sizeVal = sizeSelect ? sizeSelect.value : '';

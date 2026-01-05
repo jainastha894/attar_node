@@ -1,6 +1,6 @@
-import fs from "fs";
 import path from "path";
 import Product from "../models/product.js";
+import fs from "fs";
 
 // Load SEO JSON once
 const seoPath = path.join(process.cwd(), "src", "config", "seo.json");
@@ -13,15 +13,15 @@ const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 export const renderHome = async (req, res) => {
   try {
     // Get signature products (max 3)
-    const signatureProducts = await Product.find({
-      active: true,
-      signature: true
+    const signatureProducts = await Product.find({ 
+      active: true, 
+      signature: true 
     }).limit(3).sort({ updatedAt: -1 });
-
+    
     // Get base URL for image links - use production domain
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-
-    res.render("index", {
+    
+    res.render("index", { 
       seoData: seo.home,
       signatureProducts: signatureProducts || [],
       baseUrl
@@ -29,7 +29,7 @@ export const renderHome = async (req, res) => {
   } catch (error) {
     console.error("Home page error:", error);
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    res.render("index", {
+    res.render("index", { 
       seoData: seo.home,
       signatureProducts: [],
       baseUrl
@@ -47,34 +47,56 @@ export const renderContact = (req, res) => {
 
 export const renderShop = async (req, res) => {
   try {
-    // Only show active products on shop page
-    const productsDocs = await Product.find({ active: true });
+    const { industry } = req.query;
 
-    // Robust manual conversion for Shop page (same as Admin fix)
-    const products = productsDocs.map(doc => {
-      const p = doc.toObject();
-      if (doc.units && doc.units instanceof Map) {
-        p.units = Object.fromEntries(doc.units);
-      } else if (!p.units) {
-        p.units = {};
+    const products = await Product.find({ active: true });
+
+    // Convert Mongoose documents to plain objects and handle Map type units
+    let productsArray = products.map(p => {
+      const productObj = p.toObject ? p.toObject() : p;
+      // Convert Map to plain object if units is a Map
+      if (productObj.units && productObj.units instanceof Map) {
+        productObj.units = Object.fromEntries(productObj.units);
       }
-      return p;
+      return productObj;
     });
 
-    // Get base URL for image links - use production domain
-    const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
+    let filteredProducts = productsArray;
+
+    // Filter by industry if specified
+    if (industry) {
+      console.log('Filtering products by industry:', industry);
+      filteredProducts = productsArray.filter(p => {
+        const industryList = p.units?.industryList || [];
+        // Handle both array and single value cases
+        if (Array.isArray(industryList)) {
+          const matches = industryList.includes(industry);
+          if (matches) {
+            console.log(`Product "${p.name}" matches industry "${industry}"`);
+          }
+          return matches;
+        }
+        return false;
+      });
+      console.log(`Filtered ${filteredProducts.length} products for industry "${industry}"`);
+    }
+
+    const baseUrl = process.env.BASE_URL || "https://arjanmalattarchand.com";
 
     res.render("shop", {
       seoData: seo.shop,
-      products,
+      products: filteredProducts,
       units: unitsData,
-      baseUrl
+      baseUrl,
+      selectedIndustry: industry || "All"
     });
+
   } catch (error) {
     console.error("Shop page error:", error);
     res.status(500).send("Something went wrong");
   }
 };
+
 
 export const renderPrivacy = (req, res) => {
   res.render("privacy");
