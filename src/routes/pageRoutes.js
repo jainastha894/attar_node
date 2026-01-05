@@ -6,7 +6,8 @@ import {
   renderShop,
   renderPrivacy,
   renderTerms,
-  submitContactForm
+  submitContactForm,
+  trackProductEnquiry
 } from "../controllers/pageController.js";
 import { getAllProducts } from "../controllers/productController.js";
 import path from "path";
@@ -61,6 +62,7 @@ router.get("/", renderHome);
 router.get("/about", renderAbout);
 router.get("/contact", renderContact);
 router.post("/contact", submitContactForm);
+router.post("/api/track-enquiry", trackProductEnquiry);
 router.get("/shop", renderShop);
 router.get("/privacy", renderPrivacy);
 router.get("/terms", renderTerms);

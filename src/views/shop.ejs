@@ -164,10 +164,12 @@
 
     <%- include('partials/footer') %>
  <a href="https://wa.me/919811555255" class="whatsapp-float" target="_blank" rel="nofollow noopener"
-        aria-label="Chat on WhatsApp">
+        aria-label="Chat on WhatsApp"
+        onclick="if(typeof trackWhatsAppClick === 'function') trackWhatsAppClick(null, 'Business Enquiry (Floating)', null, 'floating');">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"
             alt="WhatsApp chat with Arjanmal Attarchand Delhi NCR" />
     </a>
+    <script src="/js/whatsapp-tracker.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
       <script id="products-data" type="application/json">
   <%- JSON.stringify(products) %>
@@ -409,7 +411,7 @@
           <div class="mt-auto pt-2 flex-shrink-0" style="margin-top: auto;">
             <a href="https://wa.me/919811555255?text=Hi%20I%20am%20interested%20in%20${encodeURIComponent(p.name)}%0A${encodeURIComponent(BASE_URL + (p.images?.[0] || '/uploads/default.png'))}" 
                target="_blank"
-               onclick="event.stopPropagation()"
+               onclick="event.stopPropagation(); if(typeof trackWhatsAppClick === 'function') trackWhatsAppClick('${p._id}', '${p.name.replace(/'/g, "\\'")}', '${(p.units?.industryList?.[0] || '').replace(/'/g, "\\'")}', 'product');"
                class="gold-btn w-full py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2" style="min-height: 40px;">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">
                 <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.59 2.15 8.02L.5 31.5l7.7-2.07C10.35 30.27 13.12 31 16 31c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28c-2.5 0-4.94-.67-7.06-1.93l-.5-.29-4.57 1.23 1.23-4.57-.29-.5C3.67 20.94 3 18.5 3 16 3 8.82 8.82 3 16 3s13 5.82 13 13-5.82 13-13 13zm7.2-9.98c-.39-.2-2.3-1.13-2.66-1.26-.36-.13-.63-.2-.9.2s-1.03 1.26-1.27 1.52c-.23.26-.47.29-.86.1-.39-.2-1.63-.6-3.1-1.92-1.15-1.02-1.92-2.3-2.15-2.69-.23-.39-.02-.6.17-.79.17-.17.39-.46.59-.69.2-.23.26-.39.39-.65.13-.26.07-.49-.03-.69-.1-.2-.9-2.17-1.24-2.97-.33-.8-.67-.69-.9-.7h-.77c-.26 0-.69.1-1.05.49-.36.39-1.37 1.34-1.37 3.26s1.4 3.77 1.59 4.03c.2.26 2.75 4.2 6.67 5.89.93.4 1.65.64 2.21.82.93.3 1.78.26 2.45.16.75-.11 2.3-.94 2.62-1.84.33-.9.33-1.67.23-1.84-.1-.17-.36-.26-.75-.46z"/>
@@ -755,6 +757,7 @@
               `Hi I am interested in ${p.name}\n${BASE_URL}${images[0]}`
             )}"
             target="_blank"
+            onclick="if(typeof trackWhatsAppClick === 'function') trackWhatsAppClick('${p._id}', '${p.name.replace(/'/g, "\\'")}', '${(p.units?.industryList?.[0] || '').replace(/'/g, "\\'")}', 'product');"
             class="gold-btn w-full mt-2 py-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-white">

@@ -26,6 +26,7 @@ import {
   leadDetailPage,
   updateLeadStatus,
   deleteLead,
+  productEnquiriesPage,
 } from "../controllers/adminPageController.js";
 import { isAdminAuth } from "../middleware/isAdminAuth.js";
 import { addAdminData } from "../middleware/adminData.js";
@@ -148,11 +149,7 @@ router.get("/admin/leads/:id", isAdminAuth, leadDetailPage);
 router.patch("/admin/leads/:id/status", isAdminAuth, updateLeadStatus);
 router.delete("/admin/leads/:id", isAdminAuth, deleteLead);
 
-// Product Enquiries Route (placeholder - can be implemented later)
-router.get("/admin/product-enquiries", isAdminAuth, (req, res) => {
-  res.render("admin/product-enquiries", { 
-    message: "Product Enquiries feature coming soon" 
-  });
-});
+// Product Enquiries Route
+router.get("/admin/product-enquiries", isAdminAuth, productEnquiriesPage);
 
 export default router;

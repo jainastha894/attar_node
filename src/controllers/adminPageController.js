@@ -3,6 +3,7 @@ import path from "path";
 import Product from "../models/product.js";
 import Admin from "../models/admin.js";
 import Lead from "../models/lead.js";
+import ProductEnquiry from "../models/productEnquiry.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 
@@ -172,6 +173,30 @@ export const dashboardPage = async(req, res) => {
     let inProgressLeads = await Lead.countDocuments({status: "in_progress"});
     let resolvedLeads = await Lead.countDocuments({status: "resolved"});
 
+    // Product Enquiry statistics
+    let totalEnquiries = await ProductEnquiry.countDocuments();
+    
+    // Industry-wise enquiries
+    let fragranceEnquiries = await ProductEnquiry.countDocuments({ industry: "Fragrance" });
+    let foodEnquiries = await ProductEnquiry.countDocuments({ industry: "Food" });
+    let pharmaEnquiries = await ProductEnquiry.countDocuments({ industry: "Pharma" });
+    
+    // Top query generated product
+    const topProduct = await ProductEnquiry.aggregate([
+      {
+        $group: {
+          _id: {
+            productId: "$productId",
+            productName: "$productName"
+          },
+          clicks: { $sum: 1 },
+          productName: { $first: "$productName" }
+        }
+      },
+      { $sort: { clicks: -1 } },
+      { $limit: 1 }
+    ]);
+
     res.render("admin/dashboard", {
       totalproducts,
       featuredproducts,
@@ -181,7 +206,15 @@ export const dashboardPage = async(req, res) => {
       newLeads,
       contactedLeads,
       inProgressLeads,
-      resolvedLeads
+      resolvedLeads,
+      totalEnquiries,
+      fragranceEnquiries,
+      foodEnquiries,
+      pharmaEnquiries,
+      topProduct: topProduct.length > 0 ? {
+        name: topProduct[0].productName,
+        clicks: topProduct[0].clicks
+      } : null
     });
   } catch (error) {
     console.error("Dashboard error:", error);
@@ -834,5 +867,52 @@ export const deleteLead = async (req, res) => {
   } catch (error) {
     console.error("Delete lead error:", error);
     res.status(500).json({ success: false, message: "Error deleting lead" });
+  }
+};
+
+// Product Enquiries Controllers
+export const productEnquiriesPage = async (req, res) => {
+  try {
+    const { search, sortBy = 'clicks', sortOrder = 'desc' } = req.query;
+    
+    // Aggregate enquiries by product
+    let matchStage = {};
+    if (search) {
+      matchStage.productName = { $regex: search, $options: 'i' };
+    }
+
+    const enquiries = await ProductEnquiry.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: {
+            productId: "$productId",
+            productName: "$productName"
+          },
+          clicks: { $sum: 1 },
+          productId: { $first: "$productId" },
+          productName: { $first: "$productName" },
+          industry: { $first: "$industry" },
+          lastClicked: { $max: "$clickedAt" }
+        }
+      },
+      {
+        $sort: sortBy === 'name' 
+          ? { productName: sortOrder === 'asc' ? 1 : -1 }
+          : { clicks: sortOrder === 'asc' ? 1 : -1 }
+      }
+    ]);
+
+    res.render("admin/product-enquiries", {
+      enquiries: enquiries || [],
+      currentFilters: {
+        search: search || '',
+        sortBy,
+        sortOrder
+      }
+    });
+  } catch (error) {
+    console.error("Product enquiries page error:", error);
+    res.status(500).send("Error loading product enquiries");
   }
 };

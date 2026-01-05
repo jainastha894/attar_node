@@ -28,13 +28,71 @@
                 <main class="main-content">
                     <div class="content-header">
                         <h1>Product Enquiries</h1>
-                        <p>Manage product-specific enquiries</p>
+                        <p>Track WhatsApp button clicks by product</p>
                     </div>
                     <div class="content-body">
-                        <div class="form-container">
-                            <div style="text-align: center; padding: 60px 20px; color: #999;">
-                                <h2 style="color: #FFD700; margin-bottom: 20px;">Coming Soon</h2>
-                                <p>Product Enquiries feature will be available soon.</p>
+                        <div class="product-list">
+                            <!-- Filter Section -->
+                            <div class="form-container" style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #FFD700; font-weight: 600;">Filters & Search</h3>
+                                <form id="filterForm" method="GET" action="/admin/product-enquiries">
+                                    <div class="form-row">
+                                        <div class="form-group-inline">
+                                            <label for="filterSearch">Search Product</label>
+                                            <input type="text" id="filterSearch" name="search" placeholder="Search by product name..." value="<%= currentFilters.search %>">
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortBy">Sort By</label>
+                                            <select id="sortBy" name="sortBy">
+                                                <option value="clicks" <%= currentFilters.sortBy === 'clicks' ? 'selected' : '' %>>Number of Enquiries</option>
+                                                <option value="name" <%= currentFilters.sortBy === 'name' ? 'selected' : '' %>>Product Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortOrder">Order</label>
+                                            <select id="sortOrder" name="sortOrder">
+                                                <option value="desc" <%= currentFilters.sortOrder === 'desc' ? 'selected' : '' %>>Highest First</option>
+                                                <option value="asc" <%= currentFilters.sortOrder === 'asc' ? 'selected' : '' %>>Lowest First</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions" style="margin-top: 20px;">
+                                        <button type="submit" class="btn btn-save">Apply Filters</button>
+                                        <a href="/admin/product-enquiries" class="btn btn-cancel">Clear Filters</a>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="product-list-header">
+                                <h2>All Product Enquiries (<%= enquiries.length %>)</h2>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Number of Enquiries</th>
+                                            <th>Industry</th>
+                                            <th>Last Clicked</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="enquiryTableBody">
+                                        <% if (enquiries && enquiries.length > 0) { %>
+                                            <% enquiries.forEach(enquiry => { %>
+                                            <tr>
+                                                <td><%= enquiry.productName %></td>
+                                                <td style="text-align: center; font-weight: 600; color: #FFD700;"><%= enquiry.clicks %></td>
+                                                <td><%= enquiry.industry || 'N/A' %></td>
+                                                <td><%= new Date(enquiry.lastClicked).toLocaleString() %></td>
+                                            </tr>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" style="text-align: center; padding: 40px; color: #999;">No enquiries found</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -47,4 +105,3 @@
     <script src="/js/header-handler.js"></script>
 </body>
 </html>
-

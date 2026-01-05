@@ -1,6 +1,7 @@
 import path from "path";
 import Product from "../models/product.js";
 import Lead from "../models/lead.js";
+import ProductEnquiry from "../models/productEnquiry.js";
 import fs from "fs";
 
 // Load SEO JSON once
@@ -144,4 +145,25 @@ export const renderPrivacy = (req, res) => {
 
 export const renderTerms = (req, res) => {
   res.render("terms");
+};
+
+export const trackProductEnquiry = async (req, res) => {
+  try {
+    const { productId, productName, industry, source } = req.body;
+
+    // For floating button, use default name
+    const enquiry = new ProductEnquiry({
+      productId: productId || null,
+      productName: productName || "Business Enquiry (Floating)",
+      industry: industry || null,
+      source: source || "floating",
+      clickedAt: new Date()
+    });
+
+    await enquiry.save();
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Product enquiry tracking error:", error);
+    res.status(500).json({ success: false });
+  }
 };
