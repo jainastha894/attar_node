@@ -171,12 +171,6 @@ export const dashboardPage = async(req, res) => {
     let contactedLeads = await Lead.countDocuments({status: "contacted"});
     let inProgressLeads = await Lead.countDocuments({status: "in_progress"});
     let resolvedLeads = await Lead.countDocuments({status: "resolved"});
-    
-    // Recent leads (last 5)
-    let recentLeads = await Lead.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select('firstName lastName email subject status createdAt');
 
     res.render("admin/dashboard", {
       totalproducts,
@@ -187,8 +181,7 @@ export const dashboardPage = async(req, res) => {
       newLeads,
       contactedLeads,
       inProgressLeads,
-      resolvedLeads,
-      recentLeads: recentLeads || []
+      resolvedLeads
     });
   } catch (error) {
     console.error("Dashboard error:", error);
@@ -680,6 +673,25 @@ export const adminLogout = (req, res) => {
 // Lead Management Controllers
 export const leadListPage = async (req, res) => {
   try {
+    // Auto-update lead statuses based on time
+    const now = new Date();
+    const fiveHoursAgo = new Date(now.getTime() - 5 * 60 * 60 * 1000); // 5 hours ago
+    
+    // Update contacted leads to in_progress if contacted more than 5 hours ago
+    // Resolution must be done manually by admin
+    await Lead.updateMany(
+      { 
+        status: 'contacted',
+        contactedAt: { $exists: true, $lte: fiveHoursAgo }
+      },
+      { 
+        $set: { 
+          status: 'in_progress',
+          inProgressAt: new Date()
+        }
+      }
+    );
+
     const { status, subject, search, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
     
     // Build filter query
@@ -768,13 +780,30 @@ export const updateLeadStatus = async (req, res) => {
     const { status, notes } = req.body;
 
     const updateData = { status };
+    const now = new Date();
     
-    if (status === 'contacted' && !req.body.contactedAt) {
-      updateData.contactedAt = new Date();
+    // Set timestamps based on status
+    if (status === 'contacted') {
+      updateData.contactedAt = now;
+      // Clear in_progress timestamp if moving back to contacted
+      updateData.inProgressAt = null;
+    } else if (status === 'in_progress') {
+      updateData.inProgressAt = now;
+      // Ensure contactedAt is set if not already
+      const lead = await Lead.findById(id);
+      if (lead && !lead.contactedAt) {
+        updateData.contactedAt = now;
+      }
+    } else if (status === 'resolved') {
+      updateData.resolvedAt = now;
+      // Ensure previous timestamps are set
+      const lead = await Lead.findById(id);
+      if (lead) {
+        if (!lead.contactedAt) updateData.contactedAt = now;
+        if (!lead.inProgressAt) updateData.inProgressAt = now;
+      }
     }
-    if (status === 'resolved' && !req.body.resolvedAt) {
-      updateData.resolvedAt = new Date();
-    }
+    
     if (notes !== undefined) {
       updateData.notes = notes;
     }

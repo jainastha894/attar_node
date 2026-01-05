@@ -40,82 +40,57 @@
                         <p>Overview of your products and leads</p>
                     </div>
                     <div class="content-body">
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <h3>Total Products</h3>
-                                <div class="stat-value" id="totalProducts"><%= totalproducts %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Active Products</h3>
-                                <div class="stat-value" id="activeProducts"><%= activeproducts %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Featured Products</h3>
-                                <div class="stat-value" id="featuredProducts"><%= featuredproducts %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Out of Stock</h3>
-                                <div class="stat-value" id="outOfStockProducts"><%= outofstockproducts %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Total Leads</h3>
-                                <div class="stat-value" id="totalLeads"><%= totalLeads || 0 %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>New Leads</h3>
-                                <div class="stat-value" style="color: #4CAF50;"><%= newLeads || 0 %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Contacted</h3>
-                                <div class="stat-value" style="color: #2196F3;"><%= contactedLeads || 0 %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>In Progress</h3>
-                                <div class="stat-value" style="color: #FF9800;"><%= inProgressLeads || 0 %></div>
-                            </div>
-                            <div class="stat-card">
-                                <h3>Resolved</h3>
-                                <div class="stat-value" style="color: #9E9E9E;"><%= resolvedLeads || 0 %></div>
+                        <!-- Products Section -->
+                        <div style="margin-bottom: 40px;">
+                            <h2 style="color: #FFD700; font-size: 24px; font-weight: 600; margin-bottom: 24px; text-align: center;">Products</h2>
+                            <div style="width: 100%; height: 2px; background: linear-gradient(to right, transparent, #FFD700, transparent); margin-bottom: 24px;"></div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Total Products</h3>
+                                    <div class="stat-value" id="totalProducts" style="text-align: center;"><%= totalproducts %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Active Products</h3>
+                                    <div class="stat-value" id="activeProducts" style="text-align: center;"><%= activeproducts %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Featured Products</h3>
+                                    <div class="stat-value" id="featuredProducts" style="text-align: center;"><%= featuredproducts %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Out of Stock</h3>
+                                    <div class="stat-value" id="outOfStockProducts" style="text-align: center;"><%= outofstockproducts %></div>
+                                </div>
                             </div>
                         </div>
                         
-                        <% if (recentLeads && recentLeads.length > 0) { %>
-                        <div style="margin-top: 30px;">
-                            <h2 style="color: #FFD700; margin-bottom: 20px;">Recent Leads</h2>
-                            <div class="table-wrapper">
-                                <table class="product-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Subject</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% recentLeads.forEach(lead => { %>
-                                        <tr>
-                                            <td><%= lead.firstName %> <%= lead.lastName %></td>
-                                            <td><%= lead.email %></td>
-                                            <td><%= lead.subject %></td>
-                                            <td>
-                                                <span class="badge badge-<%= lead.status === 'new' ? 'new' : lead.status === 'contacted' ? 'contacted' : lead.status === 'in_progress' ? 'inprogress' : 'resolved' %>">
-                                                    <%= lead.status.charAt(0).toUpperCase() + lead.status.slice(1).replace('_', ' ') %>
-                                                </span>
-                                            </td>
-                                            <td><%= new Date(lead.createdAt).toLocaleDateString() %></td>
-                                            <td>
-                                                <a href="/admin/leads/<%= lead._id %>" class="btn-icon btn-edit">View</a>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                    </tbody>
-                                </table>
+                        <!-- Leads Section -->
+                        <div style="margin-bottom: 40px;">
+                            <h2 style="color: #FFD700; font-size: 24px; font-weight: 600; margin-bottom: 24px; text-align: center;">Leads</h2>
+                            <div style="width: 100%; height: 2px; background: linear-gradient(to right, transparent, #FFD700, transparent); margin-bottom: 24px;"></div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Total Leads</h3>
+                                    <div class="stat-value" id="totalLeads" style="text-align: center;"><%= totalLeads || 0 %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">New Leads</h3>
+                                    <div class="stat-value" style="color: #4CAF50; text-align: center;"><%= newLeads || 0 %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Contacted</h3>
+                                    <div class="stat-value" style="color: #2196F3; text-align: center;"><%= contactedLeads || 0 %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">In Progress</h3>
+                                    <div class="stat-value" style="color: #FF9800; text-align: center;"><%= inProgressLeads || 0 %></div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3 style="text-align: center;">Resolved</h3>
+                                    <div class="stat-value" style="color: #9E9E9E; text-align: center;"><%= resolvedLeads || 0 %></div>
+                                </div>
                             </div>
                         </div>
-                        <% } %>
                     </div>
                 </main>
             </div>

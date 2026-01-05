@@ -603,6 +603,52 @@ html {
     color: #ff6666;
 }
 
+/* Category Styles */
+.nav-category {
+    margin-bottom: 8px;
+}
+
+.nav-category-header {
+    padding: 12px 24px 8px 24px;
+    color: #999;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: padding 0.3s ease;
+}
+
+.sidebar.minimized .nav-category-header {
+    padding: 12px 16px 8px 16px;
+}
+
+.nav-category-text {
+    transition: opacity 0.25s ease, max-width 0.25s ease, visibility 0.25s ease;
+    overflow: hidden;
+    max-width: 200px;
+    visibility: visible;
+}
+
+.sidebar.minimized .nav-category-text {
+    opacity: 0;
+    max-width: 0;
+    visibility: hidden;
+    overflow: hidden;
+}
+
+.nav-category-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-category-items .nav-item {
+    padding-left: 32px;
+}
+
+.sidebar.minimized .nav-category-items .nav-item {
+    padding-left: 16px;
+}
+
 /* Main Content */
 .main-content {
     flex: 1;
@@ -734,6 +780,15 @@ html {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 24px;
     margin-bottom: 32px;
+}
+
+.stats-grid-centered {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .stat-card {
@@ -1267,6 +1322,36 @@ html {
 .badge-archived {
     background: #607D8B;
     color: #ffffff;
+}
+
+/* Status Select Dropdown */
+.status-select {
+    background: #2a2a2a;
+    color: #ffffff;
+    border: 2px solid #FFD700;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 140px;
+    transition: all 0.2s ease;
+}
+
+.status-select:hover {
+    background: #333;
+    border-color: #FFED4E;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #FFED4E;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.status-select option {
+    background: #1a1a1a;
+    color: #ffffff;
+    padding: 8px;
 }
 
 /* Pagination Styles */

@@ -1,42 +1,76 @@
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
     <nav class="sidebar-nav">
+        
+        <!-- MAIN Category -->
+        <div class="nav-category">
+            <div class="nav-category-header">
+                <span class="nav-category-text">MAIN</span>
+            </div>
+            <div class="nav-category-items">
+                <a href="/administrator" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </div>
+        </div>
 
-        <a href="/administrator" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">📊</span>
-            <span class="nav-text">Dashboard</span>
-        </a>
+        <!-- PRODUCTS Category -->
+        <div class="nav-category">
+            <div class="nav-category-header">
+                <span class="nav-category-text">PRODUCTS</span>
+            </div>
+            <div class="nav-category-items">
+                <a href="/admin/products" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">All Products</span>
+                </a>
+                <a href="/admin/products/add" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-text">Add Product</span>
+                </a>
+                <a href="/admin/units" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Manage Units</span>
+                </a>
+            </div>
+        </div>
 
-        <a href="/admin/products/add" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">➕</span>
-            <span class="nav-text">Add Product</span>
-        </a>
+        <!-- LEADS Category -->
+        <div class="nav-category">
+            <div class="nav-category-header">
+                <span class="nav-category-text">LEADS</span>
+            </div>
+            <div class="nav-category-items">
+                <a href="/admin/leads" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">📧</span>
+                    <span class="nav-text">Contact Leads</span>
+                </a>
+                <a href="/admin/product-enquiries" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">❓</span>
+                    <span class="nav-text">Product Enquiries</span>
+                </a>
+            </div>
+        </div>
 
-        <a href="/admin/products" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">📦</span>
-            <span class="nav-text">Product List</span>
-        </a>
+        <!-- SYSTEM Category -->
+        <div class="nav-category">
+            <div class="nav-category-header">
+                <span class="nav-category-text">SYSTEM</span>
+            </div>
+            <div class="nav-category-items">
+                <a href="/admin/catalog" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">📥</span>
+                    <span class="nav-text">Catalog</span>
+                </a>
+                <a href="/admin/profile" class="nav-item" style="text-decoration: none;">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Profile</span>
+                </a>
+            </div>
+        </div>
 
-        <a href="/admin/units" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-text">Modify Units</span>
-        </a>
-
-        <a href="/admin/leads" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">📧</span>
-            <span class="nav-text">Leads</span>
-        </a>
-
-        <a href="/admin/catalog" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">📥</span>
-            <span class="nav-text">Catalog</span>
-        </a>
-
-        <a href="/admin/profile" class="nav-item" style="text-decoration: none;">
-            <span class="nav-icon">👤</span>
-            <span class="nav-text">Profile</span>
-        </a>
-
+        <!-- Logout -->
         <div class="nav-item logout" id="logoutBtn">
             <span class="nav-icon">🚪</span>
             <span class="nav-text">Logout</span>

@@ -40,6 +40,10 @@ const leadSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
+    inProgressAt: {
+      type: Date,
+      default: null
+    },
     resolvedAt: {
       type: Date,
       default: null

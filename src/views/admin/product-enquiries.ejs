@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Enquiries - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+            <div class="dashboard-body">
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Product Enquiries</h1>
+                        <p>Manage product-specific enquiries</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="form-container">
+                            <div style="text-align: center; padding: 60px 20px; color: #999;">
+                                <h2 style="color: #FFD700; margin-bottom: 20px;">Coming Soon</h2>
+                                <p>Product Enquiries feature will be available soon.</p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+</body>
+</html>
+

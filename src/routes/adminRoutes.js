@@ -148,4 +148,11 @@ router.get("/admin/leads/:id", isAdminAuth, leadDetailPage);
 router.patch("/admin/leads/:id/status", isAdminAuth, updateLeadStatus);
 router.delete("/admin/leads/:id", isAdminAuth, deleteLead);
 
+// Product Enquiries Route (placeholder - can be implemented later)
+router.get("/admin/product-enquiries", isAdminAuth, (req, res) => {
+  res.render("admin/product-enquiries", { 
+    message: "Product Enquiries feature coming soon" 
+  });
+});
+
 export default router;
