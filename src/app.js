@@ -58,6 +58,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Parse JSON request bodies
 
+
 // Routes
 app.use("/", pageRoutes);
 app.use(adminRoutes);
