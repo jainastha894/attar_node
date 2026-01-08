@@ -278,7 +278,7 @@ export const profileSettingsPage = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, email, phone, role, bio } = req.body;
+    const { fullName, email, phone, bio } = req.body;
     let username = "ArjanAttarsAdmin";
     
     // Try to get username from user object
@@ -305,15 +305,15 @@ export const updateProfile = async (req, res) => {
         fullName: fullName || "Admin User",
         email: email || "",
         phone: phone || "",
-        role: role || "Administrator",
+        role: "Administrator", // Default role, not changeable
         bio: bio || ""
       });
     } else {
-      // Update existing admin
+      // Update existing admin (role and password cannot be changed from profile settings)
       if (fullName) admin.fullName = fullName;
       if (email !== undefined) admin.email = email;
       if (phone !== undefined) admin.phone = phone;
-      if (role) admin.role = role;
+      // Role is not updated - it remains unchanged
       if (bio !== undefined) admin.bio = bio;
     }
     

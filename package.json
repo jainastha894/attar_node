@@ -23,7 +23,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "migrate": "node src/scripts/migrateToDatabase.js"
+    "migrate": "node src/scripts/migrateToDatabase.js",
+    "delete-enquiries": "node src/scripts/deleteProductEnquiries.js"
   },
   "author": "astha jain",
   "license": "ISC",

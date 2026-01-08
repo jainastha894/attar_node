@@ -207,7 +207,7 @@
           return sortedProducts;
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+          document.addEventListener("DOMContentLoaded", () => {
           // Apply initial sort
           const initialProducts = applySort(PRODUCTS);
           renderProducts(initialProducts);
@@ -229,18 +229,6 @@
                 }, 1000);
               }
             }, 800);
-          }
-          
-          // Navbar blur on scroll
-          const nav = document.getElementById('navbar');
-          if (nav) {
-            window.addEventListener('scroll', () => {
-              if (window.scrollY > 10) {
-                nav.classList.add('nav-blur');
-              } else {
-                nav.classList.remove('nav-blur');
-              }
-            });
           }
         });
 

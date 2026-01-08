@@ -8,11 +8,20 @@
 
     *{box-sizing:border-box}
 
+    html {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
     body{
       font-family:'Montserrat',sans-serif;
       letter-spacing:.2px;
       overflow-x:hidden;
+      overflow-y: visible;
       background:#0b0b0b;
+      width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     /* ========== CUSTOM SCROLLBAR STYLING ========== */
@@ -207,4 +216,126 @@
   .mobile-panel {
     max-height: 300px;
   }
+}
+
+/* Fix scrolling responsiveness - ensure proper spacing for fixed header */
+body {
+  scroll-padding-top: 100px; /* Account for fixed header */
+}
+
+/* Smooth scroll behavior for anchor links */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Ensure sections have proper spacing when scrolled to */
+section {
+  scroll-margin-top: 100px;
+  overflow: visible;
+}
+
+/* Prevent nested scrollbars - ensure no container creates its own scrollbar */
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure main content containers don't create scrollbars */
+.max-w-5xl,
+.max-w-7xl,
+.max-w-3xl {
+  overflow: visible;
+}
+
+/* FAQ section specific - no nested scrolling */
+.space-y-5 {
+  overflow: visible;
+}
+
+.lux-card {
+  overflow: visible;
+}
+
+/* Contact form section specific adjustments */
+#contact-form {
+  scroll-margin-top: 120px;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Map section adjustments */
+@media (max-width: 768px) {
+  #contact-form {
+    scroll-margin-top: 80px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  section {
+    scroll-margin-top: 80px;
+  }
+}
+
+/* Fix iframe responsiveness */
+iframe {
+  max-width: 100%;
+  height: auto;
+  min-height: 300px;
+}
+
+@media (max-width: 480px) {
+  iframe {
+    min-height: 250px;
+  }
+}
+
+/* Fix double scrollbar issue - ensure only html/body scrolls */
+html {
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body {
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  position: relative;
+}
+
+/* Remove any overflow from main content containers that could create nested scrollbars */
+section {
+  overflow: visible;
+  position: relative;
+}
+
+/* Ensure content containers don't create scrollbars */
+.max-w-5xl,
+.max-w-7xl,
+.max-w-3xl {
+  overflow: visible;
+}
+
+/* Ensure FAQ and other content sections don't create scrollbars */
+.space-y-5,
+.bg-gradient-to-b,
+.bg-white,
+.bg-gradient-to-b {
+  overflow: visible;
+}
+
+/* Ensure lux-card doesn't create scrollbars */
+.lux-card {
+  overflow: visible;
+}
+
+/* Prevent nested scrollbars in main content areas */
+.mx-auto,
+.px-4,
+.px-6,
+.px-8 {
+  overflow: visible;
 }

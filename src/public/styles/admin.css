@@ -256,6 +256,8 @@ html {
     justify-content: space-between;
     padding: 0 24px;
     z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header-left {
@@ -275,6 +277,11 @@ html {
     transition: all 0.3s;
     position: relative;
     z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .hamburger-btn:hover {
@@ -1603,8 +1610,8 @@ html {
 
 /* Responsive Styles */
 
-/* Large Tablets and Small Desktops (769px - 1024px) */
-@media (max-width: 1024px) {
+/* Large Tablets and Small Desktops (771px - 1024px) */
+@media (min-width: 771px) and (max-width: 1024px) {
     .main-content {
         margin-left: 260px;
         width: calc(100vw - 260px);
@@ -1651,12 +1658,14 @@ html {
     }
 }
 
-/* Tablets (481px - 768px) */
-@media (max-width: 768px) {
+/* Tablets and Mobile (up to 770px) */
+@media (max-width: 770px) {
     .sidebar {
         position: fixed;
         left: -260px;
+        top: 70px;
         height: calc(100vh - 70px);
+        width: 260px !important;
         z-index: 998;
         transition: left 0.3s ease;
         box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
@@ -1667,11 +1676,23 @@ html {
     }
     
     .sidebar.minimized {
-        left: -80px;
+        left: -260px; /* Keep it hidden on mobile even if minimized class is present */
     }
     
     .sidebar-overlay {
-        display: block;
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 997;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .sidebar-overlay[style*="block"] {
+        display: block !important;
     }
 
     .main-content {
@@ -1683,13 +1704,24 @@ html {
         overflow-x: hidden;
     }
     
+    .main-content.sidebar-minimized {
+        margin-left: 0 !important;
+        width: 100vw !important;
+    }
+    
     .table-wrapper {
         margin: 0 -16px;
         padding: 0 16px;
     }
     
     .hamburger-btn {
-        display: flex;
+        display: flex !important;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+        font-size: 20px;
+        align-items: center;
+        justify-content: center;
     }
     
     .header-center {
@@ -1711,15 +1743,32 @@ html {
         font-size: 11px;
     }
     
+    .dashboard-header {
+        padding: 0 12px;
+    }
+    
+    .header-left {
+        flex: 0 0 auto;
+        min-width: 44px;
+    }
+    
     .header-right {
         gap: 8px;
         flex: 0 0 auto;
+        min-width: auto;
     }
     
     .user-profile {
         padding: 4px 6px;
         gap: 0;
         min-width: auto;
+    }
+    
+    .logout-circle-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        margin-left: 8px;
     }
     
     .user-profile img,
@@ -2464,7 +2513,7 @@ html {
 }
 
 /* Landscape Orientation for Mobile */
-@media (max-width: 768px) and (orientation: landscape) {
+@media (max-width: 770px) and (orientation: landscape) {
     .content-header {
         padding: 12px 20px;
     }

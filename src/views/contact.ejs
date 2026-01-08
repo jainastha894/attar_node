@@ -127,7 +127,7 @@
   </section>
 
   <!-- Contact Form -->
-  <section id="contact-form" class="py-14 sm:py-20 bg-gradient-to-b from-gray-900 via-black to-gray-900">
+  <section id="contact-form" class="py-14 sm:py-20 bg-gradient-to-b from-gray-900 via-black to-gray-900" style="scroll-margin-top: 100px;">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-8 sm:mb-12 reveal">
         <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-3">Send us a message</p>
@@ -323,14 +323,8 @@
   </section>
 
   <%- include ('partials/footer.ejs') %>
-
+  
   <script>
-    // Navbar blur on scroll
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      if (window.scrollY > 10) nav.classList.add('nav-blur');
-      else nav.classList.remove('nav-blur');
-    });
 
     // Reveal on scroll
     const io = new IntersectionObserver((entries) => {
@@ -338,29 +332,6 @@
     }, { threshold: .15 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Mobile menu
-    const toggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('mobileMenu');
-    const iconOpen = document.getElementById('menuIconOpen');
-    const iconClose = document.getElementById('menuIconClose');
-
-    toggle.addEventListener('click', () => {
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
-        menu.classList.remove('open');
-      } else {
-        menu.classList.add('open');
-      }
-      iconOpen.classList.toggle('hidden', !isOpen);
-      iconClose.classList.toggle('hidden', isOpen);
-    });
-
-    // Close mobile menu on link click
-    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      menu.classList.remove('open');
-      iconOpen.classList.remove('hidden');
-      iconClose.classList.add('hidden');
-    }));
     // Form validation + success
     document.getElementById('contactForm').addEventListener('submit', (e) => {
       e.preventDefault();

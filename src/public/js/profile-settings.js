@@ -26,9 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.getElementById('phone')) {
             document.getElementById('phone').value = adminData.phone || '';
         }
-        if (document.getElementById('role')) {
-            document.getElementById('role').value = adminData.role || 'Administrator';
-        }
         if (document.getElementById('bio')) {
             document.getElementById('bio').value = adminData.bio || '';
         }
@@ -162,61 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('fullName', document.getElementById('fullName').value);
             formData.append('email', document.getElementById('email').value);
             formData.append('phone', document.getElementById('phone').value);
-            formData.append('role', document.getElementById('role').value);
             formData.append('bio', document.getElementById('bio').value);
             
             // Add profile picture if selected
             if (avatarFileInput && avatarFileInput.files[0]) {
                 formData.append('profilePic', avatarFileInput.files[0]);
-            }
-            
-            // Handle password change if provided
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (currentPassword || newPassword || confirmPassword) {
-                if (!currentPassword) {
-                    alert('Please enter current password');
-                    return;
-                }
-                if (!newPassword) {
-                    alert('Please enter new password');
-                    return;
-                }
-                if (newPassword !== confirmPassword) {
-                    alert('New password and confirm password do not match');
-                    return;
-                }
-                if (newPassword.length < 6) {
-                    alert('Password must be at least 6 characters long');
-                    return;
-                }
-                
-                // Change password separately
-                try {
-                    const passwordResponse = await fetch('/admin/profile/change-password', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            currentPassword,
-                            newPassword
-                        })
-                    });
-                    
-                    const passwordData = await passwordResponse.json();
-                    
-                    if (!passwordResponse.ok || !passwordData.success) {
-                        alert(passwordData.message || 'Failed to change password');
-                        return;
-                    }
-                } catch (error) {
-                    console.error('Error changing password:', error);
-                    alert('Error changing password');
-                    return;
-                }
             }
             
             // Update profile
@@ -241,11 +188,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const initial = (data.admin.fullName || 'A').charAt(0).toUpperCase();
                         profileAvatarText.textContent = initial;
                     }
-                    
-                    // Clear password fields
-                    document.getElementById('currentPassword').value = '';
-                    document.getElementById('newPassword').value = '';
-                    document.getElementById('confirmPassword').value = '';
                     
                     // Reload page after 1.5 seconds to show updated data
                     setTimeout(() => {

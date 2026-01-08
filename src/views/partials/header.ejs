@@ -144,21 +144,21 @@
   
   <script>
     // Highlight active navigation link based on current page
-    (function() {
+    (function () {
       const currentPath = window.location.pathname;
-      
+
       // Don't highlight anything on home page
       if (currentPath === '/' || currentPath === '/index' || currentPath === '/index.html') {
         return;
       }
-      
+
       // Map paths to navigation IDs
       const navMap = {
         '/shop': { desktop: 'nav-shop', mobile: 'mobile-nav-shop' },
         '/about': { desktop: 'nav-about', mobile: 'mobile-nav-about' },
         '/contact': { desktop: 'nav-contact', mobile: 'mobile-nav-contact' }
       };
-      
+
       // Find matching navigation item
       for (const [path, ids] of Object.entries(navMap)) {
         if (currentPath.startsWith(path)) {
@@ -168,7 +168,7 @@
             desktopNav.classList.remove('text-gray-300');
             desktopNav.classList.add('text-white', 'font-semibold');
           }
-          
+
           // Highlight mobile nav
           const mobileNav = document.getElementById(ids.mobile);
           if (mobileNav) {
@@ -179,53 +179,104 @@
         }
       }
     })();
-    
-    // Search functionality
-    document.addEventListener('DOMContentLoaded', function() {
+
+    // Global header behaviour (search, nav blur, mobile menu)
+    document.addEventListener('DOMContentLoaded', function () {
+      // ----- Search modal -----
       const searchBtn = document.getElementById('searchBtn');
       const searchModal = document.getElementById('searchModal');
       const closeSearchModal = document.getElementById('closeSearchModal');
       const closeSearchBtn = document.getElementById('closeSearchBtn');
       const searchForm = document.getElementById('searchForm');
       const headerSearchInput = document.getElementById('headerSearchInput');
-      
-      // Open search modal
+
       if (searchBtn && searchModal) {
-        searchBtn.addEventListener('click', function() {
+        searchBtn.addEventListener('click', function () {
           searchModal.classList.remove('hidden');
           setTimeout(() => {
             if (headerSearchInput) headerSearchInput.focus();
           }, 100);
         });
       }
-      
-      // Close search modal
+
       if (closeSearchModal) {
-        closeSearchModal.addEventListener('click', function() {
+        closeSearchModal.addEventListener('click', function () {
           searchModal.classList.add('hidden');
         });
       }
-      
+
       if (closeSearchBtn) {
-        closeSearchBtn.addEventListener('click', function() {
+        closeSearchBtn.addEventListener('click', function () {
           searchModal.classList.add('hidden');
         });
       }
-      
-      // Close on Escape key
-      document.addEventListener('keydown', function(e) {
+
+      document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && searchModal && !searchModal.classList.contains('hidden')) {
           searchModal.classList.add('hidden');
         }
       });
-      
-      // Handle search form submission
+
       if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
+        searchForm.addEventListener('submit', function (e) {
           e.preventDefault();
           const query = headerSearchInput ? headerSearchInput.value.trim() : '';
           if (query) {
             window.location.href = `/shop?q=${encodeURIComponent(query)}`;
+          }
+        });
+      }
+
+      // ----- Navbar blur on scroll -----
+      const nav = document.getElementById('navbar');
+      if (nav) {
+        const applyNavBlur = () => {
+          if (window.scrollY > 10) {
+            nav.classList.add('nav-blur');
+          } else {
+            nav.classList.remove('nav-blur');
+          }
+        };
+
+        applyNavBlur();
+        window.addEventListener('scroll', applyNavBlur);
+      }
+
+      // ----- Mobile menu / hamburger -----
+      const toggle = document.getElementById('menuToggle');
+      const menu = document.getElementById('mobileMenu');
+      const iconOpen = document.getElementById('menuIconOpen');
+      const iconClose = document.getElementById('menuIconClose');
+
+      if (toggle && menu && iconOpen && iconClose) {
+        const closeMenu = () => {
+          menu.classList.remove('open');
+          iconOpen.classList.remove('hidden');
+          iconClose.classList.add('hidden');
+        };
+
+        toggle.addEventListener('click', () => {
+          const isOpen = menu.classList.contains('open');
+          if (isOpen) {
+            closeMenu();
+          } else {
+            menu.classList.add('open');
+            iconOpen.classList.add('hidden');
+            iconClose.classList.remove('hidden');
+          }
+        });
+
+        // Close mobile menu when a link is clicked
+        menu.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', () => {
+            closeMenu();
+          });
+        });
+
+        // Ensure correct state when resizing between mobile/desktop
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 768) {
+            closeMenu();
           }
         });
       }
