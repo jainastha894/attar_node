@@ -10,7 +10,8 @@
     "Clear Glass Bottles",
     "Amber Glass Jars",
     "Clear Glass Jars",
-    "Spray Bottles"
+    "Spray Bottles",
+    "packaging boxes"
   ],
   "sizeList": [
     "3ml",
@@ -37,10 +38,13 @@
     "PET Plastic"
   ],
   "fragranceList": [
-    "Rose",
     "Oud",
     "Musk",
-    "Sandalwood"
+    "Sandalwood",
+    "Floral",
+    "Aqua",
+    "Indian Attars",
+    "Gourmend"
   ],
   "jarBottleList": [
     "Perfume Bottles",
