@@ -1,19 +1,21 @@
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;600&display=swap');
 
-    :root{
-      --gold:#d4af37;
-      --gold-deep:#b8860b;
-      --ink:#0a0a0a;
+    :root {
+      --gold: #d4af37;
+      --gold-deep: #b8860b;
+      --ink: #0a0a0a;
     }
 
-    *{box-sizing:border-box}
+    * {
+      box-sizing: border-box
+    }
 
 
-    body{
-      font-family:'Montserrat',sans-serif;
-      letter-spacing:.2px;
-      overflow-x:hidden;
-      background:#0b0b0b;
+    body {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .2px;
+      overflow-x: hidden;
+      background: #0b0b0b;
       width: 100%;
       margin: 0;
       padding: 0;
@@ -21,248 +23,307 @@
 
     /* ========== CUSTOM SCROLLBAR STYLING ========== */
     ::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+      width: 10px;
+      height: 10px;
     }
 
     ::-webkit-scrollbar-track {
-        background: #0b0b0b;
-        border-radius: 5px;
+      background: #0b0b0b;
+      border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb {
-        background: #d4af37;
-        border-radius: 5px;
-        border: 2px solid #0b0b0b;
+      background: #d4af37;
+      border-radius: 5px;
+      border: 2px solid #0b0b0b;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: #b8860b;
+      background: #b8860b;
     }
 
     ::-webkit-scrollbar-corner {
-        background: #0b0b0b;
+      background: #0b0b0b;
     }
 
     * {
-        scrollbar-width: thin;
-        scrollbar-color: #d4af37 #0b0b0b;
+      scrollbar-width: thin;
+      scrollbar-color: #d4af37 #0b0b0b;
     }
 
     html {
-        scroll-behavior: smooth;
+      scroll-behavior: smooth;
     }
 
-    .cormorant{font-family:'Cormorant Garamond',serif}
+    .cormorant {
+      font-family: 'Cormorant Garamond', serif
+    }
 
     /* Hero */
-    .hero-gradient{
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(212,175,55,.12), transparent 60%),
-                  radial-gradient(1000px 500px at 90% 20%, rgba(184,134,11,.10), transparent 60%),
-                  linear-gradient(135deg, #0b0b0b 0%, #111111 55%, #1a1a1a 100%);
-      position:relative;
+    .hero-gradient {
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(212, 175, 55, .12), transparent 60%),
+        radial-gradient(1000px 500px at 90% 20%, rgba(184, 134, 11, .10), transparent 60%),
+        linear-gradient(135deg, #0b0b0b 0%, #111111 55%, #1a1a1a 100%);
+      position: relative;
     }
-    .hero-pattern:before{
-      content:'';
-      position:absolute; inset:0;
+
+    .hero-pattern:before {
+      content: '';
+      position: absolute;
+      inset: 0;
       background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><g fill="%23d4af37" fill-opacity=".08"><circle cx="20" cy="20" r="1.2"/><circle cx="80" cy="40" r="1"/><circle cx="40" cy="120" r="1"/><circle cx="120" cy="80" r="1"/></g></svg>') repeat;
-      opacity:.25;
-      pointer-events:none;
+      opacity: .25;
+      pointer-events: none;
     }
 
     /* Subtle float */
-    .float-slow{animation:float 8s ease-in-out infinite}
-    .float-slower{animation:float 10s ease-in-out infinite 1.2s}
-    @keyframes float{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-10px)}
+    .float-slow {
+      animation: float 8s ease-in-out infinite
+    }
+
+    .float-slower {
+      animation: float 10s ease-in-out infinite 1.2s
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
     }
 
     /* Reveal */
-    .reveal{opacity:0; transform:translateY(24px); transition:all .8s cubic-bezier(.25,.46,.45,.94)}
-    .reveal.show{opacity:1; transform:translateY(0)}
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: all .8s cubic-bezier(.25, .46, .45, .94)
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
 
     /* Luxury card hover */
-    .lux-card{transition:transform .5s cubic-bezier(.25,.46,.45,.94), box-shadow .5s}
-    .lux-card:hover{transform:translateY(-6px); box-shadow:0 22px 50px rgba(0,0,0,.18)}
+    .lux-card {
+      transition: transform .5s cubic-bezier(.25, .46, .45, .94), box-shadow .5s
+    }
+
+    .lux-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, .18)
+    }
 
     /* Gold outline on hover */
-    .lux-glow{position:relative}
-    .lux-glow:before{
-      content:''; position:absolute; inset:-2px; border-radius:999px;
-      background:linear-gradient(45deg,var(--gold),#f0d97c,var(--gold-deep));
-      z-index:-1; opacity:0; transition:opacity .3s;
+    .lux-glow {
+      position: relative
     }
-    .lux-glow:hover:before{opacity:.6}
+
+    .lux-glow:before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      background: linear-gradient(45deg, var(--gold), #f0d97c, var(--gold-deep));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .lux-glow:hover:before {
+      opacity: .6
+    }
 
     /* Fluid headings (keeps proportions on mobile) */
-    .h1-fluid{font-size:clamp(2.2rem, 5.5vw, 5rem)}
-    .h2-fluid{font-size:clamp(1.8rem, 3.8vw, 3rem)}
-    .h3-fluid{font-size:clamp(1.25rem, 2.2vw, 1.75rem)}
+    .h1-fluid {
+      font-size: clamp(2.2rem, 5.5vw, 5rem)
+    }
+
+    .h2-fluid {
+      font-size: clamp(1.8rem, 3.8vw, 3rem)
+    }
+
+    .h3-fluid {
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem)
+    }
 
     /* Navbar blur on scroll */
-    .nav-blur{backdrop-filter:blur(14px); background:rgba(12,12,12,.75); border-bottom:1px solid rgba(212,175,55,.15)}
+    .nav-blur {
+      backdrop-filter: blur(14px);
+      background: rgba(12, 12, 12, .75);
+      border-bottom: 1px solid rgba(212, 175, 55, .15)
+    }
 
     /* Bottle subtle glow */
-    .bottle-glow{filter:drop-shadow(0 0 22px rgba(212,175,55,.28))}
-/* Mobile menu animation */
-.mobile-panel {
-    transform-origin: top;
-    transform: scaleY(0);
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: transform .3s ease, opacity .3s ease, max-height .3s ease;
-}
+    .bottle-glow {
+      filter: drop-shadow(0 0 22px rgba(212, 175, 55, .28))
+    }
 
-.mobile-panel.open {
-    transform: scaleY(1);
-    opacity: 1;
-    max-height: 500px; /* adjust if menu is taller */
-    pointer-events: auto;
-}
+    /* Mobile menu animation */
+    .mobile-panel {
+      transform-origin: top;
+      transform: scaleY(0);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: transform .3s ease, opacity .3s ease, max-height .3s ease;
+    }
 
-/* ========== COMPREHENSIVE RESPONSIVE STYLES ========== */
+    .mobile-panel.open {
+      transform: scaleY(1);
+      opacity: 1;
+      max-height: 500px;
+      /* adjust if menu is taller */
+      pointer-events: auto;
+    }
 
-/* Large Tablets and Small Desktops (769px - 1024px) */
+    /* ========== COMPREHENSIVE RESPONSIVE STYLES ========== */
+
+    /* Large Tablets and Small Desktops (769px - 1024px) */
 
 
-/* Tablets (481px - 768px) */
+    /* Tablets (481px - 768px) */
 
-/* Mobile Devices (up to 480px) */
+    /* Mobile Devices (up to 480px) */
 
 
-/* Extra Small Devices (up to 360px) */
+    /* Extra Small Devices (up to 360px) */
 
-/* Landscape Orientation for Mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-  .hero-gradient {
-    padding: 1.5rem 1rem;
-  }
-  
-  .mobile-panel {
-    max-height: 300px;
-  }
-}
+    /* Landscape Orientation for Mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .hero-gradient {
+        padding: 1.5rem 1rem;
+      }
 
-/* Fix scrolling responsiveness - ensure proper spacing for fixed header */
-body {
-  scroll-padding-top: 100px; /* Account for fixed header */
-}
+      .mobile-panel {
+        max-height: 300px;
+      }
+    }
 
-/* Smooth scroll behavior for anchor links */
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+    /* Fix scrolling responsiveness - ensure proper spacing for fixed header */
+    body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
 
-/* Ensure sections have proper spacing when scrolled to */
-section {
-  scroll-margin-top: 100px;
-  overflow: visible;
-}
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
-/* Prevent nested scrollbars - ensure no container creates its own scrollbar */
-* {
-  box-sizing: border-box;
-}
+    /* Ensure sections have proper spacing when scrolled to */
+    section {
+      scroll-margin-top: 100px;
+      overflow: visible;
+    }
 
-/* Ensure main content containers don't create scrollbars */
-.max-w-5xl,
-.max-w-7xl,
-.max-w-3xl {
-  overflow: visible;
-}
+    /* Prevent nested scrollbars - ensure no container creates its own scrollbar */
+    * {
+      box-sizing: border-box;
+    }
 
-/* FAQ section specific - no nested scrolling */
-.space-y-5 {
-  overflow: visible;
-}
+    /* Ensure main content containers don't create scrollbars */
+    .max-w-5xl,
+    .max-w-7xl,
+    .max-w-3xl {
+      overflow: visible;
+    }
 
-.lux-card {
-  overflow: visible;
-}
+    /* FAQ section specific - no nested scrolling */
+    .space-y-5 {
+      overflow: visible;
+    }
 
-/* Contact form section specific adjustments */
-#contact-form {
-  scroll-margin-top: 120px;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
+    .lux-card {
+      overflow: visible;
+    }
 
-/* Map section adjustments */
-@media (max-width: 768px) {
-  #contact-form {
-    scroll-margin-top: 80px;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-  }
-  
-  section {
-    scroll-margin-top: 80px;
-  }
-}
+    /* Contact form section specific adjustments */
+    #contact-form {
+      scroll-margin-top: 120px;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
 
-/* Fix iframe responsiveness */
-iframe {
-  max-width: 100%;
-  height: auto;
-  min-height: 300px;
-}
+    /* Map section adjustments */
+    @media (max-width: 768px) {
+      #contact-form {
+        scroll-margin-top: 80px;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
 
-@media (max-width: 480px) {
-  iframe {
-    min-height: 250px;
-  }
-}
+      section {
+        scroll-margin-top: 80px;
+      }
+    }
 
-/* Fix double scrollbar issue - ensure only html/body scrolls */
-html {
-  height: auto;
-  min-height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+    /* Fix iframe responsiveness */
+    iframe {
+      max-width: 100%;
+      height: auto;
+      min-height: 300px;
+    }
 
-body {
-  height: auto;
-  min-height: 100%;
-  overflow-x: hidden;
-  overflow-y: visible;
-  position: relative;
-}
+    @media (max-width: 480px) {
+      iframe {
+        min-height: 250px;
+      }
+    }
 
-/* Remove any overflow from main content containers that could create nested scrollbars */
-section {
-  overflow: visible;
-  position: relative;
-}
+    /* Fix double scrollbar issue - ensure only html/body scrolls */
+    html {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
 
-/* Ensure content containers don't create scrollbars */
-.max-w-5xl,
-.max-w-7xl,
-.max-w-3xl {
-  overflow: visible;
-}
+    body {
+      height: auto;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+      position: relative;
+    }
 
-/* Ensure FAQ and other content sections don't create scrollbars */
-.space-y-5,
-.bg-gradient-to-b,
-.bg-white,
-.bg-gradient-to-b {
-  overflow: visible;
-}
+    /* Remove any overflow from main content containers that could create nested scrollbars */
+    section {
+      overflow: visible;
+      position: relative;
+    }
 
-/* Ensure lux-card doesn't create scrollbars */
-.lux-card {
-  overflow: visible;
-}
+    /* Ensure content containers don't create scrollbars */
+    .max-w-5xl,
+    .max-w-7xl,
+    .max-w-3xl {
+      overflow: visible;
+    }
 
-/* Prevent nested scrollbars in main content areas */
-.mx-auto,
-.px-4,
-.px-6,
-.px-8 {
-  overflow: visible;
-}
+    /* Ensure FAQ and other content sections don't create scrollbars */
+    .space-y-5,
+    .bg-gradient-to-b,
+    .bg-white,
+    .bg-gradient-to-b {
+      overflow: visible;
+    }
+
+    /* Ensure lux-card doesn't create scrollbars */
+    .lux-card {
+      overflow: visible;
+    }
+
+    /* Prevent nested scrollbars in main content areas */
+    .mx-auto,
+    .px-4,
+    .px-6,
+    .px-8 {
+      overflow: visible;
+    }
