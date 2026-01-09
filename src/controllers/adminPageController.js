@@ -610,16 +610,41 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findByIdAndDelete(id);
+
+    // 1️⃣ Fetch product first
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
+
+    // 2️⃣ Correct uploads directory path
+    const uploadsDir = path.join(process.cwd(), "src", "public", "uploads");
+
+    // 3️⃣ Delete images
+    if (Array.isArray(product.images)) {
+      for (const img of product.images) {
+        const filename = path.basename(img); // handles /uploads/img.png or full URLs
+        const fullPath = path.join(uploadsDir, filename);
+
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        } else {
+          console.warn("File not found:", fullPath);
+        }
+      }
+    }
+
+    // 4️⃣ Delete product from DB
+    await Product.findByIdAndDelete(id);
+
     res.json({ success: true, message: "Product deleted successfully" });
+
   } catch (error) {
     console.error("Delete product error:", error);
     res.status(500).json({ success: false, message: "Error deleting product" });
   }
 };
+
 
 export const toggleActive = async (req, res) => {
   try {
