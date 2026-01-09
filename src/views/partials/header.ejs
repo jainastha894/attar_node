@@ -69,46 +69,6 @@
 
           <!-- Actions -->
           <div class="flex items-center gap-3">
-            <!-- Search Modal -->
-            <div id="searchModal" class="fixed inset-0 z-50 hidden">
-              <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="closeSearchModal"></div>
-              <div class="absolute inset-0 p-4 sm:p-8 flex items-start justify-center pt-20 sm:pt-32">
-                <div class="bg-white rounded-2xl max-w-2xl w-full relative">
-                  <button id="closeSearchBtn" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 grid place-items-center z-10">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                  <div class="p-6 sm:p-8">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Search Products</h2>
-                    <form id="searchForm" action="/shop" method="GET" class="flex gap-3">
-                      <input 
-                        type="text" 
-                        id="headerSearchInput" 
-                        name="q" 
-                        placeholder="Search for products..." 
-                        class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[color:var(--gold)] focus:border-[color:var(--gold)] text-gray-800"
-                        autocomplete="off"
-                      />
-                      <button 
-                        type="submit" 
-                        class="px-6 py-3 bg-[color:var(--gold)] text-black rounded-lg font-semibold hover:bg-[color:var(--gold-deep)] transition"
-                      >
-                        Search
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <button id="searchBtn" aria-label="search" class="p-2 text-white hover:text-[color:var(--gold)] transition">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M21 21l-4.8-4.8M10.5 18a7.5 7.5 0 110-15 7.5 7.5 0 010 15z"></path>
-              </svg>
-            </button>
-
 
             <!-- Mobile menu button -->
             <button id="menuToggle" class="md:hidden p-2 text-white hover:text-[color:var(--gold)]" aria-label="menu">
