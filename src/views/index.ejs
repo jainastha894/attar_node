@@ -386,27 +386,7 @@
                     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } })
                 }, { threshold: .15 });
                 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-                // Mobile menu
-                const toggle = document.getElementById('menuToggle');
-                const menu = document.getElementById('mobileMenu');
-                const iconOpen = document.getElementById('menuIconOpen');
-                const iconClose = document.getElementById('menuIconClose');
-                toggle.addEventListener('click', () => {
-                    const isOpen = menu.classList.contains('open');
-                    if (isOpen) {
-                        menu.classList.remove('open');
-                    } else {
-                        menu.classList.add('open');
-                    }
-                    iconOpen.classList.toggle('hidden', !isOpen);
-                    iconClose.classList.toggle('hidden', isOpen);
-                });
-                // Close mobile menu on link click
-                menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-                    menu.classList.remove('open');
-                    iconOpen.classList.remove('hidden');
-                    iconClose.classList.add('hidden');
-                }));
+                
                 // Add to cart feedback
                 let cartCount = 0;
                 function updateCart(count) {
