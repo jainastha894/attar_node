@@ -13,6 +13,9 @@ html, body {
 body {
     background: #1a1a1a;
     color: #ffffff;
+     width: 100%;
+      margin: 0;
+      padding: 0;
 }
 
 /* ========== CUSTOM SCROLLBAR STYLING ========== */
