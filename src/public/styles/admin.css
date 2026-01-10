@@ -2806,22 +2806,33 @@ html {
             border-bottom: 2px solid #FFD700;
         }
 
-        .info-row {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid #333;
-        }
+/* Base layout */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
 
-        .info-label {
-            font-weight: 600;
-            color: #ffffff;
-        }
+/* Label */
+.info-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+}
 
-        .info-value {
-            color: #FFD700;
-        }
+/* Value — DO NOT BREAK LETTERS */
+.info-value {
+    font-size: 13px;
+    color: #FFD700;
+    text-align: right;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word; /* breaks at WORD level only */
+    max-width: 55%;
+}
 
         .btn-edit-profile {
             padding: 10px 24px;
