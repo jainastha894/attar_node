@@ -1676,7 +1676,7 @@ html {
         position: fixed;
         left: -260px;
         top: 70px;
-        height: calc(100vh - 110px);
+        height: calc(100vh - 190px);
         width: 260px !important;
         z-index: 998;
         transition: left 0.3s ease;
@@ -1698,7 +1698,7 @@ html {
         top: 70px;
         left: 0;
         width: 100%;
-        height: calc(100vh - 110px);
+        height: calc(100vh - 190px);
         background: rgba(0, 0, 0, 0.7);
         z-index: 997;
         animation: fadeIn 0.3s ease;
