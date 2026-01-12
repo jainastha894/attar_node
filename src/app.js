@@ -37,7 +37,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 60   // 60 days
+      maxAge: 1000 * 60 * 60 * 24 * 60 *2,   // 60 days *2
+      minAge: 1000 * 60 * 60 * 24 * 60 *2,  // 60 days *2
+ 
     },
   })
 );
