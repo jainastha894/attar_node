@@ -65,6 +65,10 @@ app.use(express.json()); // Parse JSON request bodies
 app.use("/", pageRoutes);
 app.use(adminRoutes);
 
+//404
+app.use((req, res) => {
+  res.status(404).render("404");
+});
 
 app.listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}`)
