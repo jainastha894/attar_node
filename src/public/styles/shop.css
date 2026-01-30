@@ -16,6 +16,9 @@
       letter-spacing: .2px;
       overflow-x: hidden;
       background: #fff;
+     width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     /* ========== CUSTOM SCROLLBAR STYLING ========== */
@@ -439,13 +442,22 @@
     max-height: 80vh;
     overflow-y: auto;
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 }
 
 /* Mobile Devices (up to 480px) */
 @media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
+ 
   
   .catalogue-filter-box {
     width: 100%;
@@ -480,6 +492,17 @@
   .sheet-backdrop {
     background: rgba(0, 0, 0, 0.65);
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 }
 
 /* Extra Small Devices (up to 360px) */
@@ -492,6 +515,17 @@
     grid-template-columns: 1fr !important;
     width: 100%;
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
   
   
   
@@ -502,4 +536,15 @@
   .sheet {
     max-height: 70vh;
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 }

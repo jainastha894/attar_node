@@ -11,6 +11,9 @@
             overflow-x: hidden;
             font-weight: 300;
             letter-spacing: 0.5px;
+             width: 100%;
+      margin: 0;
+      padding: 0;
         }
         
         .cormorant {
@@ -290,4 +293,15 @@
                 border-right-color: white !important;
                 border-left-color: transparent !important;
             }
+            body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
         }

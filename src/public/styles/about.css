@@ -15,6 +15,9 @@
         letter-spacing: .2px;
         overflow-x: hidden;
         background: #0b0b0b;
+         width: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     /* ========== CUSTOM SCROLLBAR STYLING ========== */
@@ -244,13 +247,22 @@
   .timeline-dot {
     display: none;
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 }
 
 /* Mobile Devices (up to 480px) */
 @media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
+ 
   .map-container {
     width: 100vw;
   }
@@ -292,6 +304,17 @@
   .mobile-panel {
     max-height: 300px;
   }
+  body {
+      scroll-padding-top: 100px;
+      /* Account for fixed header */
+    }
+
+    /* Smooth scroll behavior for anchor links */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 }
         #map-body {
       margin: 0;
@@ -337,3 +360,4 @@
       left: 92%;
       transform: translate(-50%, -50%) rotate(-7deg);
     }
+    
