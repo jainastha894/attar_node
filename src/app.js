@@ -9,6 +9,7 @@ import { randomUUID } from "crypto";
 import { passportConfig } from "./config/passportConfig.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import pageRoutes from "./routes/pageRoutes.js";
+import { sitemapRouter } from "./routes/sitemapRoutes.js";
 dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
@@ -87,6 +88,7 @@ app.get("/healthz", async (_req, res) => {
 // Routes
 app.use("/", pageRoutes);
 app.use(adminRoutes);
+app.use(sitemapRouter);
 
 // 404 handler (must stay after all other routes)
 app.use((req, res) => {
