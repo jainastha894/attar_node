@@ -1,33 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Arjanmal Attarchand | Delhi NCR Glass & Attar Bottle Heritage Since 1904</title>
-
-    <meta name="description"
-        content="Discover the legacy of Arjanmal Attarchand—exporters of glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars serving Delhi NCR (New Delhi, Old Delhi, Gurugram, Noida, Faridabad, Ghaziabad) since 1904." />
-
-    <meta name="keywords"
-        content="about Arjanmal Attarchand, glass bottles Delhi NCR, perfume bottles New Delhi, attar bottles Old Delhi, aluminum bottles Noida, glass jars Gurugram, heritage packaging Faridabad, wholesale bottles Ghaziabad" />
-    <link rel="canonical" href="https://arjanmalattarchand.com/about" />
-
+    <% const seo = seoData || {}; %>
+    <title><%= seo.title || "About Arjanmal Attarchand" %></title>
+    <% if (seo.description) { %><meta name="description" content="<%= seo.description %>" /><% } %>
+    <% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>" /><% } %>
+    <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/about' %>" />
     <meta property="og:type" content="website" />
-
-    <meta property="og:title"
-        content="About Arjanmal Attarchand | Delhi NCR Glass & Attar Bottle Heritage Since 1904" />
-
-    <meta property="og:description"
-        content="Heritage exporters of glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars across Delhi NCR and beyond." />
-
-    <meta property="og:url" content="https://arjanmalattarchand.com/about." />
-
-    <meta property="og:image"
-        content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
-
+    <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
+    <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
+    <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/about' %>" />
+    <meta property="og:image" content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
     <meta name="twitter:card" content="summary_large_image" />
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/about.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -121,11 +108,11 @@
                         <p>
                             Our operations combine heritage craftsmanship with modern technology to deliver packaging
                             that is both functional and refined. From bespoke attar vials to high-end perfume bottles,
-                            we provide tailored glass packaging designed to elevate every brand’s presence and preserve
+                            we provide tailored glass packaging designed to elevate every brandâ€™s presence and preserve
                             the purity of every product.</p>
                         <p>
                             Driven by quality, precision, and reliability, Arjanmal Attar Chand continues to serve
-                            leading perfumers, exporters, and manufacturers across India and beyond — offering
+                            leading perfumers, exporters, and manufacturers across India and beyond â€” offering
                             end-to-end glass packaging solutions that reflect excellence in every detail.
                         </p>
                         <h6 style="font-weight: bold;">EST. 1904</h6>
@@ -185,9 +172,9 @@
                         <div
                             class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-2xl border border-amber-100 max-w-xs">
                             <p class="text-sm text-gray-600 italic font-light leading-relaxed">
-                                "A fragrance should be like poetry—it should move the soul and awaken memories."
+                                "A fragrance should be like poetryâ€”it should move the soul and awaken memories."
                             </p>
-                            <div class="text-xs text-amber-600 mt-2 font-medium">— Master Haji Abdul Rahman</div>
+                            <div class="text-xs text-amber-600 mt-2 font-medium">â€” Master Haji Abdul Rahman</div>
                         </div>
                     </div>
                 </div>
@@ -237,8 +224,8 @@
                     </div>
                     <h3 class="text-2xl font-light text-gray-900 mb-6 cormorant">Material Excellence</h3>
                     <p class="text-gray-600 font-light leading-relaxed">
-                        We source only the finest raw materials—high-grade glass, durable aluminum, and premium
-                        finishes—to ensure that every bottle and jar meets international standards of strength, clarity,
+                        We source only the finest raw materialsâ€”high-grade glass, durable aluminum, and premium
+                        finishesâ€”to ensure that every bottle and jar meets international standards of strength, clarity,
                         and elegance.
                     </p>
                 </div>
@@ -398,7 +385,7 @@
                     </div>
                     <h3 class="text-xl font-light text-gray-900 mb-4 cormorant">Excellence</h3>
                     <p class="text-gray-600 font-light text-sm leading-relaxed">
-                        We pursue perfection in every detail — from material sourcing to the final finishing —
+                        We pursue perfection in every detail â€” from material sourcing to the final finishing â€”
                         delivering products that meet global standards.
                     </p>
                 </div>

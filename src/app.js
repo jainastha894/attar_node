@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import passport from "passport";
 import path from "path";
 import { fileURLToPath } from "url";
+import { randomUUID } from "crypto";
 import { passportConfig } from "./config/passportConfig.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import pageRoutes from "./routes/pageRoutes.js";
@@ -37,9 +38,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 60 *2,   // 60 days *2
-      minAge: 1000 * 60 * 60 * 24 * 60 *2,  // 60 days *2
- 
+      maxAge: 1000 * 60 * 60 * 24 * 60 * 6,   // 60 days *6
+      minAge: 1000 * 60 * 60 * 24 * 60 * 6,  // 60 days *6
+
     },
   })
 );
@@ -63,9 +64,61 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Parse JSON request bodies
 
+// Attach a request id for tracing across logs and responses
+app.use((req, res, next) => {
+  const requestId = randomUUID();
+  req.id = requestId;
+  res.setHeader("X-Request-ID", requestId);
+  next();
+});
+
+// Health check for uptime monitors and orchestrators
+app.get("/healthz", async (_req, res) => {
+  const states = ["disconnected", "connected", "connecting", "disconnecting"];
+  const state = states[mongoose.connection.readyState] || "unknown";
+  const healthy = state === "connected";
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? "ok" : "degraded",
+    dbState: state,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Routes
 app.use("/", pageRoutes);
 app.use(adminRoutes);
+
+// 404 handler (must stay after all other routes)
+app.use((req, res) => {
+  // Prefer HTML if the client accepts it, otherwise JSON for APIs
+  const wantsJson = req.path.startsWith("/api") || req.accepts("json") && !req.accepts("html");
+  if (!wantsJson && req.accepts("html")) {
+    return res.status(404).render("404", { url: req.originalUrl, requestId: req.id });
+  }
+  return res.status(404).json({ error: "Not Found", path: req.originalUrl, requestId: req.id });
+});
+
+// Error handler for unexpected server errors
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", {
+    id: req.id,
+    method: req.method,
+    path: req.originalUrl,
+    message: err.message,
+    stack: err.stack,
+  });
+
+  res.setHeader("Retry-After", "120"); // hint clients to retry after 2 minutes
+
+  const wantsJson = req.path.startsWith("/api") || req.accepts("json") && !req.accepts("html");
+  if (!wantsJson && req.accepts("html")) {
+    return res
+      .status(500)
+      .render("500", { message: "Something went wrong.", requestId: req.id });
+  }
+  return res.status(500).json({ error: "Internal Server Error", requestId: req.id });
+});
 
 
 app.listen(PORT, () =>

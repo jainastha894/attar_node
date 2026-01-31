@@ -1,20 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Arjanmal Attarchand | Delhi NCR Glass Bottles & Attar Packaging Since 1904</title>
-    <meta name="description"
-        content="Arjanmal Attarchand supplies glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars across Delhi NCR (New Delhi, Old Delhi, Gurugram, Noida, Faridabad, Ghaziabad) with heritage quality since 1904." />
-    <meta name="keywords"
-        content="glass bottles Delhi NCR, perfume bottles New Delhi, attar bottles Old Delhi, aluminum bottles Noida, glass jars Gurugram, packaging Faridabad, wholesale bottles Ghaziabad" />
-    <link rel="canonical" href="https://arjanmalattarchand.com/" />
+    <% const seo = seoData || {}; %>
+    <title><%= seo.title || "Arjanmal Attarchand | Delhi NCR Bottles & Packaging" %></title>
+    <% if (seo.description) { %><meta name="description" content="<%= seo.description %>" /><% } %>
+    <% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>" /><% } %>
+    <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/' %>" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Arjanmal Attarchand | Delhi NCR Glass Bottles & Attar Packaging Since 1904" />
-    <meta property="og:description"
-        content="Exporters of glass bottles, fancy perfume bottles, perfume attar bottles, aluminum bottles, and glass jars serving Delhi NCR and global partners." />
-    <meta property="og:url" content="https://arjanmalattarchand.com/" />
+    <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
+    <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
+    <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/' %>" />
     <meta property="og:image" content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -100,7 +98,7 @@
                                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
-                                        <p class="text-amber-800 font-medium">Est. 1904 — Lahore to New Delhi</p>
+                                        <p class="text-amber-800 font-medium">Est. 1904 â€” Lahore to New Delhi</p>
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +262,7 @@
                         <p class="text-gray-600">Drawing from generations of craftsmanship, our vessels reflect a legacy
                             of
                             artistry,
-                            reimagined for today’s packaging and presentation needs.</p>
+                            reimagined for todayâ€™s packaging and presentation needs.</p>
                     </div>
                     <div class="lux-card rounded-2xl border border-gray-100 p-7 reveal bg-white">
                         <div class="w-12 h-12 rounded-full bg-amber-100 grid place-items-center mb-5">
@@ -447,3 +445,5 @@
 </body>
 
 </html>
+
+

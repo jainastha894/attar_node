@@ -1,10 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Products — Arjan Attars</title>
+  <% const seo = seoData || {}; %>
+  <title><%= seo.title || "Wholesale Perfume & Attar Bottles (2ml–500ml) | Arjanmal Attarchand" %></title>
+  <% if (seo.description) { %><meta name="description" content="<%= seo.description %>" /><% } %>
+  <% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>" /><% } %>
+  <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
+  <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
+  <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
+  <meta property="og:image" content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="styles/shop.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- <link rel="stylesheet" href="/styles/shop.css"> -->
@@ -445,7 +455,7 @@
             });
           }
 
-          // If All selected → no jar/bottle filtering (case-insensitive check)
+          // If All selected â†’ no jar/bottle filtering (case-insensitive check)
           if (selectedJar && selectedJar.toLowerCase() === "all") {
             // Apply search filter if any
             if (term) {
@@ -871,3 +881,4 @@
 </body>
 
 </html>
+
