@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Page Not Found | Arjanmal Attarchand</title>
-  <meta name="robots" content="noindex" />
-  <link rel="canonical" href="https://arjanmalattarchand.com/" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/styles/404.css" />
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <meta charset="UTF-8">
+
+    <!-- Mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>404 Not Found</title>
 </head>
+<body style="
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+">
 
-<body class="bg-black text-white min-h-screen flex flex-col">
-  <%- include('partials/header.ejs') %>
+    <div style="text-align: center; padding: 20px;">
 
-    <main class="flex-1 flex items-center justify-center px-6 pt-28 pb-20">
-      <div class="max-w-3xl w-full text-center space-y-8">
-        <p class="text-sm tracking-[0.3em] uppercase text-gray-400">Error 404</p>
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white">
-          We could not find <span class="text-[color:var(--gold)]">
-            <%= url %>
-          </span>
+        <h1 style="
+            font-size: clamp(48px, 18vw, 90px);
+            margin: 0 0 10px;
+        ">
+            404
         </h1>
-        <p class="text-lg text-gray-300">
-          The page you are looking for may have moved or no longer exists. Return home or tell us what you need and we
-          will help.
-        </p>
-        <p class="text-sm text-gray-500">Request ID: <%= requestId %>
-        </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="/" class="btn-primary">Back to home</a>
-          <a href="/contact" class="btn-secondary">Contact us</a>
-        </div>
-      </div>
-    </main>
 
-    <%- include('partials/footer.ejs') %>
+        <p style="
+            font-size: clamp(14px, 4vw, 16px);
+            margin-bottom: 25px;
+        ">
+            Page not found
+        </p>
+
+        <a href="/" style="
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: clamp(13px, 4vw, 14px);
+            text-decoration: none;
+            border: 1px solid #000;
+            border-radius: 5px;
+            color: #000;
+        ">
+            Go to Home
+        </a>
+
+    </div>
+
 </body>
-
 </html>
