@@ -4,25 +4,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <% const seo = seoData || {}; %>
-  <title><%= seo.title || "Wholesale Perfume & Attar Bottles (2ml–500ml) | Arjanmal Attarchand" %></title>
-  <% if (seo.description) { %><meta name="description" content="<%= seo.description %>" /><% } %>
-  <% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>" /><% } %>
-  <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
-  <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
-  <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
-  <meta property="og:image" content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="styles/shop.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- <link rel="stylesheet" href="/styles/shop.css"> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"
-    referrerpolicy="no-referrer"></script>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="/favicon.png">
+  <% const seo=seoData || {}; %>
+    <title>
+      <%= seo.title || "Wholesale Perfume & Attar Bottles (2ml–500ml) | Arjanmal Attarchand" %>
+    </title>
+    <% if (seo.description) { %>
+      <meta name="description" content="<%= seo.description %>" />
+      <% } %>
+        <% if (seo.keywords) { %>
+          <meta name="keywords" content="<%= seo.keywords %>" />
+          <% } %>
+            <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
+            <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
+            <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/shop' %>" />
+            <meta property="og:image"
+              content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <link rel="stylesheet" href="styles/shop.css">
+            <script src="https://cdn.tailwindcss.com"></script>
+            <!-- <link rel="stylesheet" href="/styles/shop.css"> -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"
+              referrerpolicy="no-referrer"></script>
+            <link rel="icon" href="/favicon.ico" type="image/x-icon">
+            <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+            <link rel="apple-touch-icon" href="/favicon.png">
 
 </head>
 
@@ -53,10 +60,10 @@
           <!-- Row 1: Search -->
           <div class="flex gap-3">
             <!-- hide this input -->
-            <input class="hidden" id="searchInput"/>
+            <input class="hidden" id="searchInput" />
             <!-- Mobile filter trigger -->
             <button id="openFilters"
-              class="sm:hidden p-2 px-4 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-gray-700">Filters</button>
+              class="lg:hidden p-2 px-4 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-gray-700">Filters</button>
           </div>
           <!-- Row 2: Sort + Count -->
           <div class="flex items-center justify-between gap-3">
@@ -83,17 +90,42 @@
           <aside class="hidden lg:block lg:w-64 flex-shrink-0">
             <div class="sticky top-24 bg-white border border-gray-100 rounded-2xl p-6">
               <h3 class="cormorant text-2xl text-gray-900 mb-4">Filters</h3>
-              <!-- Jars And Bottles -->
+
               <div class="mb-6">
-                <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
-                <select name="desktopfilter" class="grid grid-cols-2 gap-2">
-                  <option value="All"
-                    class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                    data-filter="all">All</option>
-                  <% units.subCategoryList.forEach(item=> { %>
-                    <option value="<%= item %>"
-                      class="filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                      data-filter="<%= item %>">
+                <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Sub Category</div>
+                <select name="desktopfilter"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[color:var(--gold)] text-sm">
+                  <option value="All">All</option>
+                  <% (units.subCategoryList || []).forEach(item=> { %>
+                    <option value="<%= item %>">
+                      <%= item %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+
+              <!-- Size Filter -->
+              <div class="mb-6">
+                <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Size</div>
+                <select name="sizefilter"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[color:var(--gold)] text-sm">
+                  <option value="All">All</option>
+                  <% (units.sizeList || []).forEach(item=> { %>
+                    <option value="<%= item %>">
+                      <%= item %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+
+              <!-- Material Filter -->
+              <div class="mb-6">
+                <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Material</div>
+                <select name="materialfilter"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[color:var(--gold)] text-sm">
+                  <option value="All">All</option>
+                  <% (units.materialList || []).forEach(item=> { %>
+                    <option value="<%= item %>">
                       <%= item %>
                     </option>
                     <% }); %>
@@ -111,10 +143,11 @@
             </div>
           </aside>
 
-            <!-- Products Grid -->
+          <!-- Products Grid -->
           <section id="products" class="flex-1">
             <!-- Grid: 2 columns on mobile -->
-            <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5 items-start">
+            <div id="productsGrid"
+              class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5 items-start">
               <!-- rendered via JS -->
             </div>
           </section>
@@ -131,16 +164,39 @@
           <button id="closeSheetBtn" class="px-3 py-1 rounded-md border border-gray-200">Close</button>
         </div>
         <div class="p-5 space-y-6 max-h-[65vh] overflow-y-auto">
+          <!-- Jars And Bottles -->
           <div>
-            <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Jars And Bottles</div>
-            <select name="jarbottlefilter" class="grid grid-cols-2 gap-2">
-              <option value="All"
-                class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                data-filter="All">All</option>
-              <% units.subCategoryList.forEach(item=> { %>
-                <option value="<%= item %>"
-                  class="m-filter filter-btn px-3 py-2 rounded-lg border border-gray-200 hover:border-[color:var(--gold)] text-sm"
-                  data-filter="<%= item %>">
+            <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Sub Category</div>
+            <select name="jarbottlefilter" class="w-full px-3 py-2 rounded-lg border border-gray-200">
+              <option value="All">All</option>
+              <% (units.subCategoryList || []).forEach(item=> { %>
+                <option value="<%= item %>">
+                  <%= item %>
+                </option>
+                <% }); %>
+            </select>
+          </div>
+
+          <!-- Size -->
+          <div>
+            <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Size</div>
+            <select name="sizefilter_mobile" class="w-full px-3 py-2 rounded-lg border border-gray-200">
+              <option value="All">All</option>
+              <% (units.sizeList || []).forEach(item=> { %>
+                <option value="<%= item %>">
+                  <%= item %>
+                </option>
+                <% }); %>
+            </select>
+          </div>
+
+          <!-- Material -->
+          <div>
+            <div class="text-xs text-gray-600 uppercase tracking-wider mb-2">Material</div>
+            <select name="materialfilter_mobile" class="w-full px-3 py-2 rounded-lg border border-gray-200">
+              <option value="All">All</option>
+              <% (units.materialList || []).forEach(item=> { %>
+                <option value="<%= item %>">
                   <%= item %>
                 </option>
                 <% }); %>
@@ -176,13 +232,13 @@
     </div>
 
     <%- include('partials/footer') %>
- <a href="https://wa.me/919811555255" class="whatsapp-float" target="_blank" rel="nofollow noopener"
+      <a href="https://wa.me/919811555255" class="whatsapp-float" target="_blank" rel="nofollow noopener"
         aria-label="Chat on WhatsApp"
         onclick="if(typeof trackWhatsAppClick === 'function') trackWhatsAppClick(null, 'Business Enquiry (Floating)', null, 'floating');">
         <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg"
-            alt="WhatsApp chat with Arjanmal Attarchand Delhi NCR" />
-    </a>
-    <script src="/js/whatsapp-tracker.js"></script>
+          alt="WhatsApp chat with Arjanmal Attarchand Delhi NCR" />
+      </a>
+      <script src="/js/whatsapp-tracker.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
       <script id="products-data" type="application/json">
   <%- JSON.stringify(products) %>
@@ -217,11 +273,11 @@
           return sortedProducts;
         }
 
-          document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
           // Apply initial sort
           const initialProducts = applySort(PRODUCTS);
           renderProducts(initialProducts);
-          
+
           // Check if product ID is in URL to open modal
           const urlParams = new URLSearchParams(window.location.search);
           const productId = urlParams.get('product');
@@ -264,7 +320,7 @@
           search: '',
           // null = no filter applied (show everything). When user clicks a filter it becomes
           // either a specific value (e.g. "Perfume Bottles") or the explicit "all" token.
-          JarsAndBottles: null,
+          subCategory: null,
           exquisiteFragnances: null,
           notes: new Set(),
           sort: 'name',
@@ -373,7 +429,7 @@
 
           // Update current displayed products
           currentDisplayedProducts = [...list];
-          
+
           // Update count
           countEl.textContent = `Showing ${list.length} product${list.length !== 1 ? 's' : ''}`;
 
@@ -439,57 +495,53 @@
           });
         }
 
-        function applyFilters(selectedJar) {
+        // Updated Apply Filter Logic
+        function applyFilters() {
           const term = state.search.toLowerCase().trim();
           let products = [...PRODUCTS];
 
-          // Apply industry filter if set from URL
+          // 1. Industry Filter (from URL)
           if (state.industry) {
             products = products.filter(p => {
               const industryList = p.units?.industryList || [];
-              // Ensure industryList is an array
-              if (!Array.isArray(industryList)) {
-                return false;
-              }
-              return industryList.includes(state.industry);
+              return Array.isArray(industryList) && industryList.includes(state.industry);
             });
           }
 
-          // If All selected â†’ no jar/bottle filtering (case-insensitive check)
-          if (selectedJar && selectedJar.toLowerCase() === "all") {
-            // Apply search filter if any
-            if (term) {
-              products = products.filter(p => 
-                p.name.toLowerCase().includes(term)
-              );
-            }
-            // Apply sort
-            products = applySort(products);
-            renderProducts(products);
-            return;
+          // 2. Search Filter
+          if (term) {
+            products = products.filter(p =>
+              p.name.toLowerCase().includes(term)
+            );
           }
 
-          let filteredProducts = products.filter(p => {
+          // 3. SubCategory (Jars And Bottles) Filter
+          if (state.subCategory && state.subCategory !== 'All') {
+            products = products.filter(p => {
+              const list = p.units?.subCategoryList || [];
+              return list.includes(state.subCategory);
+            });
+          }
 
-            /* ---------------- SEARCH FILTER ---------------- */
-            if (term && !p.name.toLowerCase().includes(term)) {
-              return false;
-            }
+          // 4. Size Filter
+          if (state.size && state.size !== 'All') {
+            products = products.filter(p => {
+              const list = p.units?.sizeList || [];
+              return list.includes(state.size);
+            });
+          }
 
-            /* ---------------- JAR/BOTTLE FILTER (using subCategoryList) ---------------- */
-            if (!p.units.subCategoryList) {
-              return false;
-            }
+          // 5. Material Filter
+          if (state.material && state.material !== 'All') {
+            products = products.filter(p => {
+              const list = p.units?.materialList || [];
+              return list.includes(state.material);
+            });
+          }
 
-            if (!p.units.subCategoryList.includes(selectedJar)) {
-              return false;
-            }
-
-            return true;
-          });
 
           // Apply sort to filtered products
-          filteredProducts = applySort(filteredProducts);
+          const filteredProducts = applySort(products);
           renderProducts(filteredProducts);
         }
 
@@ -531,7 +583,7 @@
           const initialProducts = applySort(PRODUCTS);
           renderProducts(initialProducts);
         }
-        
+
         // Handle search query from URL
         const searchQuery = urlParams.get('q');
         if (searchQuery) {
@@ -545,54 +597,38 @@
           // Search
           searchInput.addEventListener('input', (e) => {
             state.search = e.target.value;
-            applyFilters(state.search);
+            applyFilters();
           });
           // Sort
           sortSelect.addEventListener('change', (e) => {
             state.sort = e.target.value;
             // Apply sort to currently displayed products
-            const sorted = applySort(currentDisplayedProducts);
-            renderProducts(sorted);
+            applyFilters();
           });
 
-          // Desktop filter buttons
-          const colBtns = document.querySelectorAll('aside .filter-btn');
-          const exqBtns = document.querySelectorAll('aside .exq-filter');
-          const noteBtns = document.querySelectorAll('aside .note-filter');
-          function setFilterButtonState(btns, disabled) {
-            btns.forEach(b => {
-              b.disabled = disabled;
-              b.classList.toggle('opacity-50', disabled);
-              b.classList.toggle('pointer-events-none', disabled);
-            });
-          }
+          // Desktop filter inputs
+          const desktopCategory = document.querySelector('select[name="desktopfilter"]');
+          const desktopSize = document.querySelector('select[name="sizefilter"]');
+          const desktopMaterial = document.querySelector('select[name="materialfilter"]');
 
+          document.getElementById('applyDesktop').addEventListener('click', () => {
+            state.subCategory = desktopCategory ? desktopCategory.value : 'All';
+            state.size = desktopSize ? desktopSize.value : 'All';
+            state.material = desktopMaterial ? desktopMaterial.value : 'All';
+            applyFilters();
+          });
 
-          colBtns.forEach(btn => btn.addEventListener('click', () => {
-            // apply jars filter (including explicit "all") and disable Exquisite Fragnances
-            state.JarsAndBottles = btn.dataset.filter;
-            state.exquisiteFragnances = null;
-            setActive(colBtns, btn);
-            setActive(exqBtns, null);
-            setFilterButtonState(exqBtns, true);
-          }));
-          exqBtns.forEach(btn => btn.addEventListener('click', () => {
-            // apply exq filter and disable JarsAndBottles
-            state.exquisiteFragnances = btn.dataset.exq;
-            state.JarsAndBottles = null;
-            setActive(exqBtns, btn);
-            setActive(colBtns, null);
-            setFilterButtonState(colBtns, true);
-          }));
-          noteBtns.forEach(btn => btn.addEventListener('click', () => {
-            const n = btn.dataset.note;
-            if (state.notes.has(n)) { state.notes.delete(n); btn.classList.remove('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
-            else { state.notes.add(n); btn.classList.add('ring-2', 'ring-[color:var(--gold)]', 'border-[color:var(--gold)]'); }
-          }));
-          const desktopFilter = document.querySelector('select[name="desktopfilter"]');
-          document.getElementById('applyDesktop').addEventListener('click', () => applyFilters(desktopFilter.value));
           document.getElementById('clearDesktop').addEventListener('click', () => {
-            renderProducts(PRODUCTS);
+            // Reset state
+            state.subCategory = 'All';
+            state.size = 'All';
+            state.material = 'All';
+            // Reset UI
+            if (desktopCategory) desktopCategory.value = 'All';
+            if (desktopSize) desktopSize.value = 'All';
+            if (desktopMaterial) desktopMaterial.value = 'All';
+
+            applyFilters();
           });
 
           // Mobile sheet
@@ -605,8 +641,20 @@
           const clearmobile = document.getElementById('clearMobile');
 
           clearmobile.addEventListener('click', () => {
+            // Reset state
+            state.subCategory = 'All';
+            state.size = 'All';
+            state.material = 'All';
 
-            renderProducts(PRODUCTS);
+            // Reset UI (mobile inputs)
+            const mCats = document.querySelector('[name="jarbottlefilter"]');
+            const mSize = document.querySelector('[name="sizefilter_mobile"]');
+            const mMat = document.querySelector('[name="materialfilter_mobile"]');
+            if (mCats) mCats.value = 'All';
+            if (mSize) mSize.value = 'All';
+            if (mMat) mMat.value = 'All';
+
+            applyFilters();
             hideSheet();
           });
 
@@ -615,12 +663,20 @@
           applymobile.addEventListener('click', () => {
             // get select element correctly
             const jarbottlefilter = document.querySelector('[name="jarbottlefilter"]');
-            const selectedJar = jarbottlefilter.value;
-            console.log("Selected Jar1:", selectedJar);
-            applyFilters(selectedJar);
-            console.log("Selected Jar:", selectedJar);
+            const sizefilter = document.querySelector('[name="sizefilter_mobile"]');
+            const materialfilter = document.querySelector('[name="materialfilter_mobile"]');
+
+            state.subCategory = jarbottlefilter ? jarbottlefilter.value : 'All';
+            state.size = sizefilter ? sizefilter.value : 'All';
+            state.material = materialfilter ? materialfilter.value : 'All';
+
+            applyFilters();
             hideSheet();
           });
+
+
+
+
 
           function openSheet() {
             sheet.classList.remove('hidden');
@@ -643,7 +699,7 @@
           document.getElementById('xModal').addEventListener('click', closeProductModal);
         }
         // Modal - Make it globally accessible
-        window.openProductModal = function(id) {
+        window.openProductModal = function (id) {
 
 
           console.log("PRODUCTS:", PRODUCTS);
@@ -806,8 +862,8 @@
           // Build WhatsApp message
           function updateWhatsApp(imgPath = images[0]) {
             // Ensure absolute URL using BASE_URL
-            const imgUrl = imgPath.startsWith('http') 
-              ? imgPath 
+            const imgUrl = imgPath.startsWith('http')
+              ? imgPath
               : BASE_URL + (imgPath.startsWith('/') ? imgPath : '/' + imgPath);
 
             const sizeVal = sizeSelect ? sizeSelect.value : '';
@@ -881,4 +937,3 @@
 </body>
 
 </html>
-

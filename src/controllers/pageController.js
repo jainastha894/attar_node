@@ -1,8 +1,8 @@
-import path from "path";
-import Product from "../models/product.js";
-import Lead from "../models/lead.js";
-import ProductEnquiry from "../models/productEnquiry.js";
 import fs from "fs";
+import path from "path";
+import Lead from "../models/lead.js";
+import Product from "../models/product.js";
+import ProductEnquiry from "../models/productEnquiry.js";
 
 // Load SEO JSON once
 const seoPath = path.join(process.cwd(), "src", "config", "seo.json");
@@ -10,20 +10,19 @@ const seo = JSON.parse(fs.readFileSync(seoPath, "utf8"));
 
 // Load Units JSON once
 const unitsPath = path.join(process.cwd(), "src/config/units.json");
-const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
 export const renderHome = async (req, res) => {
   try {
     // Get signature products (max 3)
-    const signatureProducts = await Product.find({ 
-      active: true, 
-      signature: true 
+    const signatureProducts = await Product.find({
+      active: true,
+      signature: true
     }).limit(3).sort({ updatedAt: -1 });
-    
+
     // Get base URL for image links - use production domain
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    
-    res.render("index", { 
+
+    res.render("index", {
       seoData: seo.home,
       signatureProducts: signatureProducts || [],
       baseUrl
@@ -31,7 +30,7 @@ export const renderHome = async (req, res) => {
   } catch (error) {
     console.error("Home page error:", error);
     const baseUrl = process.env.BASE_URL || 'https://arjanmalattarchand.com';
-    res.render("index", { 
+    res.render("index", {
       seoData: seo.home,
       signatureProducts: [],
       baseUrl
@@ -53,9 +52,9 @@ export const submitContactForm = async (req, res) => {
 
     // Validate required fields
     if (!firstName || !lastName || !email || !subject || !message) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "All required fields must be filled" 
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be filled"
       });
     }
 
@@ -73,15 +72,15 @@ export const submitContactForm = async (req, res) => {
     await lead.save();
     console.log('✅ New lead created:', lead._id);
 
-    res.json({ 
-      success: true, 
-      message: "Thank you for contacting us! We'll get back to you soon." 
+    res.json({
+      success: true,
+      message: "Thank you for contacting us! We'll get back to you soon."
     });
   } catch (error) {
     console.error("Error submitting contact form:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Error submitting form. Please try again." 
+    res.status(500).json({
+      success: false,
+      message: "Error submitting form. Please try again."
     });
   }
 };
@@ -89,6 +88,9 @@ export const submitContactForm = async (req, res) => {
 export const renderShop = async (req, res) => {
   try {
     const { industry } = req.query;
+
+    // Read units dynamically to get latest updates
+    const unitsData = JSON.parse(fs.readFileSync(unitsPath, "utf-8"));
 
     const products = await Product.find({ active: true });
 
