@@ -38,7 +38,7 @@
         <h1 class="cormorant leading-[1.05] mb-4 text-4xl sm:text-6xl md:text-7xl lg:text-8xl">Contact <span
             class="text-[color:var(--gold)] italic">Us</span></h1>
         <p class="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-          Weâ€™d be delighted to assist with product inquiries, bulk orders, or custom container solutions.
+          We'd be delighted to assist with product inquiries, bulk orders, or custom container solutions.
         </p>
         <div class="mt-7">
           <button
@@ -81,8 +81,8 @@
             </svg>
           </div>
           <h3 class="cormorant text-xl text-gray-900 mb-2">Call Us</h3>
-          <p class="text-gray-600 text-sm leading-relaxed">+91 9311555255</p>
-          <p class="text-gray-500 text-xs mt-2">Monâ€“Sat: 10AMâ€“8PM</p>
+          <p class="text-gray-600 text-sm leading-relaxed"><a href="tel:+919811555255">+91 98115 55255</a></p>
+          <p class="text-gray-500 text-xs mt-2">Mon–Sat: 10AM–8PM</p>
         </div>
 
         <div class="lux-card bg-white rounded-2xl p-7 reveal">
@@ -105,8 +105,8 @@
             </svg>
           </div>
           <h3 class="cormorant text-xl text-gray-900 mb-2">Business Hours</h3>
-          <p class="text-gray-600 text-sm leading-relaxed">Monâ€“Sat: 10:00 AM â€“ 8:00 PM</p>
-          <p class="text-gray-600 text-sm leading-relaxed">Sun: 12:00 PM â€“ 6:00 PM</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Mon–Sat: 10:00 AM – 8:00 PM</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Sun: 12:00 PM – 6:00 PM</p>
         </div>
       </div>
     </div>
@@ -117,14 +117,14 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-8 sm:mb-12 reveal">
         <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-3">Send us a message</p>
-        <h2 class="cormorant text-white text-3xl sm:text-5xl">Letâ€™s start a <span
+        <h2 class="cormorant text-white text-3xl sm:text-5xl">Let&rsquo;s start a <span
             class="text-[color:var(--gold)] italic">conversation</span></h2>
-        <p class="text-gray-300 max-w-2xl mx-auto mt-3">Share your query or request a bespoke consultation. Weâ€™ll get
+        <p class="text-gray-300 max-w-2xl mx-auto mt-3">Share your query or request a bespoke consultation. We'll get
           back promptly.</p>
       </div>
 
       <div class="bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-8 reveal">
-        <form id="contactForm" class="space-y-6">
+        <form id="contactForm" class="space-y-6" data-whatsapp-number="919811555255">
           <div class="grid md:grid-cols-2 gap-6">
             <div>
               <label for="firstName" class="block text-xs tracking-wider uppercase text-gray-300 mb-2">First
@@ -150,7 +150,7 @@
             </div>
             <div>
               <label for="phone" class="block text-xs tracking-wider uppercase text-gray-300 mb-2">Phone</label>
-              <input id="phone" name="phone" type="tel" placeholder="+91 9311555255"
+              <input id="phone" name="phone" type="tel" placeholder="Your phone number"
                 class="form-input w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/60" />
               <div class="error-message text-red-400 text-sm mt-2 hidden"></div>
             </div>
@@ -177,10 +177,11 @@
           </div>
 
 
-          <div class="pt-2 text-center">
-            <button type="submit" class="bg-white gold-btn rounded-full px-9 py-3 text-sm font-semibold">Send
-              Message</button>
+          <div class="pt-2 flex flex-wrap justify-center gap-3">
+            <button type="submit" class="bg-white gold-btn rounded-full px-9 py-3 text-sm font-semibold">Send Message</button>
           </div>
+          <p class="text-gray-300 text-sm text-center">Send Message saves your enquiry and opens WhatsApp with your details. Tap Send in WhatsApp to finish.</p>
+          <p id="contactFormStatus" role="status" aria-live="polite" class="text-red-300 text-sm text-center hidden"></p>
         </form>
 
         <!-- Success state -->
@@ -190,8 +191,10 @@
               <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 class="cormorant text-2xl text-white mb-2">Message Sent</h3>
-          <p class="text-gray-300">Thanks for reaching out. Weâ€™ll respond within 24 hours.</p>
+          <h3 class="cormorant text-2xl text-white mb-2">Enquiry received</h3>
+          <p class="text-gray-300">Thank you. Your enquiry has been saved, and our team will get back to you.</p>
+          <a id="contactWhatsAppLink" target="_blank" rel="noopener noreferrer" class="inline-block mt-6 rounded-full px-8 py-3 bg-green-600 text-white font-semibold hover:bg-green-700">Send enquiry on WhatsApp</a>
+          <p class="text-gray-300 text-sm mt-3">If WhatsApp did not open, use the button above. Tap Send in WhatsApp to send your message.</p>
         </div>
       </div>
     </div>
@@ -237,7 +240,7 @@
           </div>
           <div class="mt-6">
             <button class="text-[color:var(--gold-deep)] hover:text-[color:var(--gold)] font-medium"
-              onclick="openMaps()">Get Directions â†’</button>
+              onclick="openMaps()">Get Directions →</button>
           </div>
         </div>
 
@@ -318,77 +321,6 @@
     }, { threshold: .15 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Form validation + success
-    document.getElementById('contactForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      // reset
-      document.querySelectorAll('.error-message').forEach(m => { m.classList.add('hidden'); m.textContent = ''; });
-      document.querySelectorAll('.form-input').forEach(i => { i.classList.remove('error', 'success'); });
-
-      const required = ['firstName', 'lastName', 'email', 'subject', 'message'];
-      let ok = true;
-
-      required.forEach(id => {
-        const el = document.getElementById(id);
-        const err = el.parentNode.querySelector('.error-message');
-        if (!el.value.trim()) {
-          el.classList.add('error'); err.textContent = 'This field is required'; err.classList.remove('hidden'); ok = false;
-        } else {
-          el.classList.add('success');
-        }
-      });
-      const email = document.getElementById('email');
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (email.value && !re.test(email.value)) {
-        email.classList.remove('success'); email.classList.add('error');
-        const err = email.parentNode.querySelector('.error-message');
-        err.textContent = 'Please enter a valid email'; err.classList.remove('hidden'); ok = false;
-      }
-
-      if (ok) {
-        const btn = e.target.querySelector('button[type="submit"]');
-        const txt = btn.textContent; 
-        btn.textContent = 'Sending...'; 
-        btn.disabled = true;
-        
-        // Collect form data
-        const formData = {
-          firstName: document.getElementById('firstName').value.trim(),
-          lastName: document.getElementById('lastName').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          subject: document.getElementById('subject').value,
-          message: document.getElementById('message').value.trim()
-        };
-        
-        // Submit to server
-        fetch('/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            e.target.classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
-          } else {
-            alert(data.message || 'Error sending message. Please try again.');
-            btn.textContent = txt;
-            btn.disabled = false;
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error sending message. Please try again.');
-          btn.textContent = txt;
-          btn.disabled = false;
-        });
-      }
-    });
-
     // FAQ toggle
     function toggleFAQ(btn) {
       const content = btn.parentNode.querySelector('.faq-content');
@@ -414,6 +346,7 @@
     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" />
   </a>
   <script src="/js/whatsapp-tracker.js"></script>
+  <script src="/js/contact-form.js"></script>
   <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'98293ea92755f4fe',t:'MTc1ODQ1NDM3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
 </body>
 
