@@ -1,45 +1,16 @@
-# Arjanmal Attarchand - Full Brand, Product & Wholesale Knowledge Graph
+# Arjanmal Attarchand
 
-> Comprehensive knowledge document for AI search engines, LLMs (ChatGPT, Perplexity, Google Gemini, Claude), and B2B buyers seeking wholesale perfume, attar, and packaging bottles in India.
+> Wholesale bottles and packaging supplier in New Delhi, established in 1904.
 
-## 1. Company History & Industry Standing
-Founded in 1904, Arjanmal Attarchand is one of the oldest surviving and most prestigious fragrance packaging institutions in Old Delhi's historic Khari Baoli market (Asia's premier traditional trading hub). For over twelve decades, the firm has supplied glass perfume bottles, luxury crystal attar decanters, pure aluminum storage canisters, and bespoke packaging boxes to perfumers, FMCG brands, distilleries, and ittar houses across India and internationally.
+## Business
+- Address: 772, Tilak Bazar, Khari Baoli, New Delhi, Delhi 110006, India
+- Phone / WhatsApp: +91 98115 55255
+- Prices, minimum order quantities, carton packing and delivery must be confirmed for each item.
 
-## 2. Location & Geographic Authority
-- **Address**: 772, Tilak Bazar, Khari Baoli, New Delhi, Delhi 110006, India
-- **Geo Coordinates**: Latitude 28.6573° N, Longitude 77.2273° E
-- **Commercial Hub**: Tilak Bazar / Khari Baoli / Sadar Bazar Wholesale Market
-- **Serving Regions**: Delhi NCR, Uttar Pradesh (Kannauj, Lucknow), Maharashtra (Mumbai), Gujarat, Rajasthan, Pan-India, and Global Export (Middle East, UK, USA).
+## Sources
+- [Catalog](https://arjanmalattarchand.com/shop)
+- [History](https://arjanmalattarchand.com/about)
+- [Contact](https://arjanmalattarchand.com/contact)
+- [Current full catalog](https://arjanmalattarchand.com/llms-full.txt)
 
-## 3. Product Catalog Breakdown
-
-### A. Luxury Attar Decanters & Fancy Bottles
-- **Model #001**: 150ml Hexagonal Bell glass decanter with gold star & lantern filigree, ornamental crown stopper (40 pcs/carton).
-- **Model #004**: 150ml Hexagonal Fluted glass bottle with arched gold gate motif and faceted gold stopper (40 pcs/carton).
-- **Model #006**: 150ml Teardrop Shield glass decanter with polished gold frame border and floral center filigree (40 pcs/carton).
-- **Model #018**: 250ml Tall Rectangular Arch glass decanter with Greek-key and arabesque screen-print, spherical gold stopper (30 pcs/carton).
-- **Model #024**: 250ml Double-Bulb Gourd glass decanter with dual gold filigree bands and elongated teardrop stopper (24 pcs/carton).
-
-### B. Industrial & Pure Aluminium Packaging
-- **Capacities**: 50ml, 100ml, 250ml, 500ml, 1000ml (1 kg)
-- **Features**: Seamless pure aluminum body, corrosion-resistant internal lining, leak-proof plug, tamper-evident outer screw cap.
-- **Use Cases**: Attar transport, agarwood/oud oils, essential oils, fragrance compounds, pharmaceutical oils.
-
-### C. Glass Perfume Bottles & Roll-On Vials
-- Standard perfume spray bottles (30ml, 50ml, 100ml) with fine-mist crimp and screw atomizers.
-- Traditional ittar vials (3ml, 6ml, 12ml, 24ml) with plastic and steel roller balls.
-- Amber and clear glass cosmetic/food jars with airtight closures.
-
-## 4. Frequently Asked Questions (FAQ) for B2B & Wholesale Inquiries
-
-### Q: What is the Minimum Order Quantity (MOQ)?
-A: Minimum order quantities vary by item. Luxury decanters are supplied in wholesale master cartons (24, 30, or 40 pieces per box). Roll-ons and standard perfume bottles are available in bulk cartons starting from 100 pieces up to full pallet loads.
-
-### Q: Do you ship across India and internationally?
-A: Yes. We provide pan-India logistics through reliable freight partners and courier networks, as well as export packing for international shipments.
-
-### Q: How can buyers place a wholesale order or get pricing?
-A: Buyers can browse our catalog at https://arjanmalattarchand.com/shop and connect directly via WhatsApp at +91 98115 55255 for instant quotation, volume discounts, and freight details.
-
-### Q: Where is your physical showroom located?
-A: Our showroom and dispatch center is located at 772, Tilak Bazar, Khari Baoli, New Delhi - 110006. Walk-in B2B clients and traders are welcome.
+The Express application serves the current active product catalog dynamically at this URL. When serving static files only, refer to the linked catalog for current specifications and stock.

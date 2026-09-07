@@ -1,59 +1,46 @@
-# robots.txt for Arjanmal Attarchand (Since 1904)
-# Heritage Attar & Perfume Bottle Wholesaler, Delhi NCR
+# Public catalog crawl rules. robots.txt does not replace authentication.
 
-# AI and LLM Search Engine Directives (Explicitly Allowed for Generative Engine Optimization)
 User-agent: GPTBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 Disallow: /admin
-Disallow: /administrator
+Disallow: /api/
+Disallow: /healthz
 
 User-agent: OAI-SearchBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 Disallow: /admin
-Disallow: /administrator
+Disallow: /api/
+Disallow: /healthz
 
 User-agent: PerplexityBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 Disallow: /admin
-Disallow: /administrator
+Disallow: /api/
+Disallow: /healthz
 
 User-agent: ClaudeBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 Disallow: /admin
-Disallow: /administrator
+Disallow: /api/
+Disallow: /healthz
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /healthz
 
 User-agent: Google-Extended
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 Disallow: /admin
-Disallow: /administrator
+Disallow: /api/
+Disallow: /healthz
 
-# Standard Web Crawlers
 User-agent: *
 Allow: /
-Allow: /shop
-Allow: /about
-Allow: /contact
-Allow: /uploads/
-Allow: /images/
-Allow: /llms.txt
-Allow: /llms-full.txt
-
-# Private Administration Sections
 Disallow: /admin
-Disallow: /administrator
-Disallow: /admin/
-Disallow: /admin/*
 Disallow: /api/
+Disallow: /healthz
 
-# Sitemaps & Machine-Readable AI Indices
 Sitemap: https://arjanmalattarchand.com/sitemap.xml
+# Catalog reference: https://arjanmalattarchand.com/llms.txt

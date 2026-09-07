@@ -949,7 +949,7 @@ export const productEnquiriesPage = async (req, res) => {
 
 export const generateAdminSitemap = async (req, res) => {
   res.set('Cache-Control', 'no-store');
-  if (!req.session.seoCsrf || req.body.csrfToken !== req.session.seoCsrf) {
+  if (!req.session.seoCsrf || req.body?.csrfToken !== req.session.seoCsrf) {
     return res.status(403).json({ error: 'Please reload the dashboard and try again.' });
   }
   try {
