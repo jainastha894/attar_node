@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,11 +20,11 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="/favicon.png">
-    <script type="application/ld+json">
-  {
-    <%- JSON.stringify(seoData, null, 2) %>
-  }
-  </script>
+<!-- Structured Data (JSON-LD) -->
+    <% if (seoData && seoData['@graph']) { %>
+    <script type="application/ld+json"><%- jsonForHtml({ "@context": "https://schema.org", "@graph": seoData["@graph"] || [] }) %></script>
+    <% } %>
+<link rel="describedby" href="/llms.txt" type="text/plain">
 </head>
 
 <body>

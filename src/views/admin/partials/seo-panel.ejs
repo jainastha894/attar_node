@@ -1,0 +1,24 @@
+<section class="seo-panel" aria-labelledby="seo-title">
+  <div>
+    <p class="seo-eyebrow">SEARCH & DISCOVERY</p>
+    <h2 id="seo-title">Sitemap & AI catalog</h2>
+    <p>Generate from active products and their images. Public files update automatically as your catalog changes.</p>
+  </div>
+  <form id="seo-generate-form">
+    <input type="hidden" name="csrfToken" value="<%= seoCsrf %>">
+    <button id="seo-generate-button" type="submit">Generate sitemap</button>
+  </form>
+  <p id="seo-status" role="status" aria-live="polite"><%= seoGeneration ? `Last generated in this session: ${seoGeneration.productCount} products, ${seoGeneration.urlCount} URLs, ${seoGeneration.imageCount} images.` : 'Ready to generate from the current catalog.' %></p>
+  <div id="seo-results" class="seo-results" <%= seoGeneration ? '' : 'hidden' %>>
+    <span><strong id="seo-products"><%= seoGeneration?.productCount || 0 %></strong> active products</span>
+    <span><strong id="seo-urls"><%= seoGeneration?.urlCount || 0 %></strong> page URLs</span>
+    <span><strong id="seo-images"><%= seoGeneration?.imageCount || 0 %></strong> image entries</span>
+  </div>
+  <nav aria-label="SEO files" class="seo-links">
+    <a href="/sitemap.xml" target="_blank" rel="noopener">View XML sitemap ↗</a>
+    <a href="/robots.txt" target="_blank" rel="noopener">Crawler rules ↗</a>
+    <a href="/llms.txt" target="_blank" rel="noopener">AI overview ↗</a>
+    <a href="/llms-full.txt" target="_blank" rel="noopener">Full AI catalog ↗</a>
+  </nav>
+  <p class="seo-note">After deployment, submit <strong>/sitemap.xml</strong> in Google Search Console for your domain. Generation does not submit it to Google or guarantee indexing.</p>
+</section>

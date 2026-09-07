@@ -10,11 +10,13 @@ import { passportConfig } from "./config/passportConfig.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import pageRoutes from "./routes/pageRoutes.js";
 import { sitemapRouter } from "./routes/sitemapRoutes.js";
+import { jsonForHtml, catalogSchema, productPath, productImages } from './services/seoService.js';
 dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
 
 const app = express();
+Object.assign(app.locals, { jsonForHtml, catalogSchema, productPath, productImages });
 const PORT = process.env.PORT || 3000;
 
 
@@ -61,6 +63,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Static files
+// Machine-readable routes must precede old static copies of these files.
+app.use(sitemapRouter);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Parse JSON request bodies
@@ -88,7 +92,6 @@ app.get("/healthz", async (_req, res) => {
 // Routes
 app.use("/", pageRoutes);
 app.use(adminRoutes);
-app.use(sitemapRouter);
 
 // 404 handler (must stay after all other routes)
 app.use((req, res) => {

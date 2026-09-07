@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,8 +29,9 @@
               referrerpolicy="no-referrer"></script>
             <link rel="icon" href="/favicon.ico" type="image/x-icon">
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-            <link rel="apple-touch-icon" href="/favicon.png">
-
+<!-- Structured Data (JSON-LD) for Shop Catalog & Products -->
+    <script type="application/ld+json"><%- jsonForHtml(catalogSchema(products || [], baseUrl)) %></script>
+<link rel="describedby" href="/llms.txt" type="text/plain">
 </head>
 
 <body>
@@ -148,7 +149,16 @@
             <!-- Grid: 2 columns on mobile -->
             <div id="productsGrid"
               class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5 items-start">
-              <!-- rendered via JS -->
+              <% products.forEach(product => { %>
+                <article class="rounded-xl border border-gray-200 bg-white p-3">
+                  <a href="<%= productPath(product) %>">
+                    <% const photo = productImages(product, baseUrl)[0]; if (photo) { %><img src="<%= photo %>" alt="<%= product.name %>" loading="lazy" class="w-full aspect-square object-contain"><% } %>
+                    <h2 class="font-semibold mt-3"><%= product.name %></h2>
+                  </a>
+                  <p class="text-sm text-gray-600 mt-2"><%= (product.description || '').slice(0, 150) %></p>
+                  <p class="text-sm mt-2"><%= product.outofstock ? 'Out of stock' : 'In stock' %> · Wholesale quotation on request</p>
+                </article>
+              <% }); %>
             </div>
           </section>
         </div>
@@ -241,7 +251,7 @@
       <script src="/js/whatsapp-tracker.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
       <script id="products-data" type="application/json">
-  <%- JSON.stringify(products) %>
+  <%- jsonForHtml(products) %>
 </script>
 
 

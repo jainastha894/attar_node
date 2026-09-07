@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= product.name %> | Wholesale in Delhi | Arjanmal Attarchand</title>
+  <meta name="description" content="<%= (product.description || product.name).slice(0, 160) %>">
+  <link rel="canonical" href="<%= canonical %>">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= product.name %> | Arjanmal Attarchand">
+  <meta property="og:description" content="<%= (product.description || product.name).slice(0, 160) %>">
+  <meta property="og:url" content="<%= canonical %>">
+  <% if (images.length) { %><meta property="og:image" content="<%= images[0] %>"><% } %>
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/styles/shop.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="application/ld+json"><%- jsonForHtml(schema) %></script>
+  <link rel="describedby" href="/llms.txt" type="text/plain">
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <%- include('partials/header') %>
+  <main class="max-w-6xl mx-auto px-5 pt-28 pb-16">
+    <nav aria-label="Breadcrumb" class="text-sm text-gray-600 mb-8"><a href="/">Home</a> / <a href="/shop">Shop</a> / <span><%= product.name %></span></nav>
+    <div class="grid md:grid-cols-2 gap-10">
+      <div>
+        <% if (images.length) { %>
+          <img src="<%= images[0] %>" alt="<%= product.name %>" class="w-full aspect-square object-contain bg-white rounded-xl border" fetchpriority="high">
+          <div class="grid grid-cols-2 gap-3 mt-4">
+            <% images.slice(1).forEach((image, index) => { %>
+              <a href="<%= image %>"><img src="<%= image %>" alt="<%= product.name %> — view <%= index + 2 %>" loading="lazy" class="w-full aspect-square object-contain bg-white border rounded-lg"></a>
+            <% }); %>
+          </div>
+        <% } else { %><p class="p-12 bg-white rounded-xl">Contact us for product photographs.</p><% } %>
+      </div>
+      <div>
+        <p class="uppercase tracking-widest text-sm text-amber-800 mb-3">Wholesale packaging · Since 1904</p>
+        <h1 class="cormorant text-4xl font-semibold"><%= product.name %></h1>
+        <p class="mt-6 text-gray-700 whitespace-pre-line leading-relaxed"><%= product.description %></p>
+        <p class="mt-5 font-semibold <%= product.outofstock ? 'text-red-800' : 'text-green-800' %>"><%= product.outofstock ? 'Out of stock — enquire about restocking' : 'In stock — confirm quantity when ordering' %></p>
+        <dl class="mt-6 divide-y divide-gray-200">
+          <% Object.entries(product.units || {}).forEach(([key, values]) => { if (Array.isArray(values) && values.length) { %>
+            <div class="py-3"><dt class="font-semibold capitalize"><%= key.replace(/List$/, '').replace(/([A-Z])/g, ' $1') %></dt><dd class="text-gray-600"><%= values.join(', ') %></dd></div>
+          <% } }); %>
+        </dl>
+        <p class="mt-6 text-gray-600">Contact us for prices, minimum order quantities, carton packing and delivery options.</p>
+        <a href="<%= enquiryUrl %>" target="_blank" rel="noopener" class="inline-block mt-5 px-7 py-3 rounded-lg bg-amber-700 text-white font-semibold">Request wholesale quotation</a>
+        <p class="mt-8 text-sm text-gray-600">Visit Arjanmal Attarchand at 772, Tilak Bazar, Khari Baoli, New Delhi 110006. Serving Delhi NCR and customers across India. <a href="/contact" class="underline">Contact and directions</a></p>
+      </div>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>

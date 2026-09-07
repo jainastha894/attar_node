@@ -6,6 +6,8 @@ import Lead from "../models/lead.js";
 import ProductEnquiry from "../models/productEnquiry.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
+import { randomBytes } from 'node:crypto';
+import { generateSeoDocuments } from '../services/seoService.js';
 
 const unitsPath = path.join(process.cwd(), "src/config/units.json");
 
@@ -161,6 +163,7 @@ export const loginPage = (req, res) => {
 
 export const dashboardPage = async(req, res) => {
   try {
+    req.session.seoCsrf ||= randomBytes(32).toString('hex');
     let totalproducts = await Product.countDocuments();
     let featuredproducts = await Product.countDocuments({featured:true});
     let outofstockproducts = await Product.countDocuments({outofstock:true});
@@ -198,6 +201,8 @@ export const dashboardPage = async(req, res) => {
     ]);
 
     res.render("admin/dashboard", {
+      seoCsrf: req.session.seoCsrf,
+      seoGeneration: req.session.seoGeneration || null,
       totalproducts,
       featuredproducts,
       outofstockproducts,
@@ -939,5 +944,20 @@ export const productEnquiriesPage = async (req, res) => {
   } catch (error) {
     console.error("Product enquiries page error:", error);
     res.status(500).send("Error loading product enquiries");
+  }
+};
+
+export const generateAdminSitemap = async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  if (!req.session.seoCsrf || req.body.csrfToken !== req.session.seoCsrf) {
+    return res.status(403).json({ error: 'Please reload the dashboard and try again.' });
+  }
+  try {
+    const documents = await generateSeoDocuments();
+    req.session.seoGeneration = documents.summary;
+    res.json({ ...documents.summary, message: 'Sitemap and AI catalog generated successfully.' });
+  } catch (error) {
+    console.error('Admin sitemap generation failed:', error.message);
+    res.status(503).json({ error: 'Could not generate the sitemap. Check the database connection and try again.' });
   }
 };

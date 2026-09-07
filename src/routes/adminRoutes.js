@@ -2,6 +2,7 @@ import express from "express";
 import {
   loginPage,
   dashboardPage,
+  generateAdminSitemap,
   productListPage,
   addProductPage,
   unitsPage,
@@ -33,6 +34,10 @@ import { addAdminData } from "../middleware/adminData.js";
 import upload, { resizeImages } from "../middleware/upload.js";
 
 const router = express.Router();
+router.use((req, res, next) => {
+  if (req.path.startsWith('/admin')) res.set('X-Robots-Tag', 'noindex, nofollow').set('Cache-Control', 'no-store');
+  next();
+});
 
 // Add admin data to all admin routes
 router.use(addAdminData);
@@ -43,6 +48,7 @@ router.post("/admin/login", adminLogin);
 
 
 router.get("/administrator",isAdminAuth, dashboardPage);
+router.post('/admin/seo/generate', isAdminAuth, generateAdminSitemap);
 router.get("/admin/products", isAdminAuth, productListPage);
 router.get("/admin/products/add", isAdminAuth, addProductPage);
 router.get("/admin/products/edit/:id", isAdminAuth, editProductPage);

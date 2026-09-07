@@ -3,6 +3,7 @@ import path from "path";
 import Lead from "../models/lead.js";
 import Product from "../models/product.js";
 import ProductEnquiry from "../models/productEnquiry.js";
+import { productSchema, productPath, productImages, siteUrl } from '../services/seoService.js';
 
 // Load SEO JSON once
 const seoPath = path.join(process.cwd(), "src", "config", "seo.json");
@@ -143,6 +144,26 @@ export const renderShop = async (req, res) => {
 
 export const renderPrivacy = (req, res) => {
   res.render("privacy");
+};
+
+export const renderProduct = async (req, res, next) => {
+  try {
+    if (!/^[a-f0-9]{24}$/i.test(req.params.id)) return next();
+    const product = await Product.findOne({ _id: req.params.id, active: true }).lean();
+    if (!product) return next();
+    const baseUrl = siteUrl();
+    const canonical = baseUrl + productPath(product);
+    const schema = { '@context': 'https://schema.org', '@graph': [
+      productSchema(product, baseUrl),
+      { '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl + '/' },
+        { '@type': 'ListItem', position: 2, name: 'Shop', item: baseUrl + '/shop' },
+        { '@type': 'ListItem', position: 3, name: product.name, item: canonical }
+      ] }
+    ] };
+    res.render('product', { product, canonical, schema, images: productImages(product, baseUrl),
+      enquiryUrl: `https://wa.me/919811555255?text=${encodeURIComponent(`Hello, I would like a wholesale quotation for ${product.name}. ${canonical}`)}` });
+  } catch (error) { next(error); }
 };
 
 export const renderTerms = (req, res) => {

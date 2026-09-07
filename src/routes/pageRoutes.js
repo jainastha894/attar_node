@@ -4,6 +4,7 @@ import {
   renderAbout,
   renderContact,
   renderShop,
+  renderProduct,
   renderPrivacy,
   renderTerms,
   submitContactForm,
@@ -64,8 +65,7 @@ router.get("/contact", renderContact);
 router.post("/contact", submitContactForm);
 router.post("/api/track-enquiry", trackProductEnquiry);
 router.get("/shop", renderShop);
+router.get('/products/:id', renderProduct);
 router.get("/privacy", renderPrivacy);
 router.get("/terms", renderTerms);
-
-
 export default router;

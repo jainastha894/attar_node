@@ -1,37 +1,20 @@
-import express from "express";
-
+import express from 'express';
+import { generateSeoDocuments, robotsText } from '../services/seoService.js';
 const router = express.Router();
-
-// Static list of important URLs; extend as you add new pages
-const baseUrl = process.env.BASE_URL || "https://arjanmalattarchand.com";
-const urls = [
-  "/",
-  "/shop",
-  "/about",
-  "/contact",
-  "/privacy",
-  "/terms",
-  "/administrator", // admin dashboard (optional; remove if you don't want indexed)
-];
-
-router.get("/sitemap.xml", (_req, res) => {
-  const lastmod = new Date().toISOString().split("T")[0];
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
-  .map(
-    (path) => `  <url>
-    <loc>${baseUrl}${path}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>${path === "/" ? "1.0" : "0.7"}</priority>
-  </url>`
-  )
-  .join("\n")}
-</urlset>`;
-
-  res.header("Content-Type", "application/xml");
-  res.send(xml);
-});
-
+router.get('/robots.txt', (_req, res) => res.type('text/plain').set('Cache-Control', 'no-cache').send(robotsText()));
+for (const [path, key, contentType] of [
+  ['/sitemap.xml', 'sitemap', 'application/xml'],
+  ['/llms.txt', 'llms', 'text/plain'],
+  ['/llms-full.txt', 'full', 'text/plain']
+]) {
+  router.get(path, async (_req, res) => {
+    try {
+      const documents = await generateSeoDocuments();
+      res.type(contentType).set('Cache-Control', 'no-cache').send(documents[key]);
+    } catch (error) {
+      console.error('SEO generation failed:', error.message);
+      res.status(503).set('Retry-After', '120').set('Cache-Control', 'no-store').type('text/plain').send('Catalog temporarily unavailable. Please retry shortly.');
+    }
+  });
+}
 export { router as sitemapRouter };

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <link rel="stylesheet" href="/styles/admin-seo.css">
     <script>
         // Apply sidebar state immediately to prevent flickering (using sessionStorage)
         (function() {
@@ -44,6 +45,7 @@
                         <p>Overview of your products and leads</p>
                     </div>
                     <div class="content-body">
+                        <%- include('partials/seo-panel') %>
                         <!-- Products Section -->
                         <div style="margin-bottom: 40px;">
                             <h2 style="color: #FFD700; font-size: 24px; font-weight: 600; margin-bottom: 24px; text-align: center;">Products</h2>
@@ -137,6 +139,7 @@
     <script src="/js/partials-loader.js"></script>
     <script src="/js/script.js"></script>
     <script src="/js/header-handler.js"></script>
+    <script src="/js/admin-seo.js"></script>
 
 </body>
 </html>
