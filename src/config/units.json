@@ -1,16 +1,24 @@
 {
   "industryList": [
-    "Cosmetics",
-    "Food and Beverage"
+    "Fragrance",
+    "Food",
+    "Pharma"
   ],
   "subCategoryList": [
-    "Glass Bottles",
-    "Plastic Jars"
+    "Perfume Bottles",
+    "Ittar Bottles",
+    "Clear Glass Bottles",
+    "Amber Glass Jars",
+    "Clear Glass Jars",
+    "packaging boxes"
   ],
   "sizeList": [
-    "Small (100ml)",
-    "Medium (250ml)",
-    "Large (500ml)"
+    "3ml",
+    "6ml",
+    "12ml",
+    "24ml",
+    "50ml",
+    "100ml"
   ],
   "colorList": [
     "Clear",
@@ -29,13 +37,18 @@
     "PET Plastic"
   ],
   "fragranceList": [
-    "Lavender",
-    "Vanilla"
+    "Oud",
+    "Musk",
+    "Sandalwood",
+    "Floral",
+    "Aqua",
+    "Indian Attars",
+    "Gourmend"
   ],
   "jarBottleList": [
-    "Glass Jar",
-    "Plastic Jar",
-    "Glass Bottle",
-    "Plastic Bottle"
+    "Perfume Bottles",
+    "Ittar Bottles",
+    "Clear Glass Bottles",
+    "Amber Glass Jars"
   ]
 }

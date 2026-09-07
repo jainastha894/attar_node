@@ -1,5 +1,11 @@
 {
     "home":{
+        "title": "Wholesale Attar & Perfume Bottles Delhi NCR | Arjanmal Attarchand (Since 1904)",
+        "description": "Wholesale fancy attar bottles (2ml–500ml), glass perfume bottles, roll-ons, and packaging boxes direct from Arjanmal Attarchand—Delhi NCR’s heritage bottle manufacturer supplying across India.",
+        "keywords": "fancy attar bottles wholesale, attar bottle manufacturer, perfume bottle manufacturers delhi, glass perfume bottles wholesale, perfume bottle suppliers india, empty attar bottles, roll on perfume bottle, attar packaging boxes wholesale, perfume wholesale market delhi, wholesale perfume bottles near me",
+        "canonical": "https://arjanmalattarchand.com/",
+        "ogTitle": "Wholesale Attar & Perfume Bottles Delhi NCR | Arjanmal Attarchand",
+        "ogDescription": "Shop fancy attar bottles, roll-ons, glass perfume bottles, and boxes in bulk from Delhi NCR’s trusted manufacturer—sizes 2ml to 500ml with pan-India supply.",
         "@context": "https://schema.org",
         "@graph": [
             {
@@ -139,6 +145,12 @@
         ]
     },
     "about":{
+      "title": "About Arjanmal Attarchand | Delhi NCR Bottles & Attar Packaging Since 1904",
+      "description": "Learn about Arjanmal Attarchand’s heritage as a Delhi NCR manufacturer of glass perfume bottles, fancy attar bottles, aluminum bottles, jars, and packaging since 1904.",
+      "keywords": "arjanmal attarchand, attar bottle manufacturer delhi, perfume bottle exporters india, glass bottle heritage tilak bazar",
+      "canonical": "https://arjanmalattarchand.com/about",
+      "ogTitle": "About Arjanmal Attarchand | Delhi NCR Bottle Manufacturer",
+      "ogDescription": "Heritage bottle makers from Tilak Bazar, supplying attar and perfume packaging across India since 1904.",
         
       "@context": "https://schema.org",
       "@graph": [
@@ -222,6 +234,12 @@
       ]
     },
     "contact":{
+        "title": "Contact Arjanmal Attarchand | Wholesale Attar & Perfume Bottles Delhi",
+        "description": "Talk to Arjanmal Attarchand for bulk attar bottles, roll-ons, glass perfume bottles, boxes, and caps. Based in Tilak Bazar, Old Delhi — pan-India dispatch.",
+        "keywords": "contact arjanmal attarchand, attar bottle supplier contact, perfume bottle manufacturer delhi contact, tilak bazar bottle market",
+        "canonical": "https://arjanmalattarchand.com/contact",
+        "ogTitle": "Contact Arjanmal Attarchand | Delhi NCR Bottle Supplier",
+        "ogDescription": "Get pricing and MOQ for wholesale attar and perfume bottles from Delhi’s heritage supplier.",
         "@context": "https://schema.org",
     "@graph": [
       {
@@ -297,5 +315,38 @@
         "description": "Get in touch for glass bottles, perfume bottles, attar bottles, aluminum bottles, and glass jars in Delhi NCR."
       }
     ]
+    },
+    "shop": {
+      "title": "Wholesale Perfume & Attar Bottles (2ml–500ml) | Arjanmal Attarchand",
+      "description": "Glass perfume bottles, attar roll-ons, fancy and antique bottles, wooden attar boxes, caps and packaging — wholesale from Delhi NCR with pan-India delivery.",
+      "keywords": "perfume bottle wholesale, glass perfume bottles wholesale, attar bottles wholesale in delhi, empty perfume bottles, roll on perfume bottle, wooden attar box, perfume bottle manufacturers in india, fancy attar bottles wholesale",
+      "canonical": "https://arjanmalattarchand.com/shop",
+      "ogTitle": "Wholesale Perfume & Attar Bottles | Arjanmal Attarchand",
+      "ogDescription": "Shop roll-ons, glass perfume bottles, fancy attar bottles, and packaging direct from Delhi NCR’s heritage supplier.",
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://arjanmalattarchand.com/shop#breadcrumbs",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://arjanmalattarchand.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://arjanmalattarchand.com/shop" }
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://arjanmalattarchand.com/shop#page",
+          "url": "https://arjanmalattarchand.com/shop",
+          "name": "Wholesale Perfume & Attar Bottles",
+          "description": "Bulk glass perfume bottles, roll-ons, attar bottles, wooden boxes, and packaging from Arjanmal Attarchand."
+        },
+        {
+          "@type": "ProductCollection",
+          "name": "Perfume & Attar Bottles (2ml–500ml)",
+          "brand": "Arjanmal Attarchand",
+          "category": "Perfume Bottles",
+          "url": "https://arjanmalattarchand.com/shop"
+        }
+      ]
     }
 }

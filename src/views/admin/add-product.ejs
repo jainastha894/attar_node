@@ -6,7 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/favicon.png">
 
 </head>
 
@@ -24,28 +41,53 @@
                 <!-- Main Content -->
                 <main class="main-content">
                     <div class="content-header">
-                        <h1>Add Product</h1>
-                        <p>Create a new product listing</p>
+                        <h1><%= isEdit ? 'Edit Product' : 'Add Product' %></h1>
+                        <p><%= isEdit ? 'Update product information' : 'Create a new product listing' %></p>
                     </div>
                     <div class="content-body">
                         <div class="form-container">
                             <div class="success-message" id="addProductSuccess"></div>
-                            <form id="addProductForm" action="/admin/products/add" method="POST"
+                            <% if (typeof query !== 'undefined' && query.error) { %>
+                            <div class="error-message" style="background-color: #f44336; color: white; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+                                <%= decodeURIComponent(query.error) %>
+                            </div>
+                            <% } %>
+                            <form id="addProductForm" action="<%= isEdit && product && product._id ? `/admin/products/edit/${product._id}` : '/admin/products/add' %>" method="POST"
                                 enctype="multipart/form-data">
 
                                 <div class="form-row">
                                     <div class="form-group-inline">
                                         <label for="productName">Product Name *</label>
-                                        <input type="text" id="productName" name="productName" required>
+                                        <input type="text" id="productName" name="productName" value="<%= (product && product.name) ? product.name : '' %>" required>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group-inline" style="grid-column: 1/-1;">
                                         <label for="description">Description *</label>
-                                        <textarea id="description" name="description" required></textarea>
+                                        <textarea id="description" name="description" required><%= (product && product.description) ? product.description : '' %></textarea>
                                     </div>
                                 </div>
+                                <!-- Industry List - Single Select Dropdown -->
+                                <% if (units.industryList) { %>
+                                <div class="form-row">
+                                    <div class="form-group-inline">
+                                        <label for="industryList">Industry *</label>
+                                        <select id="industryList" name="industryList" onchange="handleIndustryChange(this.value)" required>
+                                            <option value="">Select Industry</option>
+                                            <% units.industryList.forEach(item => { 
+                                                const productIndustryList = product && product.units && product.units.industryList ? product.units.industryList : [];
+                                                const isSelected = Array.isArray(productIndustryList) && productIndustryList.includes(item);
+                                            %>
+                                                <option value="<%= item %>" <%= isSelected ? 'selected' : '' %>><%= item %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                <!-- Other fields (excluding industryList, fragranceList, and jarBottleList) -->
                                 <% for (const unitKey in units) { %>
+                                    <% if (unitKey !== 'industryList' && unitKey !== 'fragranceList' && unitKey !== 'jarBottleList') { %>
                                     <div class="form-row">
                                         <div class="form-group-inline">
                                             <label for="<%= unitKey %>">
@@ -53,18 +95,19 @@
                                             </label>
                                             <div class="multi-select-wrapper">
 
-                                                <div class="multi-select-display">
-                                                    <button type="button" onclick="toggleDropdown('<%= unitKey %>')"
-                                                        class="multi-select-placeholder" id="display-<%= unitKey %>">
-                                                        Select <%= unitKey %>
-                                                    </button>
+                                                <div class="multi-select-display" id="display-<%= unitKey %>" onclick="toggleDropdown('<%= unitKey %>')">
+                                                    <div class="selected-tags-container" id="tags-<%= unitKey %>"></div>
+                                                    <span class="multi-select-placeholder" id="placeholder-<%= unitKey %>">Select <%= unitKey %></span>
                                                 </div>
 
                                                 <div class="multi-select-dropdown" id="dropdown-<%= unitKey %>">
-                                                    <% units[unitKey].forEach(item=> { %>
+                                                    <% units[unitKey].forEach(item=> { 
+                                                        const isChecked = (product && product.units && product.units[unitKey] && Array.isArray(product.units[unitKey]) && product.units[unitKey].includes(item));
+                                                    %>
                                                         <label class="multi-option m-10">
                                                             <input type="checkbox" name="<%= unitKey %>[]"
                                                                 value="<%= item %>"
+                                                                <%= isChecked ? 'checked' : '' %>
                                                                 onchange="updateSelected('<%= unitKey %>')" />
                                                             <%= item %>
                                                         </label>
@@ -75,19 +118,50 @@
 
                                         </div>
                                     </div>
-
                                     <% } %>
+                                <% } %>
+
+                                <!-- Fragrance List - Only shown when Fragrance industry is selected -->
+                                <% if (units.fragranceList) { %>
+                                <div class="form-row" id="fragranceListRow" style="display: none;">
+                                    <div class="form-group-inline">
+                                        <label for="fragranceList">Fragrance *</label>
+                                            <div class="multi-select-wrapper">
+
+                                            <div class="multi-select-display" id="display-fragranceList" onclick="toggleDropdown('fragranceList')">
+                                                <div class="selected-tags-container" id="tags-fragranceList"></div>
+                                                <span class="multi-select-placeholder" id="placeholder-fragranceList">Select Fragrance</span>
+                                            </div>
+
+                                            <div class="multi-select-dropdown" id="dropdown-fragranceList">
+                                                <% units.fragranceList.forEach(item=> { 
+                                                    const isChecked = (product && product.units && product.units.fragranceList && Array.isArray(product.units.fragranceList) && product.units.fragranceList.includes(item));
+                                                %>
+                                                    <label class="multi-option m-10">
+                                                        <input type="checkbox" name="fragranceList[]"
+                                                            value="<%= item %>"
+                                                            <%= isChecked ? 'checked' : '' %>
+                                                            onchange="updateSelected('fragranceList')" />
+                                                        <%= item %>
+                                                    </label>
+                                                    <% }) %>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
 
                                         <div class="form-row">
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="featured" name="featured">
+                                                    <input type="checkbox" id="featured" name="featured" <%= (product && product.featured) ? 'checked' : '' %>>
                                                     <label for="featured">Featured Product</label>
                                                 </div>
                                             </div>
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="topRated" name="topRated">
+                                                    <input type="checkbox" id="topRated" name="topRated" <%= (product && product.topRated) ? 'checked' : '' %>>
                                                     <label for="topRated">Top Rated</label>
                                                 </div>
                                             </div>
@@ -95,13 +169,13 @@
                                         <div class="form-row">
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="bestSeller" name="bestSeller">
+                                                    <input type="checkbox" id="bestSeller" name="bestSeller" <%= (product && product.bestSeller) ? 'checked' : '' %>>
                                                     <label for="bestSeller">Best Seller</label>
                                                 </div>
                                             </div>
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="onSale" name="onSale">
+                                                    <input type="checkbox" id="onSale" name="onSale" <%= (product && product.onSale) ? 'checked' : '' %>>
                                                     <label for="onSale">On Sale</label>
                                                 </div>
                                             </div>
@@ -109,13 +183,13 @@
                                         <div class="form-row">
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="outofstock" name="outofstock">
+                                                    <input type="checkbox" id="outofstock" name="outofstock" <%= (product && product.outofstock) ? 'checked' : '' %>>
                                                     <label for="outofstock">Out of Stock</label>
                                                 </div>
                                             </div>
                                             <div class="form-group-inline">
                                                 <div class="checkbox-group">
-                                                    <input type="checkbox" id="active" name="active" checked>
+                                                    <input type="checkbox" id="active" name="active" <%= (!product || product.active) ? 'checked' : '' %>>
                                                     <label for="active">Active</label>
                                                 </div>
                                             </div>
@@ -125,7 +199,7 @@
                                                 <input type="file" id="imageInput" name="productImages" accept="image/*"
                                                     multiple hidden />
 
-                                                <p>📷 Click to upload images</p>
+                                                <p>📷 Click to upload images (Max 10 images)</p>
                                                 <p style="font-size: 12px; color: #999; margin-top: 8px;">
                                                     You can select multiple images
                                                 </p>
@@ -146,49 +220,357 @@
             </div>
 
             <!-- Footer Placeholder -->
-            <div id="footer-placeholder">(%-include('partials/footer.ejs')%)</div>
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
         </div>
     </div>
-    <script src="js/partials-loader.js"></script>
-    <script src="js/units-sync.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/header-handler.js"></script>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
     <script>
         function toggleDropdown(unitKey) {
+            // Close all other dropdowns first
+            document.querySelectorAll(".multi-select-dropdown").forEach(dropdown => {
+                if (dropdown.id !== `dropdown-${unitKey}`) {
+                    dropdown.classList.remove("open");
+                    dropdown.closest(".multi-select-wrapper").querySelector(".multi-select-display").classList.remove("open");
+                }
+            });
+
             const dropdown = document.getElementById(`dropdown-${unitKey}`);
+            const display = document.getElementById(`display-${unitKey}`);
+            
             dropdown.classList.toggle("open");
+            display.classList.toggle("open");
         }
 
-        // Optional: close when clicking outside
+        // Handle industry change - show/hide fragrance list
+        function handleIndustryChange(selectedIndustry) {
+            const fragranceRow = document.getElementById("fragranceListRow");
+            if (fragranceRow) {
+                // Show fragrance list only if "Fragrance" or "Fragrances" is selected
+                if (selectedIndustry && (selectedIndustry.toLowerCase().includes("fragrance") || selectedIndustry.toLowerCase().includes("fragnance"))) {
+                    fragranceRow.style.display = "block";
+                    // Don't make checkboxes required - we'll validate in JavaScript instead
+                    // HTML5 required on checkboxes doesn't work well
+                } else {
+                    fragranceRow.style.display = "none";
+                    // Remove required and uncheck all
+                    const fragranceInputs = fragranceRow.querySelectorAll('input[type="checkbox"]');
+                    fragranceInputs.forEach(input => {
+                        input.removeAttribute("required");
+                        input.checked = false;
+                    });
+                    // Update display
+                    updateSelected('fragranceList');
+                }
+            }
+        }
+
+        // Remove selected item
+        function removeSelected(unitKey, value) {
+            const checkbox = document.querySelector(`input[name="${unitKey}[]"][value="${value}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+                updateSelected(unitKey);
+            }
+        }
+
+        // Update selected values display in placeholder
+        function updateSelected(unitKey) {
+            // Use attribute selector to handle brackets in name - try multiple selector methods
+            let checkboxes = document.querySelectorAll(`input[name="${unitKey}[]"]:checked`);
+            
+            // Fallback: if no checkboxes found, try finding all checkboxes with this name and filter checked ones
+            if (checkboxes.length === 0) {
+                const allCheckboxes = document.querySelectorAll(`input[name="${unitKey}[]"]`);
+                checkboxes = Array.from(allCheckboxes).filter(cb => cb.checked);
+            }
+            
+            const tagsContainer = document.getElementById(`tags-${unitKey}`);
+            const placeholder = document.getElementById(`placeholder-${unitKey}`);
+            
+            if (tagsContainer && placeholder) {
+                tagsContainer.innerHTML = "";
+                
+                if (checkboxes.length === 0) {
+                    placeholder.style.display = "inline";
+                } else {
+                    placeholder.style.display = "none";
+                    Array.from(checkboxes).forEach(cb => {
+                        const tag = document.createElement("span");
+                        tag.className = "selected-tag";
+                        tag.innerHTML = `
+                            ${cb.value}
+                            <span class="remove-tag" onclick="event.stopPropagation(); removeSelected('${unitKey}', '${cb.value.replace(/'/g, "\\'")}')">×</span>
+                        `;
+                        tagsContainer.appendChild(tag);
+                    });
+                }
+            }
+        }
+
+        // Initialize all selected values - call this after page loads
+        function initializeSelectedValues() {
+            <% for (const unitKey in units) { %>
+                <% if (unitKey !== 'industryList' && unitKey !== 'jarBottleList') { %>
+                    // Ensure checkboxes are checked based on product data (in case they weren't rendered as checked)
+                    <% if (isEdit && product && product.units && product.units[unitKey] && Array.isArray(product.units[unitKey])) { %>
+                        const unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = '<%= unitKey %>';
+                        const productValues<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = <%- JSON.stringify(product.units[unitKey]) %>;
+                        // First, uncheck all checkboxes for this unit
+                        const allCheckboxes<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %> = document.querySelectorAll(`input[name="${unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>}[]"]`);
+                        allCheckboxes<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>.forEach(cb => cb.checked = false);
+                        // Then check the ones that should be checked
+                        productValues<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>.forEach(item => {
+                            // Escape special characters for querySelector
+                            const escapedValue = item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const checkbox = document.querySelector(`input[name="${unitKey<%= unitKey.replace(/[^a-zA-Z0-9]/g, '_') %>}[]"][value="${escapedValue}"]`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    <% } %>
+                    // Update the display - use setTimeout to ensure DOM is ready
+                    setTimeout(() => {
+                        updateSelected('<%= unitKey %>');
+                    }, 10);
+                <% } %>
+            <% } %>
+        }
+
+        // Close dropdowns when clicking outside
         document.addEventListener("click", function (e) {
             if (!e.target.closest(".multi-select-wrapper")) {
-                document
-                    .querySelectorAll(".multi-select-dropdown")
-                    .forEach(d => d.classList.remove("open"));
+                document.querySelectorAll(".multi-select-dropdown").forEach(dropdown => {
+                    dropdown.classList.remove("open");
+                    dropdown.closest(".multi-select-wrapper").querySelector(".multi-select-display").classList.remove("open");
+                });
             }
         });
+
         const imageUpload = document.getElementById("imageUpload");
-const imageInput = document.getElementById("imageInput");
-const imagePreview = document.getElementById("imagePreview");
+        const imageInput = document.getElementById("imageInput");
+        const imagePreview = document.getElementById("imagePreview");
+        
+        // Track images to remove (for existing images in edit mode)
+        const imagesToRemove = [];
+        // Track new file objects (for newly uploaded images)
+        const newImageFiles = [];
 
-imageUpload.addEventListener("click", () => {
-  imageInput.click();
-});
+        // Function to create image preview with remove button
+        function createImagePreview(imgSrc, isExisting = false, imagePath = null) {
+            const previewItem = document.createElement("div");
+            previewItem.className = "preview-item";
+            previewItem.style.position = "relative";
+            previewItem.style.width = "120px";
+            previewItem.style.height = "120px";
+            previewItem.style.borderRadius = "8px";
+            previewItem.style.overflow = "hidden";
+            previewItem.style.border = "2px solid #FFD700";
+            previewItem.style.background = "#1a1a1a";
+            previewItem.style.margin = "5px";
+            
+            const img = document.createElement("img");
+            img.src = imgSrc;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "preview-remove";
+            removeBtn.innerHTML = "×";
+            removeBtn.style.position = "absolute";
+            removeBtn.style.top = "4px";
+            removeBtn.style.right = "4px";
+            removeBtn.style.width = "28px";
+            removeBtn.style.height = "28px";
+            removeBtn.style.borderRadius = "50%";
+            removeBtn.style.background = "rgba(255, 0, 0, 0.9)";
+            removeBtn.style.color = "#ffffff";
+            removeBtn.style.border = "none";
+            removeBtn.style.cursor = "pointer";
+            removeBtn.style.fontSize = "20px";
+            removeBtn.style.fontWeight = "bold";
+            removeBtn.style.display = "flex";
+            removeBtn.style.alignItems = "center";
+            removeBtn.style.justifyContent = "center";
+            removeBtn.style.zIndex = "10";
+            removeBtn.style.transition = "all 0.2s";
+            
+            removeBtn.onmouseover = function() {
+                this.style.background = "rgba(255, 0, 0, 1)";
+                this.style.transform = "scale(1.1)";
+            };
+            removeBtn.onmouseout = function() {
+                this.style.background = "rgba(255, 0, 0, 0.9)";
+                this.style.transform = "scale(1)";
+            };
+            
+            removeBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (isExisting && imagePath) {
+                    // Mark existing image for removal
+                    imagesToRemove.push(imagePath);
+                } else {
+                    // Remove from new files array
+                    const fileIndex = newImageFiles.findIndex(f => URL.createObjectURL(f) === imgSrc);
+                    if (fileIndex !== -1) {
+                        newImageFiles.splice(fileIndex, 1);
+                        URL.revokeObjectURL(imgSrc);
+                    }
+                }
+                
+                previewItem.remove();
+                updateImageInput();
+            };
+            
+            previewItem.appendChild(img);
+            previewItem.appendChild(removeBtn);
+            imagePreview.appendChild(previewItem);
+        }
 
-imageInput.addEventListener("change", () => {
-  imagePreview.innerHTML = "";
+        // Function to update the file input based on remaining new files
+        function updateImageInput() {
+            const dt = new DataTransfer();
+            newImageFiles.forEach(file => {
+                dt.items.add(file);
+            });
+            imageInput.files = dt.files;
+        }
 
-  Array.from(imageInput.files).forEach(file => {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.style.width = "80px";
-    img.style.margin = "5px";
-    img.style.borderRadius = "6px";
-    imagePreview.appendChild(img);
-  });
-});
+        // Load existing images if in edit mode
+        <% if (isEdit && product && product.images && product.images.length > 0) { %>
+        const existingImages = <%- JSON.stringify(product.images) %>;
+        existingImages.forEach(imgPath => {
+            createImagePreview(imgPath, true, imgPath);
+        });
+        <% } %>
 
+        imageUpload.addEventListener("click", () => {
+            imageInput.click();
+        });
 
+        imageInput.addEventListener("change", () => {
+            Array.from(imageInput.files).forEach(file => {
+                const objectURL = URL.createObjectURL(file);
+                newImageFiles.push(file);
+                createImagePreview(objectURL, false);
+            });
+            updateImageInput();
+        });
+        
+        // Setup form submission handler
+        function setupFormSubmission() {
+            const form = document.getElementById("addProductForm");
+            if (!form) {
+                console.error('Form element not found!');
+                return;
+            }
+            
+            // Add hidden input to track images to remove
+            const removeImagesInput = document.createElement("input");
+            removeImagesInput.type = "hidden";
+            removeImagesInput.name = "imagesToRemove";
+            removeImagesInput.id = "imagesToRemove";
+            form.appendChild(removeImagesInput);
+            
+            // Update hidden input before form submission
+            form.addEventListener("submit", function(e) {
+                console.log('Form submit event triggered');
+                
+                // Validate fragrance selection if Fragrance industry is selected
+                const industrySelect = document.getElementById('industryList');
+                const fragranceRow = document.getElementById("fragranceListRow");
+                if (industrySelect && industrySelect.value && 
+                    (industrySelect.value.toLowerCase().includes("fragrance") || industrySelect.value.toLowerCase().includes("fragnance")) &&
+                    fragranceRow && fragranceRow.style.display !== 'none') {
+                    const fragranceCheckboxes = fragranceRow.querySelectorAll('input[type="checkbox"]');
+                    const hasFragranceSelected = Array.from(fragranceCheckboxes).some(cb => cb.checked);
+                    if (!hasFragranceSelected) {
+                        e.preventDefault();
+                        alert('Please select at least one fragrance option.');
+                        return false;
+                    }
+                }
+                
+                // Check form validity for other required fields
+                if (!this.checkValidity()) {
+                    console.error('Form validation failed');
+                    this.reportValidity();
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Don't prevent default - let form submit normally
+                removeImagesInput.value = JSON.stringify(imagesToRemove);
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Saving...';
+                }
+                
+                console.log('Form submitting to:', this.action);
+                // Form will submit normally to the server
+                return true;
+            });
+        }
+        
+        // Setup form when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupFormSubmission);
+        } else {
+            setupFormSubmission();
+        }
+
+        // Initialize selected values on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            // Multiple attempts to ensure checkboxes are loaded
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            function tryInitialize() {
+                attempts++;
+                // Check if at least one checkbox exists
+                const hasCheckboxes = document.querySelectorAll('input[type="checkbox"][name$="[]"]').length > 0;
+                
+                if (hasCheckboxes || attempts >= maxAttempts) {
+                    // Handle industry change first if product has industry (for edit mode)
+                    <% if (isEdit && product && product.units && product.units.industryList && Array.isArray(product.units.industryList) && product.units.industryList.length > 0) { %>
+                        const industryValue = '<%= product.units.industryList[0] %>';
+                        if (industryValue) {
+                            // Set the industry dropdown value
+                            const industrySelect = document.getElementById('industryList');
+                            if (industrySelect) {
+                                industrySelect.value = industryValue;
+                            }
+                            // Show fragrance list if needed
+                            handleIndustryChange(industryValue);
+                        }
+                    <% } %>
+                    
+                    // Wait a bit for industry change to take effect, then initialize all values
+                    setTimeout(() => {
+                        initializeSelectedValues();
+                        
+                        // One more update after a short delay to ensure everything is synced
+                        setTimeout(() => {
+                            initializeSelectedValues();
+                        }, 100);
+                    }, 150);
+                } else {
+                    // Retry after a short delay if checkboxes aren't ready
+                    setTimeout(tryInitialize, 50);
+                }
+            }
+            
+            // Start initialization with a small delay to ensure DOM is fully ready
+            setTimeout(tryInitialize, 150);
+        });
     </script>
 </body>
 

@@ -1,34 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Arjanmal Attarchand | Delhi NCR Glass & Attar Bottle Exporters</title>
-
-  <meta name="description"
-    content="Contact Arjanmal Attarchand for glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars across Delhi NCR (New Delhi, Old Delhi, Gurugram, Noida, Faridabad, Ghaziabad). Call +91-98115-55255 or visit 772 Tilak Bazar, Khari Baoli, New Delhi 110006." />
-
-  <meta name="keywords"
-    content="contact Arjanmal Attarchand, glass bottles Delhi NCR, perfume bottles New Delhi, attar bottles Old Delhi, aluminum bottles Noida, glass jars Gurugram, packaging Faridabad, wholesale bottles Ghaziabad" />
-  <link rel="canonical" href="https://arjanmalattarchand.com/contact" />
-
-  <meta property="og:type" content="website" />
-
-  <meta property="og:title" content="Contact Arjanmal Attarchand | Delhi NCR Glass & Attar Bottle Exporters" />
-
-  <meta property="og:description"
-    content="Get in touch for glass bottles, fancy perfume bottles, attar bottles, aluminum bottles, and glass jars across Delhi NCR." />
-
-  <meta property="og:url" content="https://arjanmalattarchand.com/contact" />
-
-  <meta property="og:image"
-    content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% const seo = seoData || {}; %>
+    <title><%= seo.title || "Contact Arjanmal Attarchand" %></title>
+    <% if (seo.description) { %><meta name="description" content="<%= seo.description %>" /><% } %>
+    <% if (seo.keywords) { %><meta name="keywords" content="<%= seo.keywords %>" /><% } %>
+    <link rel="canonical" href="<%= seo.canonical || 'https://arjanmalattarchand.com/contact' %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%= seo.ogTitle || seo.title || 'Arjanmal Attarchand' %>" />
+    <meta property="og:description" content="<%= seo.ogDescription || seo.description || '' %>" />
+    <meta property="og:url" content="<%= seo.canonical || 'https://arjanmalattarchand.com/contact' %>" />
+    <meta property="og:image" content="https://arjanmalattarchand.com/images/glass-perfume-bottles-delhi-ncr.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="styles/contact.css">
+    <link rel="stylesheet" href="styles/map.css">
+    <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles/contact.css">
-  <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/favicon.png">
 
   <script type="application/ld+json">
   {
@@ -42,22 +35,20 @@
   <%- include ('partials/header.ejs') %>
 
   <!-- Hero -->
-  <section class="hero-gradient hero-pattern pt-28 sm:pt-36 pb-12 sm:pb-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center text-white">
-        <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-5">Get in touch</p>
+  <section class="hero-gradient hero-pattern pt-24 sm:pt-32 pb-8 sm:pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-4">Get in touch</p>
         <h1 class="cormorant leading-[1.05] mb-4 text-4xl sm:text-6xl md:text-7xl lg:text-8xl">Contact <span
             class="text-[color:var(--gold)] italic">Us</span></h1>
         <p class="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-          We’d be delighted to assist with product inquiries, bulk orders, or custom container solutions.
+          Weâ€™d be delighted to assist with product inquiries, bulk orders, or custom container solutions.
         </p>
-        <div class="mt-8">
+        <div class="mt-7">
           <button
             class="border border-[color:var(--gold)] text-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-black transition rounded-full px-7 py-3 text-sm"
             onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})">Start
             Conversation</button>
         </div>
-      </div>
     </div>
   </section>
 
@@ -94,7 +85,7 @@
           </div>
           <h3 class="cormorant text-xl text-gray-900 mb-2">Call Us</h3>
           <p class="text-gray-600 text-sm leading-relaxed">+91 9311555255</p>
-          <p class="text-gray-500 text-xs mt-2">Mon–Sat: 10AM–8PM</p>
+          <p class="text-gray-500 text-xs mt-2">Monâ€“Sat: 10AMâ€“8PM</p>
         </div>
 
         <div class="lux-card bg-white rounded-2xl p-7 reveal">
@@ -117,21 +108,21 @@
             </svg>
           </div>
           <h3 class="cormorant text-xl text-gray-900 mb-2">Business Hours</h3>
-          <p class="text-gray-600 text-sm leading-relaxed">Mon–Sat: 10:00 AM – 8:00 PM</p>
-          <p class="text-gray-600 text-sm leading-relaxed">Sun: 12:00 PM – 6:00 PM</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Monâ€“Sat: 10:00 AM â€“ 8:00 PM</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Sun: 12:00 PM â€“ 6:00 PM</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Contact Form -->
-  <section id="contact-form" class="py-14 sm:py-20 bg-gradient-to-b from-gray-900 via-black to-gray-900">
+  <section id="contact-form" class="py-14 sm:py-20 bg-gradient-to-b from-gray-900 via-black to-gray-900" style="scroll-margin-top: 100px;">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-8 sm:mb-12 reveal">
         <p class="uppercase tracking-[0.35em] text-[color:var(--gold)] text-xs sm:text-sm mb-3">Send us a message</p>
-        <h2 class="cormorant text-white text-3xl sm:text-5xl">Let’s start a <span
+        <h2 class="cormorant text-white text-3xl sm:text-5xl">Letâ€™s start a <span
             class="text-[color:var(--gold)] italic">conversation</span></h2>
-        <p class="text-gray-300 max-w-2xl mx-auto mt-3">Share your query or request a bespoke consultation. We’ll get
+        <p class="text-gray-300 max-w-2xl mx-auto mt-3">Share your query or request a bespoke consultation. Weâ€™ll get
           back promptly.</p>
       </div>
 
@@ -203,7 +194,7 @@
             </svg>
           </div>
           <h3 class="cormorant text-2xl text-white mb-2">Message Sent</h3>
-          <p class="text-gray-300">Thanks for reaching out. We’ll respond within 24 hours.</p>
+          <p class="text-gray-300">Thanks for reaching out. Weâ€™ll respond within 24 hours.</p>
         </div>
       </div>
     </div>
@@ -249,7 +240,7 @@
           </div>
           <div class="mt-6">
             <button class="text-[color:var(--gold-deep)] hover:text-[color:var(--gold)] font-medium"
-              onclick="openMaps()">Get Directions →</button>
+              onclick="openMaps()">Get Directions â†’</button>
           </div>
         </div>
 
@@ -321,14 +312,8 @@
   </section>
 
   <%- include ('partials/footer.ejs') %>
-
+  
   <script>
-    // Navbar blur on scroll
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      if (window.scrollY > 10) nav.classList.add('nav-blur');
-      else nav.classList.remove('nav-blur');
-    });
 
     // Reveal on scroll
     const io = new IntersectionObserver((entries) => {
@@ -336,29 +321,6 @@
     }, { threshold: .15 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Mobile menu
-    const toggle = document.getElementById('menuToggle');
-    const menu = document.getElementById('mobileMenu');
-    const iconOpen = document.getElementById('menuIconOpen');
-    const iconClose = document.getElementById('menuIconClose');
-
-    toggle.addEventListener('click', () => {
-      const isOpen = menu.classList.contains('open');
-      if (isOpen) {
-        menu.classList.remove('open');
-      } else {
-        menu.classList.add('open');
-      }
-      iconOpen.classList.toggle('hidden', !isOpen);
-      iconClose.classList.toggle('hidden', isOpen);
-    });
-
-    // Close mobile menu on link click
-    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      menu.classList.remove('open');
-      iconOpen.classList.remove('hidden');
-      iconClose.classList.add('hidden');
-    }));
     // Form validation + success
     document.getElementById('contactForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -388,11 +350,45 @@
 
       if (ok) {
         const btn = e.target.querySelector('button[type="submit"]');
-        const txt = btn.textContent; btn.textContent = 'Sending...'; btn.disabled = true;
-        setTimeout(() => {
-          e.target.classList.add('hidden');
-          document.getElementById('successMessage').classList.remove('hidden');
-        }, 1200);
+        const txt = btn.textContent; 
+        btn.textContent = 'Sending...'; 
+        btn.disabled = true;
+        
+        // Collect form data
+        const formData = {
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          subject: document.getElementById('subject').value,
+          message: document.getElementById('message').value.trim()
+        };
+        
+        // Submit to server
+        fetch('/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            e.target.classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+          } else {
+            alert(data.message || 'Error sending message. Please try again.');
+            btn.textContent = txt;
+            btn.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error sending message. Please try again.');
+          btn.textContent = txt;
+          btn.disabled = false;
+        });
       }
     });
 
@@ -416,9 +412,11 @@
     window.openMaps = openMaps; // expose for inline handler
   </script>
   <a href="https://wa.me/919811555255?text=I%20want%20to%20know%20more%20about%20Glass%20products"
-    class="whatsapp-float" target="_blank" rel="nofollow noopener" aria-label="Chat on WhatsApp">
+    class="whatsapp-float" target="_blank" rel="nofollow noopener" aria-label="Chat on WhatsApp"
+    onclick="if(typeof trackWhatsAppClick === 'function') trackWhatsAppClick(null, 'Business Enquiry (Floating)', null, 'floating');">
     <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" />
   </a>
+  <script src="/js/whatsapp-tracker.js"></script>
   <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'98293ea92755f4fe',t:'MTc1ODQ1NDM3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
 </body>
 

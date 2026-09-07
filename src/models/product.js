@@ -30,7 +30,8 @@ const productSchema = new mongoose.Schema(
     bestSeller: { type: Boolean, default: false },
     onSale: { type: Boolean, default: false },
     outofstock: { type: Boolean, default: false },
-    active: { type: Boolean, default: false }
+    active: { type: Boolean, default: false },
+    signature: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Enquiries - Arjanmal Attarchand</title>
+    <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/favicon.png">
+
+</head>
+<body>
+    <div class="main-wrapper mb-12">
+        <div id="dashboardPage" class="dashboard-container" style="display: flex;">
+            <div id="header-placeholder"><%- include('partials/header') %></div>
+            <div class="dashboard-body">
+                <div id="sidebar-placeholder"><%- include('partials/sidebar') %></div>
+                <main class="main-content">
+                    <div class="content-header">
+                        <h1>Product Enquiries</h1>
+                        <p>Track WhatsApp button clicks by product</p>
+                    </div>
+                    <div class="content-body">
+                        <div class="product-list">
+                            <!-- Filter Section -->
+                            <div class="form-container" style="margin-bottom: 20px;">
+                                <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #FFD700; font-weight: 600;">Filters & Search</h3>
+                                <form id="filterForm" method="GET" action="/admin/product-enquiries">
+                                    <div class="form-row">
+                                        <div class="form-group-inline">
+                                            <label for="filterSearch">Search Product</label>
+                                            <input type="text" id="filterSearch" name="search" placeholder="Search by product name..." value="<%= currentFilters.search %>">
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortBy">Sort By</label>
+                                            <select id="sortBy" name="sortBy">
+                                                <option value="clicks" <%= currentFilters.sortBy === 'clicks' ? 'selected' : '' %>>Number of Enquiries</option>
+                                                <option value="name" <%= currentFilters.sortBy === 'name' ? 'selected' : '' %>>Product Name</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group-inline">
+                                            <label for="sortOrder">Order</label>
+                                            <select id="sortOrder" name="sortOrder">
+                                                <option value="desc" <%= currentFilters.sortOrder === 'desc' ? 'selected' : '' %>>Highest First</option>
+                                                <option value="asc" <%= currentFilters.sortOrder === 'asc' ? 'selected' : '' %>>Lowest First</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions" style="margin-top: 20px;">
+                                        <button type="submit" class="btn btn-save">Apply Filters</button>
+                                        <a href="/admin/product-enquiries" class="btn btn-cancel">Clear Filters</a>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="product-list-header">
+                                <h2>All Product Enquiries (<%= enquiries.length %>)</h2>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="product-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Number of Enquiries</th>
+                                            <th>Industry</th>
+                                            <th>Last Clicked</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="enquiryTableBody">
+                                        <% if (enquiries && enquiries.length > 0) { %>
+                                            <% enquiries.forEach(enquiry => { %>
+                                            <tr>
+                                                <td><%= enquiry.productName %></td>
+                                                <td style="text-align: center; font-weight: 600; color: #FFD700;"><%= enquiry.clicks %></td>
+                                                <td><%= enquiry.industry || 'N/A' %></td>
+                                                <td><%= new Date(enquiry.lastClicked).toLocaleString() %></td>
+                                            </tr>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" style="text-align: center; padding: 40px; color: #999;">No enquiries found</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+                <!-- Footer Placeholder -->
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+</body>
+</html>

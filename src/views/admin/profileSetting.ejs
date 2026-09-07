@@ -5,6 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Settings - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+    <style>
+        @media (max-width: 400px) {
+  .profile-actions,
+  .form-actions {
+    display: flex;
+    flex-direction: column-reverse; /* Cancel first, Save second */
+    gap: 10px;
+  }
+
+  .profile-actions button,
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+
+    </style>
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/favicon.png">
+
 </head>
 <body>
     <div class="main-wrapper">
@@ -30,11 +65,12 @@
                             <form id="profileSettingsForm">
                                 <div class="profile-settings-header">
                                     <div class="profile-avatar-large" id="profileAvatarContainer">
-                                        <img id="profileAvatarImg" src="" alt="Profile">
-                                        <span id="profileAvatarText">A</span>
+                                        <img id="profileAvatarImg" src="" alt="Profile" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                        <span id="profileAvatarText" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 48px; font-weight: bold; color: #000000; background: #FFD700; border-radius: 50%;">A</span>
                                         <div class="avatar-upload-btn" id="avatarUploadBtn" title="Change Photo">
                                             📷
                                         </div>
+                                        <button type="button" class="avatar-remove-btn" id="removePicBtn" title="Remove Photo" style="position: absolute; bottom: 0; right: 0; background: #ff4444; color: white; border: 2px solid white; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; <%= admin && admin.profilePic ? '' : 'display: none;' %>">×</button>
                                         <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
                                     </div>
                                     <div>
@@ -42,13 +78,16 @@
                                         <p id="profileDisplayRole">Administrator</p>
                                     </div>
                                 </div>
+                                <script>
+                                    window.ADMIN_DATA = <%- JSON.stringify(admin || null) %>;
+                                </script>
 
                                 <div class="profile-section">
                                     <h3>Personal Information</h3>
                                     
                                     <div class="form-group-profile">
-                                        <label for="userId">User ID</label>
-                                        <input type="text" id="userId" readonly>
+                                        <label for="userId">Username</label>
+                                        <input type="text" id="userId" value="<%= admin ? admin.username : 'ArjanAttarsAdmin' %>" readonly>
                                     </div>
 
                                     <div class="form-group-profile">
@@ -115,9 +154,9 @@
             <div id="footer-placeholder"><%- include('partials/footer') %></div>
         </div>
     </div>
-    <script src="js/partials-loader.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/header-handler.js"></script>
-    <script src="js/profile-settings.js"></script>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
+    <script src="/js/profile-settings.js"></script>
 </body>
 </html>

@@ -6,10 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modify Units - Arjanmal Attarchand</title>
     <link rel="stylesheet" href="/styles/admin.css">
+    <script>
+        // Apply sidebar state immediately to prevent flickering (using sessionStorage)
+        (function() {
+            try {
+                var savedState = sessionStorage.getItem('sidebarMinimized');
+                if (savedState === 'true' && document.head) {
+                    var style = document.createElement('style');
+                    style.id = 'sidebar-preload-state';
+                    style.textContent = '#sidebar{width:80px!important}.main-content{margin-left:80px!important;width:calc(100vw - 80px)!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
+        })();
+    </script>
+      <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/favicon.png">
+
 </head>
 
 <body>
-    <div class="main-wrapper">
+    <div class="main-wrapper mb-12">
         <div id="dashboardPage" class="dashboard-container" style="display: flex;">
             <!-- Header Placeholder -->
             <div id="header-placeholder"><%- include('partials/header') %></div>
@@ -30,6 +48,7 @@
                         <div class="units-grid">
 
                             <% for (const unitKey in units) { %>
+                                <% if (unitKey !== 'jarBottleList') { %>
                                 <div class="unit-card">
 
                                     <h3>
@@ -70,6 +89,7 @@
 
                                 </div>
                                 <% } %>
+                                <% } %>
 
                         </div>
                     </div>
@@ -77,13 +97,14 @@
 
             </div>
 
-            <!-- Footer Placeholder -->
-            <div id="footer-placeholder"><%- include('partials/footer') %></div>
+
         </div>
     </div>
-    <script src="js/partials-loader.js"></script>
-    <script src="js/script.js"></script>
-    <script src="js/header-handler.js"></script>
+                <!-- Footer Placeholder -->
+            <div id="footer-placeholder"><%- include('partials/footer') %></div>
+    <script src="/js/partials-loader.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/header-handler.js"></script>
    
 </body>
 

@@ -1,0 +1,10 @@
+# robots.txt for Arjanmal Attarchand
+User-agent: *
+Disallow: /admin
+Disallow: /administrator
+Disallow: /admin/
+Disallow: /admin/*
+
+Allow: /
+
+Sitemap: https://arjanmalattarchand.com/sitemap.xml
