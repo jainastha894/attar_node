@@ -5,6 +5,7 @@
     "Pharma"
   ],
   "subCategoryList": [
+    "Aluminium Bottles",
     "Perfume Bottles",
     "Ittar Bottles",
     "Clear Glass Bottles",
@@ -18,15 +19,20 @@
     "12ml",
     "24ml",
     "50ml",
-    "100ml"
+    "100ml",
+    "150ml",
+    "250ml"
   ],
   "colorList": [
     "Clear",
-    "Amber"
+    "Amber",
+    "Gold"
   ],
   "shapeList": [
     "Round",
-    "Square"
+    "Square",
+    "Hexagonal",
+    "Teardrop"
   ],
   "neckTypeList": [
     "Screw Cap",
@@ -34,7 +40,8 @@
   ],
   "materialList": [
     "Clear Glass",
-    "PET Plastic"
+    "PET Plastic",
+    "Aluminium & Glass"
   ],
   "fragranceList": [
     "Oud",
@@ -46,6 +53,7 @@
     "Gourmend"
   ],
   "jarBottleList": [
+    "Aluminium Bottles",
     "Perfume Bottles",
     "Ittar Bottles",
     "Clear Glass Bottles",
